@@ -29,8 +29,6 @@ struct MainView: View {
     
     @State var refresh: Bool = false
     
-    private let columns = [GridItem(.flexible()), GridItem(.flexible())]
-
     var body: some View {
         NavigationView {
             ZStack {

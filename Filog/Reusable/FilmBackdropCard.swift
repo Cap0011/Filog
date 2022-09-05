@@ -17,8 +17,7 @@ struct FilmBackdropCard: View {
                 image
                     .resizable()
             } placeholder: {
-                Image("NoPosterBackdrop")
-                    .resizable()
+                Color.gray
             }
             .aspectRatio(270/152, contentMode: .fit)
             .frame(width: 270)
@@ -26,10 +25,10 @@ struct FilmBackdropCard: View {
             .shadow(radius: 4)
             
             Text(film.title)
-                .multilineTextAlignment(.leading)
+                .frame(width: 262, alignment: .leading)
                 .font(.system(size: 16, weight: .bold))
                 .foregroundColor(.white)
-                .padding(.horizontal, 8)
+                .padding(.leading, 8)
                 .truncationMode(.tail)
                 .lineLimit(1)
         }

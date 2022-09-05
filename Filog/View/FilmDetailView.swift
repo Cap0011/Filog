@@ -260,8 +260,7 @@ struct FilmDetailImage: View {
             image
                 .resizable()
         } placeholder: {
-            Image("NoPosterBackdrop")
-                .resizable()
+            Color.gray
         }
         .aspectRatio(270/152, contentMode: .fit)
         .frame(width: UIScreen.main.bounds.size.width)
@@ -277,8 +276,7 @@ struct FilmPosterImage: View {
             image
                 .resizable()
         } placeholder: {
-            Image("NoPoster")
-                .resizable()
+            Color.gray
         }
         .aspectRatio(2/3, contentMode: .fit)
         .frame(width: 120)

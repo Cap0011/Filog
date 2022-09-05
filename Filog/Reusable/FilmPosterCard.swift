@@ -17,8 +17,7 @@ struct FilmPosterCard: View {
                 .resizable()
         } placeholder: {
             ZStack(alignment: .bottom) {
-                Image("NoPoster")
-                    .resizable()
+                Color.gray
             }
         }
         .aspectRatio(168/248, contentMode: .fit)
