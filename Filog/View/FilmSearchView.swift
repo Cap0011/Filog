@@ -22,7 +22,9 @@ struct FilmSearchView: View {
                     
                     ScrollView {
                         LoadingView(isLoading: self.filmSearchState.isLoading, error: self.filmSearchState.error) {
-                            self.filmSearchState.search(query: self.filmSearchState.query)
+                            Task {
+                                await self.filmSearchState.search(query: self.filmSearchState.query)
+                            }
                         }
                         
                         if self.filmSearchState.films != nil {

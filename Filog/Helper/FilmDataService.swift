@@ -8,15 +8,18 @@
 import Foundation
 
 protocol FilmDataService {
-    func fetchFilms(from endpoint: FilmListEndpoint, completion: @escaping (Result<FilmResponse, FilmError>) -> ())
-    func fetchFilm(id: Int, completion: @escaping (Result<FilmData, FilmError>) -> ())
-    func fetchPerson(id: Int, completion: @escaping (Result<PersonData, FilmError>) -> ())
-    func fetchSimilarFilms(id: Int, completion: @escaping (Result<FilmResponse, FilmError>) -> ())
-    func fetchRecommendationFilms(id: Int, completion: @escaping (Result<FilmResponse, FilmError>) -> ())
-    func searchFilm(query: String, completion: @escaping (Result<FilmResponse, FilmError>) -> ())
+    func fetchFilms(from endpoint: FilmListEndpoint) async throws -> [FilmData]
+    func fetchFilm(id: Int) async throws -> FilmData
+    func fetchPerson(id: Int) async throws -> PersonData
+    func fetchSimilarFilms(id: Int) async throws -> [FilmData]
+    func fetchRecommendationFilms(id: Int) async throws -> [FilmData]
+    func searchFilm(query: String) async throws -> [FilmData]
 }
 
-enum FilmListEndpoint: String, CaseIterable {
+enum FilmListEndpoint: String, CaseIterable, Identifiable {
+    
+    var id: String { rawValue}
+    
     case nowPlaying = "now_playing"
     case upcoming
     case topRated = "top_rated"

@@ -22,7 +22,9 @@ struct PersonDetailView: View {
             Color("Blue").ignoresSafeArea()
             ScrollView {
                 LoadingView(isLoading: self.personDetailState.isLoading, error: self.personDetailState.error) {
-                    self.personDetailState.loadPerson(id: self.id)
+                    Task {
+                        await self.personDetailState.loadPerson(id: self.id)
+                    }
                 }
                 
                 if personDetailState.person != nil {
@@ -114,7 +116,9 @@ struct PersonDetailView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            self.personDetailState.loadPerson(id: self.id)
+            Task {
+                await self.personDetailState.loadPerson(id: self.id)
+            }
         }
     }
 }

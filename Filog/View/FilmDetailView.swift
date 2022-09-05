@@ -22,7 +22,9 @@ struct FilmDetailView: View {
             Color("Blue").ignoresSafeArea()
             ScrollView {
                 LoadingView(isLoading: self.filmDetailState.isLoading, error: self.filmDetailState.error) {
-                    self.filmDetailState.loadFilm(id: self.filmId)
+                    Task {
+                        await self.filmDetailState.loadFilm(id: self.filmId)
+                    }
                 }
                 
                 if filmDetailState.film != nil {
@@ -34,9 +36,11 @@ struct FilmDetailView: View {
         .toast(message: "Added to your watch list", isShowing: $isShowingAddToast, duration: Toast.short)
         .toast(message: "Removed from your watch list", isShowing: $isShowingRemoveToast, duration: Toast.short)
         .onAppear {
-            self.filmDetailState.loadFilm(id: self.filmId)
-            self.filmSmiliarState.loadSimilarFilms(id: self.filmId)
-            self.filmRecommendationState.loadRecommendationFilms(id: self.filmId)
+            Task {
+                await self.filmDetailState.loadFilm(id: self.filmId)
+                await self.filmSmiliarState.loadSimilarFilms(id: self.filmId)
+                await self.filmRecommendationState.loadRecommendationFilms(id: self.filmId)
+            }
         }
     }
 }

@@ -33,8 +33,10 @@ struct RecommendationView: View {
                         Image(systemName: "arrow.clockwise")
                             .foregroundColor(.white)
                             .onTapGesture {
-                                recommendations.load()
-                                recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                Task {
+                                    recommendations.load()
+                                    await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                }
                             }
                     }
                     .font(.system(size: 24, weight: .black))
@@ -55,7 +57,9 @@ struct RecommendationView: View {
                                 .multilineTextAlignment(.center)
                         } else {
                             LoadingView(isLoading: recommendationsState.isLoading, error: recommendationsState.error) {
-                                recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                Task {
+                                    await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                }
                             }
                         }
                     }
@@ -67,8 +71,10 @@ struct RecommendationView: View {
         }
         .onAppear {
             if !isLoaded {
-                recommendations.load()
-                recommendationsState.loadFilms(with: recommendations.filmIDs)
+                Task {
+                    recommendations.load()
+                    await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                }
             }
         }
     }
