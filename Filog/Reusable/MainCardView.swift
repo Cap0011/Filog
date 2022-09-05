@@ -18,7 +18,7 @@ struct MainCardView: View {
                 img
                     .resizable()
                     .aspectRatio(2/3, contentMode: .fit)
-                    .frame(width: UIScreen.main.bounds.size.width / 2 - 24)
+                    .frame(width: (UIScreen.main.bounds.size.width - 48) / 2)
                     .scaledToFit()
                 
                 MainTextView(title: film.title!, review: film.review!, recommend: film.recommend)

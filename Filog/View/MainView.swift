@@ -28,6 +28,8 @@ struct MainView: View {
     @State private var genre = 0
     
     @State var refresh: Bool = false
+    
+    private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
         NavigationView {
@@ -39,65 +41,38 @@ struct MainView: View {
                         GenreScrollView(selected: $genre, isAllIncluded: true)
                         ScrollView(showsIndicators: false) {
                             HStack(alignment: .top) {
-                                VStack(spacing: 16) {
-                                    ForEach(Array(stride(from: 0, to: resultFilms.count, by: 2)), id: \.self) { idx in
-                                        MainCardView(film: resultFilms[idx])
-                                            .padding(.leading, 16)
-                                            .confirmationDialog(selectedFilm?.title ?? "", isPresented: $isShowingActionSheet, titleVisibility: .visible) {
-                                                Button("See film info", role: .none) {
-                                                    // Open Detail View
-                                                    isShowingDetailSheet.toggle()
-                                                }
-                                                Button("Edit", role: .none) {
-                                                    // Open Edit Sheet
-                                                    isShowingEditSheet.toggle()
-                                                }
-                                                Button("Delete", role: .destructive) {
-                                                    // Delete
-                                                    deleteFilm(object: selectedFilm!)
-                                                }
-                                                Button("Cancel", role: .cancel) {
-                                                    isShowingActionSheet = false
-                                                }
+                                ForEach(0...1, id: \.self) { column in
+                                    LazyVStack(spacing: 16) {
+                                        ForEach(0..<resultFilms.count, id: \.self) { idx in
+                                            if idx % 2 == column {
+                                                MainCardView(film: resultFilms[idx])
+                                                    .confirmationDialog(selectedFilm?.title ?? "", isPresented: $isShowingActionSheet, titleVisibility: .visible) {
+                                                        Button("See film info", role: .none) {
+                                                            // Open Detail View
+                                                            isShowingDetailSheet.toggle()
+                                                        }
+                                                        Button("Edit", role: .none) {
+                                                            // Open Edit Sheet
+                                                            isShowingEditSheet.toggle()
+                                                        }
+                                                        Button("Delete", role: .destructive) {
+                                                            // Delete
+                                                            deleteFilm(object: selectedFilm!)
+                                                        }
+                                                        Button("Cancel", role: .cancel) {
+                                                            isShowingActionSheet = false
+                                                        }
+                                                    }
+                                                    .onTapGesture {
+                                                        selectedFilm = resultFilms[idx]
+                                                        isShowingActionSheet = true
+                                                    }
                                             }
-                                            .onTapGesture {
-                                                selectedFilm = resultFilms[idx]
-                                                isShowingActionSheet = true
-                                            }
+                                        }
                                     }
                                 }
-                                .frame(width: UIScreen.main.bounds.size.width / 2)
-                                
-                                VStack(spacing: 16) {
-                                    ForEach(Array(stride(from: 1, to: resultFilms.count, by: 2)), id: \.self) { idx in
-                                        MainCardView(film: resultFilms[idx])
-                                            .padding(.trailing, 16)
-                                            .confirmationDialog(selectedFilm?.title ?? "", isPresented: $isShowingActionSheet, titleVisibility: .visible) {
-                                                Button("See film info", role: .none) {
-                                                    // Open Detail View
-                                                    isShowingDetailSheet.toggle()
-                                                }
-                                                Button("Edit", role: .none) {
-                                                    // Open Edit Sheet
-                                                    isShowingEditSheet.toggle()
-                                                }
-                                                Button("Delete", role: .destructive) {
-                                                    // Delete
-                                                    deleteFilm(object: selectedFilm!)
-                                                    Constants.shared.films = films.filter{ $0.genre >= 0 }
-                                                }
-                                                Button("Cancel", role: .cancel) {
-                                                    isShowingActionSheet = false
-                                                }
-                                            }
-                                            .onTapGesture {
-                                                selectedFilm = resultFilms[idx]
-                                                isShowingActionSheet = true
-                                            }
-                                    }
-                                }
-                                .frame(width: UIScreen.main.bounds.size.width / 2)
                             }
+                            .padding(.horizontal, 16)
                         }
                         .simultaneousGesture(DragGesture().onChanged({ gesture in
                             withAnimation{
