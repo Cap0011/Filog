@@ -22,6 +22,7 @@ struct FilmListView: View {
     @ObservedObject private var popularState = FilmListState()
     
     @State var isShowingSearchView = false
+    @State private var isLoaded = false
     @ObservedObject var filmSearchState = FilmSearchState()
     
     var body: some View {
@@ -109,12 +110,15 @@ struct FilmListView: View {
         }
         .onAppear {
             Constants.shared.films = films.filter{ $0.genre >= 0 }
-            
-            Task {
-                await self.nowPlayingState.loadFilms(with: .nowPlaying)
-                await self.upcomingState.loadFilms(with: .upcoming)
-                await self.topRatedState.loadFilms(with: .topRated)
-                await self.popularState.loadFilms(with: .popular)
+            if !isLoaded {
+                Task {
+                    await self.nowPlayingState.loadFilms(with: .nowPlaying)
+                    await self.upcomingState.loadFilms(with: .upcoming)
+                    await self.topRatedState.loadFilms(with: .topRated)
+                    await self.popularState.loadFilms(with: .popular)
+                    
+                    isLoaded = true
+                }
             }
         }
         
