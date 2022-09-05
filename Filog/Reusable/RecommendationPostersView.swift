@@ -45,8 +45,7 @@ struct RecommendationPosterView: View {
                     image
                         .resizable()
                 } placeholder: {
-                    Image("NoPoster")
-                        .resizable()
+                    Color.gray
                 }
                 .aspectRatio(168/248, contentMode: .fit)
                 .cornerRadius(8)
