@@ -32,7 +32,7 @@ struct PersonDetailView: View {
                     PersonProfileView(profileURL: personDetailState.person!.profileURL, name: personDetailState.person!.name, birthplace: personDetailState.person!.placeOfBirth, birthday: personDetailState.person!.birthday, deathday: personDetailState.person!.deathday, socials: personDetailState.person!.externalIds)
                     
                     // biography
-                    VStack(alignment: .trailing, spacing: 4) {
+                    LazyVStack(alignment: .trailing, spacing: 4) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Biography")
                                 .font(.system(size: 18, weight: .bold))
@@ -68,7 +68,7 @@ struct PersonDetailView: View {
                                 .padding(.leading, 16)
                             ScrollView(.horizontal, showsIndicators: false) {
                                 if sortedCast != nil {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(sortedCast!) { cast in
                                             NavigationLink(destination: FilmDetailView(filmId: cast.id)) {
                                                 FilmCastCard(name: "\(cast.title) (\(cast.yearText))", character: cast.character, profileURL: cast.posterURL)
@@ -76,6 +76,7 @@ struct PersonDetailView: View {
                                         }
                                     }
                                     .padding(.horizontal, 16)
+                                    .frame(height: 245)
                                 }
                             }
                         }
@@ -95,7 +96,7 @@ struct PersonDetailView: View {
                                 .padding(.leading, 16)
                             ScrollView(.horizontal, showsIndicators: false) {
                                 if sortedCrew != nil {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(personDetailState.person!.crew!) { crew in
                                             NavigationLink(destination: FilmDetailView(filmId: crew.id)) {
                                                 FilmCastCard(name: "\(crew.title) (\(crew.yearText))", character: crew.department, profileURL: crew.posterURL)
@@ -103,6 +104,7 @@ struct PersonDetailView: View {
                                         }
                                     }
                                     .padding(.horizontal, 16)
+                                    .frame(height: 245)
                                 }
                             }
                         }

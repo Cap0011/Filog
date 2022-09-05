@@ -14,7 +14,7 @@ struct YoutubeCarouselView: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16) {
+            LazyHStack(spacing: 16) {
                 ForEach(self.videos) { video in
                     if video.youtubeURL != nil {
                         Link(destination: video.youtubeURL!) {
@@ -24,6 +24,7 @@ struct YoutubeCarouselView: View {
                 }
             }
             .padding(.horizontal, 16)
+            .frame(height: 180)
         }
     }
 }
@@ -35,19 +36,19 @@ struct YoutubeBackdropCard: View {
     var body: some View {
         VStack(alignment: .leading) {
             ZStack {
-                CachedAsyncImage(url: thumbnailURL)  { image in
-                    image
-                        .resizable()
-                } placeholder: {
-                    Image("NoPosterBackdrop")
-                        .resizable()
-                        .aspectRatio(16/9, contentMode: .fit)
+                CachedAsyncImage(url: thumbnailURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                        default: Color.gray
+                    }
                 }
                 .scaledToFill()
                 .frame(width: 270, height: 150, alignment: .center)
                 .clipped()
                 .aspectRatio(contentMode: .fit)
-                .cornerRadius(8)
+                .cornerRadius(4)
                 .shadow(radius: 4)
                 
                 Image(systemName: "play.circle.fill")

@@ -22,7 +22,7 @@ struct FilmBackdropCarouselView: View {
                     .foregroundColor(.white)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
+                    LazyHStack(spacing: 16) {
                         ForEach(self.films) { film in
                             NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                                 FilmBackdropCard(film: film)

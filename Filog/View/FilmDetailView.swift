@@ -61,7 +61,7 @@ struct FilmDetailListView: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color("Blue").ignoresSafeArea()
-            VStack(alignment: .leading) {
+            LazyVStack(alignment: .leading) {
                 ZStack(alignment: .bottomTrailing) {
                     FilmDetailImage(imageURL: self.film.backdropURL)
                     FilmRatingCircle(value: film.voteAverage * 10)
@@ -134,7 +134,7 @@ struct FilmDetailListView: View {
                         .padding(.horizontal, 16)
                     if film.directors != nil {
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
+                            LazyHStack(spacing: 16) {
                                 ForEach(film.directors!){ director in
                                     NavigationLink(destination: PersonDetailView(id: director.id)) {
                                         FilmCastCard(name: director.name, character: nil, profileURL: director.profileURL)
@@ -142,6 +142,7 @@ struct FilmDetailListView: View {
                                 }
                             }
                             .padding(.horizontal, 16)
+                            .frame(height: 225)
                         }
                         .padding(.bottom, 16)
                     }
@@ -153,7 +154,7 @@ struct FilmDetailListView: View {
                         .padding(.horizontal, 16)
                     if film.cast != nil {
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
+                            LazyHStack(spacing: 16) {
                                 ForEach(film.cast!.prefix(10)){ cast in
                                     NavigationLink(destination: PersonDetailView(id: cast.id)) {
                                         FilmCastCard(name: cast.name, character: cast.character, profileURL: cast.profileURL)
@@ -161,6 +162,7 @@ struct FilmDetailListView: View {
                                 }
                             }
                             .padding(.horizontal, 16)
+                            .frame(height: 245)
                         }
                         .padding(.bottom, 16)
                     }
@@ -191,7 +193,7 @@ struct FilmDetailListView: View {
                 
                 if similarFilms != nil {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        LazyHStack(spacing: 16) {
                             ForEach(similarFilms!) { film in
                                 NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                                     RecommendationPosterView(film: film, width: (UIScreen.main.bounds.size.width - 32) / 2.5, rank: nil, color: Color("Blue"), fontSize: 20)
@@ -199,6 +201,7 @@ struct FilmDetailListView: View {
                             }
                         }
                         .padding(.horizontal, 16)
+                        .frame(height: (UIScreen.main.bounds.size.width - 32) / 2.5 / 2 * 3 + 20)
                     }
                     .padding(.bottom, 16)
                 }
@@ -211,7 +214,7 @@ struct FilmDetailListView: View {
                 
                 if recommendationFilms != nil {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        LazyHStack(spacing: 16) {
                             ForEach(recommendationFilms!) { film in
                                 NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                                     RecommendationPosterView(film: film, width: (UIScreen.main.bounds.size.width - 32) / 2.5, rank: nil, color: Color("Blue"), fontSize: 20)
@@ -219,6 +222,7 @@ struct FilmDetailListView: View {
                             }
                         }
                         .padding(.horizontal, 16)
+                        .frame(height: (UIScreen.main.bounds.size.width - 32) / 2.5 / 2 * 3 + 20)
                     }
                 }
             }

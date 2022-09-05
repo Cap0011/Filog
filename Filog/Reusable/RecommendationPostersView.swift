@@ -51,7 +51,7 @@ struct RecommendationPosterView: View {
                     }
                 }
                 .aspectRatio(168/248, contentMode: .fit)
-                .cornerRadius(8)
+                .cornerRadius(4)
                 .shadow(radius: 4)
                 .frame(width: width)
                 
