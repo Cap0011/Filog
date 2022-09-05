@@ -59,12 +59,12 @@ struct WatchListPosterCard: View {
     
     var body: some View {
         NavigationLink(destination: FilmDetailView(filmId: self.filmID)) {
-            CachedAsyncImage(url: posterURL)  { image in
-                image
-                    .resizable()
-            } placeholder: {
-                ZStack(alignment: .bottom) {
-                    Color.gray
+            CachedAsyncImage(url: posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                    default: Color.gray
                 }
             }
             .aspectRatio(2/3, contentMode: .fit)

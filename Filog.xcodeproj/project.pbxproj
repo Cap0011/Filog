@@ -214,18 +214,18 @@
 		C7BDE18F28C50B8E00B4F781 /* Reusable */ = {
 			isa = PBXGroup;
 			children = (
+				C7BDE19B28C50B8E00B4F781 /* MainCardView.swift */,
 				C7BDE19028C50B8E00B4F781 /* GenreScrollView.swift */,
-				C7BDE19128C50B8E00B4F781 /* RecommendationPostersView.swift */,
 				C7BDE19228C50B8E00B4F781 /* SearchBar.swift */,
-				C7BDE19328C50B8E00B4F781 /* FilmPosterCard.swift */,
+				C7BDE19828C50B8E00B4F781 /* FilmSearchRow.swift */,
 				C7BDE19428C50B8E00B4F781 /* YoutubeCarouselView.swift */,
 				C7BDE19528C50B8E00B4F781 /* FilmBackdropCarouselView.swift */,
-				C7BDE19628C50B8E00B4F781 /* FilmPosterCarouselView.swift */,
-				C7BDE19728C50B8E00B4F781 /* ActivityIndicatorView.swift */,
-				C7BDE19828C50B8E00B4F781 /* FilmSearchRow.swift */,
-				C7BDE19928C50B8E00B4F781 /* LoadingView.swift */,
 				C7BDE19A28C50B8E00B4F781 /* FilmBackdropCard.swift */,
-				C7BDE19B28C50B8E00B4F781 /* MainCardView.swift */,
+				C7BDE19628C50B8E00B4F781 /* FilmPosterCarouselView.swift */,
+				C7BDE19328C50B8E00B4F781 /* FilmPosterCard.swift */,
+				C7BDE19928C50B8E00B4F781 /* LoadingView.swift */,
+				C7BDE19728C50B8E00B4F781 /* ActivityIndicatorView.swift */,
+				C7BDE19128C50B8E00B4F781 /* RecommendationPostersView.swift */,
 			);
 			path = Reusable;
 			sourceTree = "<group>";

@@ -13,11 +13,13 @@ struct FilmBackdropCard: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            CachedAsyncImage(url: film.backdropURL)  { image in
-                image
-                    .resizable()
-            } placeholder: {
-                Color.gray
+            CachedAsyncImage(url: film.backdropURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                    default: Color.gray
+                }
             }
             .aspectRatio(270/152, contentMode: .fit)
             .frame(width: 270)

@@ -133,14 +133,15 @@ struct PersonProfileView: View {
     
     var body: some View {
         VStack {
-            CachedAsyncImage(url: profileURL)  { image in
-                image
-                    .resizable()
-                    .cornerRadius(8)
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 8)
-                    .foregroundColor(.gray)
+            CachedAsyncImage(url: profileURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                    default: Color.gray
+                }
             }
+            .cornerRadius(8)
             .aspectRatio(2/3, contentMode: .fit)
             .frame(width: 150)
             

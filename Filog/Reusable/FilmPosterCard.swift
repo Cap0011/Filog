@@ -12,12 +12,12 @@ struct FilmPosterCard: View {
     let film: FilmData
     
     var body: some View {
-        CachedAsyncImage(url: film.posterURL)  { image in
-            image
-                .resizable()
-        } placeholder: {
-            ZStack(alignment: .bottom) {
-                Color.gray
+        CachedAsyncImage(url: film.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                default: Color.gray
             }
         }
         .aspectRatio(168/248, contentMode: .fit)

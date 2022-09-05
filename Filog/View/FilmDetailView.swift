@@ -260,11 +260,13 @@ struct FilmDetailImage: View {
     
     var body: some View {
         
-        CachedAsyncImage(url: imageURL)  { image in
-            image
-                .resizable()
-        } placeholder: {
-            Color.gray
+        CachedAsyncImage(url: imageURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                default: Color.gray
+            }
         }
         .aspectRatio(270/152, contentMode: .fit)
         .frame(width: UIScreen.main.bounds.size.width)
@@ -276,11 +278,13 @@ struct FilmPosterImage: View {
     let imageURL: URL
     
     var body: some View {
-        CachedAsyncImage(url: imageURL)  { image in
-            image
-                .resizable()
-        } placeholder: {
-            Color.gray
+        CachedAsyncImage(url: imageURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                default: Color.gray
+            }
         }
         .aspectRatio(2/3, contentMode: .fit)
         .frame(width: 120)
@@ -325,12 +329,13 @@ struct FilmCastCard: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            CachedAsyncImage(url: profileURL)  { image in
-                image
-                    .resizable()
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 4)
-                    .foregroundColor(.gray)
+            CachedAsyncImage(url: profileURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                    default: Color.gray
+                }
             }
             .aspectRatio(2/3, contentMode: .fill)
             .frame(width: 120)

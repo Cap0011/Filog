@@ -18,7 +18,7 @@ struct RecommendationPostersView: View {
                     .padding(.bottom, 16)
             }
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 24) {
+                LazyHStack(spacing: 24) {
                     ForEach(1..<films.count) { idx in
                         NavigationLink(destination: FilmDetailView(filmId: films[idx].id)) {
                             RecommendationPosterView(film: films[idx], width: (UIScreen.main.bounds.size.width - 32) / 2.5, rank: idx + 1, color: Color("Blue"), fontSize: 18)
@@ -26,6 +26,7 @@ struct RecommendationPostersView: View {
                     }
                 }
                 .padding(.horizontal, 36)
+                .padding(.bottom, 100)
             }
         }
     }
@@ -41,11 +42,13 @@ struct RecommendationPosterView: View {
     var body: some View {
         VStack {
             ZStack(alignment: .bottomLeading) {
-                CachedAsyncImage(url: film.posterURL)  { image in
-                    image
-                        .resizable()
-                } placeholder: {
-                    Color.gray
+                CachedAsyncImage(url: film.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                        default: Color.gray
+                    }
                 }
                 .aspectRatio(168/248, contentMode: .fit)
                 .cornerRadius(8)
