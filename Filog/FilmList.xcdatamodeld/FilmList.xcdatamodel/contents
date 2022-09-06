@@ -5,10 +5,11 @@
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="poster" optional="YES" attributeType="Binary"/>
         <attribute name="recommend" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="recommendsub" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="review" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="Film" positionX="-63" positionY="-18" width="128" height="119"/>
+        <element name="Film" positionX="-63" positionY="-18" width="128" height="134"/>
     </elements>
 </model>

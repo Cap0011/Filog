@@ -25,6 +25,7 @@ struct AddFilmView: View {
     @State private var genre: Int = 1
     @State private var review: String = ""
     @State private var recommend: Bool = true
+    @State private var recommendsub: Bool = false
     
     var body: some View {
         NavigationView {
@@ -89,16 +90,40 @@ struct AddFilmView: View {
                             .font(.custom(FontManager.Inconsolata.black, size: 22))
                             .foregroundColor(.white)
                         
-                        HStack(spacing: 80) {
+                        HStack(spacing: 40) {
                             VStack(spacing: 5) {
-                                Image(systemName: "heart.fill")
-                                    .font(.system(size: 40))
+                                ZStack {
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 40))
+                                        .offset(x: 26)
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 46))
+                                        .foregroundColor(Color("Blue"))
+                                        .offset(y: 1)
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 40))
+                                }
+                                .padding(.trailing, 40)
+                                .padding(.bottom, -6)
                                 Text("For sure")
                                     .font(.custom(FontManager.Inconsolata.regular, size: 17))
                             }
-                            .foregroundColor(recommend ? Color("Red") : .white)
+                            .foregroundColor(recommend && recommendsub ? Color("Red") : .white)
                             .onTapGesture {
                                 recommend = true
+                                recommendsub = true
+                            }
+                            
+                            VStack(spacing: 5) {
+                                Image(systemName: "heart.fill")
+                                    .font(.system(size: 40))
+                                Text("Maybe")
+                                    .font(.custom(FontManager.Inconsolata.regular, size: 17))
+                            }
+                            .foregroundColor(recommend && !recommendsub ? Color("Red") : .white)
+                            .onTapGesture {
+                                recommend = true
+                                recommendsub = false
                             }
                             
                             VStack(spacing: 5) {
