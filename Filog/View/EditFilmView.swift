@@ -21,6 +21,7 @@ struct EditFilmView: View {
     @State private var title: String = ""
     @State private var review: String = ""
     @State private var recommend: Bool = true
+    @State private var recommendsub: Bool = true
     
     @Binding var film: FetchedResults<Film>.Element?
 
@@ -74,22 +75,46 @@ struct EditFilmView: View {
                             .font(.custom(FontManager.Inconsolata.black, size: 22))
                             .foregroundColor(.white)
                         
-                        HStack(spacing: 80) {
+                        HStack(spacing: 40) {
                             VStack(spacing: 5) {
-                                Image(systemName: "heart.fill")
-                                    .font(.system(size: 40))
+                                ZStack {
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 40))
+                                        .offset(x: 26)
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 46))
+                                        .foregroundColor(Color("Blue"))
+                                        .offset(y: 1)
+                                    Image(systemName: "heart.fill")
+                                        .font(.system(size: 40))
+                                }
+                                .padding(.trailing, 40)
+                                .padding(.bottom, -6)
                                 Text("For sure")
                                     .font(.custom(FontManager.Inconsolata.regular, size: 17))
                             }
-                            .foregroundColor(recommend ? Color("Red") : .white)
+                            .foregroundColor(recommend && recommendsub ? Color("Red") : .white)
                             .onTapGesture {
                                 recommend = true
+                                recommendsub = true
+                            }
+                            
+                            VStack(spacing: 5) {
+                                Image(systemName: "heart.fill")
+                                    .font(.system(size: 40))
+                                Text("Maybe")
+                                    .font(.custom(FontManager.Inconsolata.regular, size: 17))
+                            }
+                            .foregroundColor(recommend && !recommendsub ? Color("Red") : .white)
+                            .onTapGesture {
+                                recommend = true
+                                recommendsub = false
                             }
                             
                             VStack(spacing: 5) {
                                 Image(systemName: "heart.slash")
                                     .font(.system(size: 40))
-                                Text("I'm good")
+                                Text("Not really")
                                     .font(.custom(FontManager.Inconsolata.regular, size: 17))
                             }
                             .foregroundColor(recommend ? .white : Color("Red"))
@@ -134,6 +159,7 @@ struct EditFilmView: View {
                 title = (film?.title!)!
                 review = (film?.review!)!
                 recommend = film!.recommend
+                recommendsub = film!.recommendsub
                 filmImage = Image(uiImage: UIImage(data: (film?.poster)!)!)
             }
         }
