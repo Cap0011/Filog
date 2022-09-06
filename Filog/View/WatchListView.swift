@@ -27,7 +27,6 @@ struct WatchListView: View {
                             .foregroundColor(.white)
                     }
                     .font(.system(size: 24, weight: .black))
-                    .padding(.top, 64)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 4)
                     
@@ -39,12 +38,10 @@ struct WatchListView: View {
                                 }
                             }
                         }
-                        .padding(.bottom, 100)
                     }
                 }
-                .ignoresSafeArea()
+                .padding(.top, 8)
             }
-            .ignoresSafeArea()
             .navigationBarHidden(true)
             .onAppear {
                 dictionary = UserDefaults.standard.dictionary(forKey: "ToWatchFilms") as? [String: String] ?? [:]

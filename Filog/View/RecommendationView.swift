@@ -40,13 +40,14 @@ struct RecommendationView: View {
                             }
                     }
                     .font(.system(size: 24, weight: .black))
-                    .padding(.top, 64)
+                    .padding(.top, 8)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 4)
                     
                     if recommendationsState.films != nil && recommendationsState.films!.count == 50 {
+                        Spacer()
+                        
                         RecommendationPostersView(films: recommendationsState.films!)
-                            .padding(.top, 16)
                             .onAppear {
                                 isLoaded = true
                             }
@@ -64,9 +65,7 @@ struct RecommendationView: View {
                         }
                     }
                 }
-                .ignoresSafeArea()
             }
-            .ignoresSafeArea()
             .navigationBarHidden(true)
         }
         .onAppear {

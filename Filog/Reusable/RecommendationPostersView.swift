@@ -13,10 +13,12 @@ struct RecommendationPostersView: View {
     
     var body: some View {
         VStack {
+            Spacer()
+            
             NavigationLink(destination: FilmDetailView(filmId: films.first!.id)) {
                 RecommendationPosterView(film: films.first!, width: UIScreen.main.bounds.size.width / 2, rank: 1, color: Color("Red"), fontSize: 20)
-                    .padding(.bottom, 16)
             }
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 24) {
                     ForEach(1..<films.count) { idx in
@@ -26,7 +28,6 @@ struct RecommendationPostersView: View {
                     }
                 }
                 .padding(.horizontal, 36)
-                .padding(.bottom, 100)
             }
         }
     }
