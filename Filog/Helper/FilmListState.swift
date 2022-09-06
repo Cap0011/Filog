@@ -39,22 +39,25 @@ class FilmListState: ObservableObject {
         self.isLoading = false
         
         let convertedIDs = ids.map { Int($0) }
-
+        
         do {
-            let films = try await withThrowingTaskGroup(of: FilmData.self) { group -> [FilmData] in
+            let films = try await withThrowingTaskGroup(of: FilmData?.self) { group -> [FilmData] in
                 for id in convertedIDs {
                     group.addTask {
-                        return try await self.filmService.fetchFilm(id: id!)
+                        return try? await self.filmService.fetchFilm(id: id!)
                     }
                 }
                 
                 var collected = [FilmData]()
-
+                
                 for try await value in group {
-                    collected.append(value)
+                    if value != nil {
+                        collected.append(value!)
+                    }
                 }
                 return collected
             }
+            
             self.films = films
             self.isLoading = false
         } catch {

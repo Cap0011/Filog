@@ -44,7 +44,7 @@ struct RecommendationView: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 4)
                     
-                    if recommendationsState.films != nil && recommendationsState.films!.count == 50 {
+                    if recommendationsState.films != nil && recommendationsState.films!.count > 0 {
                         Spacer()
                         
                         RecommendationPostersView(films: recommendationsState.films!)
