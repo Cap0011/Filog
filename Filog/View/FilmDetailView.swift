@@ -16,6 +16,7 @@ struct FilmDetailView: View {
     
     @State var isShowingAddToast = false
     @State var isShowingRemoveToast = false
+    @State var isShowingSuccessToast = false
     
     var body: some View {
         ZStack {
@@ -28,13 +29,14 @@ struct FilmDetailView: View {
                 }
                 
                 if filmDetailState.film != nil {
-                    FilmDetailListView(film: filmDetailState.film!, similarFilms: filmSmiliarState.films, recommendationFilms: filmRecommendationState.films, isShowingAddToast: $isShowingAddToast, isShowingRemoveToast: $isShowingRemoveToast)
+                    FilmDetailListView(film: filmDetailState.film!, similarFilms: filmSmiliarState.films, recommendationFilms: filmRecommendationState.films, isShowingAddToast: $isShowingAddToast, isShowingRemoveToast: $isShowingRemoveToast, isShowingSuccessToast: $isShowingSuccessToast)
                 }
             }
             .ignoresSafeArea()
         }
         .toast(message: "Added to your watch list", isShowing: $isShowingAddToast, duration: Toast.short)
         .toast(message: "Removed from your watch list", isShowing: $isShowingRemoveToast, duration: Toast.short)
+        .toast(message: "Your review was successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
         .onAppear {
             Task {
                 await self.filmDetailState.loadFilm(id: self.filmId)
@@ -53,8 +55,10 @@ struct FilmDetailListView: View {
     @State private var selectedTrailer: FilmVideo?
     
     @State var isShowingSheet = false
+    
     @Binding var isShowingAddToast: Bool
     @Binding var isShowingRemoveToast: Bool
+    @Binding var isShowingSuccessToast: Bool
     
     @State var isAlreadyOnList = false
         
@@ -227,7 +231,7 @@ struct FilmDetailListView: View {
                 }
             }
             .sheet(isPresented: $isShowingSheet, content: {
-                AddFilmView(isShowingSheet: $isShowingSheet, selectedURL: film.posterURL, title: film.title, id: String(film.id))
+                AddFilmView(isShowingSheet: $isShowingSheet, isShowingSuccessToast: $isShowingSuccessToast, selectedURL: film.posterURL, title: film.title, id: String(film.id))
             })
             .lineSpacing(5)
             .ignoresSafeArea()

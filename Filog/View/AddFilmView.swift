@@ -12,6 +12,7 @@ struct AddFilmView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @Binding var isShowingSheet: Bool
+    @Binding var isShowingSuccessToast: Bool
     @State var selectedURL: URL?
     @State var title: String = ""
     @State var id: String = ""
@@ -134,6 +135,7 @@ struct AddFilmView: View {
                         // If complete -> save
                         else {
                             self.isShowingSheet = false
+                            self.isShowingSuccessToast = true
                             addFilm(title: title, review: review, genre: genre, recommend: recommend, poster: selectedImage ?? Image("NoPoster"))
                         }
                     } label: {
