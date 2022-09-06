@@ -58,6 +58,7 @@ struct MainView: View {
                                                         Button("Delete", role: .destructive) {
                                                             // Delete
                                                             deleteFilm(object: selectedFilm!)
+                                                            Constants.shared.films = films.filter{ $0.genre >= 0 }
                                                         }
                                                         Button("Cancel", role: .cancel) {
                                                             isShowingActionSheet = false
