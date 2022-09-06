@@ -19,6 +19,7 @@ struct MainView: View {
     
     @State private var isShowingSheet = false
     @State var isShowingSuccessToast = false
+    @State var isShowingEditToast = false
     @State private var isShowingEditSheet = false
     @State private var isShowingActionSheet = false
     @State private var isShowingDetailSheet = false
@@ -118,11 +119,12 @@ struct MainView: View {
                     }
                 }
                 .toast(message: "Your review was successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
+                .toast(message: "Your review was successfully edited!", isShowing: $isShowingEditToast, duration: Toast.short)
                 .sheet(isPresented: $isShowingSheet) {
                     AddFilmView(isShowingSheet: self.$isShowingSheet, isShowingSuccessToast: $isShowingSuccessToast)
                 }
                 .sheet(isPresented: $isShowingEditSheet) {
-                    EditFilmView(isShowingSheet: self.$isShowingEditSheet, film: $selectedFilm)
+                    EditFilmView(isShowingSheet: self.$isShowingEditSheet, isShowingSuccessToast: $isShowingEditToast, film: $selectedFilm)
                 }
                 .sheet(isPresented: $isShowingDetailSheet) {
                     if selectedFilm != nil {

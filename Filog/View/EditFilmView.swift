@@ -12,6 +12,8 @@ struct EditFilmView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @Binding var isShowingSheet: Bool
+    @Binding var isShowingSuccessToast: Bool
+    
     @State private var showErrorToast = false
 
     @State private var filmImage: Image?
@@ -119,6 +121,7 @@ struct EditFilmView: View {
                         else {
                             self.isShowingSheet = false
                             editFilm(review: review, recommend: recommend)
+                            self.isShowingSuccessToast = true
                         }
                     } label: {
                         Text("Done")
