@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct ImageSearchView: View {
-    
     @ObservedObject var filmSearchState = FilmSearchState()
+    
     @Binding var isShowingSheet: Bool
     @Binding var selectedURL: URL?
     @Binding var title: String
     @Binding var id: String
+    @Binding var genres: [Int]
+    @Binding var isSelected: Bool
+    
     @State private var isSearching = false
     
     var body: some View {
@@ -40,7 +43,13 @@ struct ImageSearchView: View {
                                         selectedURL = film.posterURL
                                         title = film.title
                                         id = String(film.id)
+                                        if film.genreIds != nil {
+                                            genres = Array(film.genreIds!.prefix(3))
+                                        } else {
+                                            genres = []
+                                        }
                                         self.isShowingSheet = false
+                                        self.isSelected = true
                                     }
                                 }
                             }
