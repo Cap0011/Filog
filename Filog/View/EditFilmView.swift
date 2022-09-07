@@ -145,7 +145,7 @@ struct EditFilmView: View {
                         // If complete -> save
                         else {
                             self.isShowingSheet = false
-                            editFilm(review: review, recommend: recommend)
+                            editFilm(review: review, recommend: recommend, recommendsub: recommendsub)
                             self.isShowingSuccessToast = true
                         }
                     } label: {
@@ -174,9 +174,10 @@ struct EditFilmView: View {
         }
     }
     
-    private func editFilm(review: String, recommend: Bool) {
+    private func editFilm(review: String, recommend: Bool, recommendsub: Bool) {
         film!.review = review
         film!.recommend = recommend
+        film!.recommendsub = recommendsub
         
         saveContext()
     }

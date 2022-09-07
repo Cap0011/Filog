@@ -161,7 +161,7 @@ struct AddFilmView: View {
                         else {
                             self.isShowingSheet = false
                             self.isShowingSuccessToast = true
-                            addFilm(title: title, review: review, genre: genre, recommend: recommend, poster: selectedImage ?? Image("NoPoster"))
+                            addFilm(title: title, review: review, genre: genre, recommend: recommend, recommendsub: recommendsub, poster: selectedImage ?? Image("NoPoster"))
                         }
                     } label: {
                         Text("Save")
@@ -181,10 +181,11 @@ struct AddFilmView: View {
         }
     }
     
-    private func addFilm(title: String, review: String, genre: Int, recommend: Bool, poster: Image) {
+    private func addFilm(title: String, review: String, genre: Int, recommend: Bool, recommendsub: Bool, poster: Image) {
         let newFilm = Film(context: viewContext)
         newFilm.title = title
         newFilm.recommend = recommend
+        newFilm.recommendsub = recommendsub
         newFilm.review = review
         newFilm.genre = Int64(genre)
         newFilm.poster = poster.snapshot().pngData()
