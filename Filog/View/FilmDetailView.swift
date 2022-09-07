@@ -27,6 +27,7 @@ struct FilmDetailView: View {
                         await self.filmDetailState.loadFilm(id: self.filmId)
                     }
                 }
+                .padding(.top, 100)
                 
                 if filmDetailState.film != nil {
                     FilmDetailListView(film: filmDetailState.film!, similarFilms: filmSmiliarState.films, recommendationFilms: filmRecommendationState.films, isShowingAddToast: $isShowingAddToast, isShowingRemoveToast: $isShowingRemoveToast, isShowingSuccessToast: $isShowingSuccessToast)

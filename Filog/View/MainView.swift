@@ -87,13 +87,11 @@ struct MainView: View {
                 }
                 .onChange(of: genre) { genre in
                     if genre == 0 { resultFilms = films.filter{ $0.genre >= 0 } }
-                    else { resultFilms = films.filter{ $0.genre == genre } }
+                    else { resultFilms = films.filter{ Utils.decodeGenres(number: Int($0.genre) - 1).contains(genre) } }
                     if isSearching && searchTitle != "" { resultFilms = resultFilms.filter{ $0.title!.lowercased().contains(searchTitle.lowercased()) } }
                 }
                 .onChange(of: searchTitle, perform: { title in
-                    if title != "" { resultFilms = films.filter{ $0.title!.lowercased().contains(title.lowercased()) } }
-                    else if genre == 0 { resultFilms = films.filter{ $0.genre >= 0 } }
-                    else { resultFilms = films.filter{ $0.genre == genre } }
+                    if title != "" { resultFilms = resultFilms.filter{ $0.title!.lowercased().contains(title.lowercased()) } }
                 })
                 .onChange(of: isShowingSheet, perform: { _ in
                     resultFilms = films.filter{ $0.genre >= 0 }
