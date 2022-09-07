@@ -22,30 +22,33 @@ struct GenreScrollView: View {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(Color("LightRed"), lineWidth: 1)
-                                    .frame(width: 76, height: 30)
+                                    .frame(height: 30)
                                 Text(Genres.allCases[idx].rawValue)
-                                    .font(.custom(FontManager.rubikGlitch, size: 14))
+                                    .padding(.horizontal, 8)
                                     .foregroundColor(Color("LightRed"))
                             }
                             .onTapGesture {
                                 selected = idx
                             }
+                            .frame(minWidth: 76)
                         } else {
                             // Selected
                             ZStack {
                                 RoundedRectangle(cornerRadius: 16)
-                                    .frame(width: 78, height: 32)
+                                    .frame(height: 32)
                                     .foregroundColor(Color("Red"))
                                 Text(Genres.allCases[idx].rawValue)
-                                    .font(.custom(FontManager.rubikGlitch, size: 14))
+                                    .padding(.horizontal, 8)
                                     .foregroundColor(.white)
                             }
+                            .frame(minWidth: 78)
                             .onTapGesture {
                                 selected = 0
                             }
                         }
                     }
                 }
+                .font(.system(size: 14, weight: .black))
             }
             .frame(height: 32)
             .padding(.horizontal, 16)
