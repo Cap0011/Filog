@@ -16,14 +16,14 @@ struct AddFilmView: View {
     @State var selectedURL: URL?
     @State var title = ""
     @State var id = ""
-    @State private var isSelected = false
+    @State var isSelected = false
+    @State var genres = [Int]()
 
     @State private var showErrorToast = false
     
     @State private var selectedImage: Image?
     @State private var isShowingSearchSheet = false
     
-    @State private var genres = [Int]()
     @State private var review = ""
     @State private var recommend = true
     @State private var recommendsub = false
@@ -68,9 +68,9 @@ struct AddFilmView: View {
                                     .multilineTextAlignment(.center)
                             }
                         }
-                        .padding(.horizontal, 24)
+                        .padding(.horizontal, 16)
                         .padding(.bottom, 24)
-                        .padding(.top, -8)
+                        .padding(.top, -4)
                         
                         // Review
                         ZStack(alignment: .topLeading) {

@@ -231,7 +231,7 @@ struct FilmDetailListView: View {
                 }
             }
             .sheet(isPresented: $isShowingSheet, content: {
-                AddFilmView(isShowingSheet: $isShowingSheet, isShowingSuccessToast: $isShowingSuccessToast, selectedURL: film.posterURL, title: film.title, id: String(film.id))
+                AddFilmView(isShowingSheet: $isShowingSheet, isShowingSuccessToast: $isShowingSuccessToast, selectedURL: film.posterURL, title: film.title, id: String(film.id), isSelected: true, genres: film.genres?.prefix(3).map { $0.id } ?? [])
             })
             .lineSpacing(5)
             .ignoresSafeArea()
