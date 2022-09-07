@@ -17,7 +17,7 @@ struct FilmPosterCard: View {
                 case .success(let image):
                     image
                         .resizable()
-                default: Color.gray
+                default: Utils.placeholderColor
             }
         }
         .aspectRatio(168/248, contentMode: .fit)

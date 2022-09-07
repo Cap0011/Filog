@@ -273,7 +273,7 @@ struct FilmDetailImage: View {
                 case .success(let image):
                     image
                         .resizable()
-                default: Color.gray
+                default: Utils.placeholderColor
             }
         }
         .aspectRatio(270/152, contentMode: .fit)
@@ -291,7 +291,7 @@ struct FilmPosterImage: View {
                 case .success(let image):
                     image
                         .resizable()
-                default: Color.gray
+                default: Utils.placeholderColor
             }
         }
         .aspectRatio(2/3, contentMode: .fit)
@@ -342,7 +342,7 @@ struct FilmCastCard: View {
                     case .success(let image):
                         image
                             .resizable()
-                    default: Color.gray
+                    default: Utils.placeholderColor
                 }
             }
             .aspectRatio(2/3, contentMode: .fill)

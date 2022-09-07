@@ -18,8 +18,7 @@ struct FilmSearchRow: View {
                     image
                         .resizable()
                 } placeholder: {
-                    Image("NoPoster")
-                        .resizable()
+                    Utils.placeholderColor
                 }
                 .aspectRatio(168/248 ,contentMode: .fit)
                 .frame(width: 80)

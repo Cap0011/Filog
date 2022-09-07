@@ -41,7 +41,7 @@ struct YoutubeBackdropCard: View {
                         case .success(let image):
                             image
                                 .resizable()
-                        default: Color.gray
+                        default: Utils.placeholderColor
                     }
                 }
                 .scaledToFill()

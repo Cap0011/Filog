@@ -5,7 +5,7 @@
 //  Created by Jiyoung Park on 2022/05/03.
 //
 
-import Foundation
+import SwiftUI
 
 class Utils {
     static let jsonDecoder: JSONDecoder = {
@@ -20,4 +20,6 @@ class Utils {
         dateFormatter.dateFormat = "yyyy-mm-dd"
         return dateFormatter
     }()
+    
+    static let placeholderColor: Color = Color.gray
 }

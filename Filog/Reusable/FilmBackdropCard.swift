@@ -18,7 +18,7 @@ struct FilmBackdropCard: View {
                     case .success(let image):
                         image
                             .resizable()
-                    default: Color.gray
+                    default: Utils.placeholderColor
                 }
             }
             .aspectRatio(270/152, contentMode: .fit)

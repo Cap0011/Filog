@@ -44,9 +44,6 @@ struct FilmSearchView: View {
                 .onAppear {
                     self.filmSearchState.startObserve()
                 }
-                .onDisappear {
-                    
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Button(action: {
