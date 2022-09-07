@@ -39,9 +39,6 @@ struct EditFilmView: View {
                         .shadow(color: .black.opacity(0.1), radius: 15, x: 0, y: 2)
                         .padding(.vertical, 16)
                     
-                    GenreScrollView(selected: $genre, isAllIncluded: false)
-                        .padding(.bottom, 16)
-                    
                     TextField("Film title", text: $title)
                         .padding(.leading, 16)
                         .foregroundColor(.white)

@@ -55,9 +55,6 @@ struct AddFilmView: View {
                         ImageSearchView(isShowingSheet: $isShowingSearchSheet, selectedURL: $selectedURL, title: $title, id: $id)
                     }
                     
-                    GenreScrollView(selected: $genre, isAllIncluded: false)
-                        .padding(.bottom, 16)
-                    
                     TextField("Film title", text: $title)
                         .padding(.leading, 16)
                         .foregroundColor(.white)

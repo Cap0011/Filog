@@ -38,7 +38,7 @@ struct MainView: View {
                 VStack(spacing: 16) {
                         SearchBar(searchTitle: $searchTitle, isSearching: $isSearching)
                             .padding(.top, 10)
-                        GenreScrollView(selected: $genre, isAllIncluded: true)
+                        GenreScrollView(selected: $genre)
                         ScrollView(showsIndicators: false) {
                             HStack(alignment: .top) {
                                 ForEach(0...1, id: \.self) { column in
