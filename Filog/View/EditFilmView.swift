@@ -125,6 +125,11 @@ struct EditFilmView: View {
                     }
                     .padding(.top, 24)
                 }
+                .simultaneousGesture(DragGesture().onChanged({ gesture in
+                    withAnimation{
+                        UIApplication.shared.dismissKeyboard()
+                    }
+                }))
             }
             .toast(message: "Please choose a film", isShowing: $showErrorToast, duration: Toast.short)
             .navigationBarTitleDisplayMode(.inline)
