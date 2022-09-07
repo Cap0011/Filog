@@ -44,10 +44,11 @@ struct ImageSearchView: View {
                                         title = film.title
                                         id = String(film.id)
                                         if film.genreIds != nil {
-                                            genres = Array(film.genreIds!.prefix(3))
+                                            genres = Array(film.genreIds!.prefix(3).map { Constants.shared.genreDictionary[$0] ?? 0 })
                                         } else {
                                             genres = []
                                         }
+                                        print(genres)
                                         self.isShowingSheet = false
                                         self.isSelected = true
                                     }

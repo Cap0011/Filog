@@ -17,7 +17,7 @@ struct EditFilmView: View {
     @State private var showErrorToast = false
 
     @State private var filmImage: Image?
-    @State private var genre: Int = 0
+    @State private var genres = [Int]()
     @State private var title: String = ""
     @State private var review: String = ""
     @State private var recommend: Bool = true
@@ -30,25 +30,30 @@ struct EditFilmView: View {
             ZStack(alignment: .top) {
                 Color("Blue").ignoresSafeArea()
                 VStack {
-                    let image = filmImage ?? Image("White")
+                    let image = filmImage ?? Image("NoPoster")
                     image
                         .resizable()
-                        .aspectRatio(168/248 ,contentMode: .fit)
+                        .aspectRatio(2/3, contentMode: .fit)
                         .frame(width: UIScreen.main.bounds.size.width / 2 - 24)
-                        .cornerRadius(8)
                         .shadow(color: .black.opacity(0.1), radius: 15, x: 0, y: 2)
-                        .padding(.vertical, 16)
+                        .padding(.top, 16)
                     
-                    TextField("Film title", text: $title)
-                        .padding(.leading, 16)
-                        .foregroundColor(.white)
-                        .frame(height: 40)
-                        .font(.system(size: 16, weight: .black))
-                        .background(RoundedRectangle(cornerRadius: 8).stroke(lineWidth: 1).foregroundColor(.white))
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 8)
-                        .disabled(true)
+                    // Film Title
+                    Text(title)
+                        .font(.system(size: 24, weight: .black))
                     
+                    // Genres
+                    HStack(spacing: 16) {
+                        ForEach(genres, id: \.self) { genre in
+                            SelectedGenreView(idx: genre)
+                                .multilineTextAlignment(.center)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 24)
+                    .padding(.top, -4)
+                    
+                    // Review
                     ZStack(alignment: .topLeading) {
                         if review.isEmpty {
                             Text("How did you find the film?")
@@ -67,8 +72,9 @@ struct EditFilmView: View {
                     }
                     .font(.system(size: 16, weight: .light))
    
+                    // Recommendation
                     VStack(spacing: 24) {
-                        Text("Would you watch it again?")
+                        Text("Did you enjoy watching it?")
                             .font(.custom(FontManager.Inconsolata.black, size: 22))
                             .foregroundColor(.white)
                         
@@ -157,7 +163,7 @@ struct EditFilmView: View {
                 }
             }
             .onAppear {
-                genre = Int(film!.genre)
+                genres = Array(Utils.decodeGenres(number: Int(film!.genre - 1)).prefix(3))
                 title = (film?.title!)!
                 review = (film?.review!)!
                 recommend = film!.recommend

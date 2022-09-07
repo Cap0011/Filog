@@ -43,7 +43,7 @@ struct AddFilmView: View {
                         Image("White")
                             .resizable()
                     }
-                    .aspectRatio(2/3, contentMode: .fit)
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.size.width / 2 - 24)
                     .cornerRadius(8)
                     .shadow(color: .black.opacity(0.1), radius: 15, x: 0, y: 2)
@@ -64,7 +64,7 @@ struct AddFilmView: View {
                         // Genres
                         HStack(spacing: 16) {
                             ForEach(genres, id: \.self) { genre in
-                                SelectedGenreView(idx: Constants.shared.genreDictionary[genre] ?? 0)
+                                SelectedGenreView(idx: genre)
                                     .multilineTextAlignment(.center)
                             }
                         }
@@ -145,7 +145,7 @@ struct AddFilmView: View {
                                 }
                             }
                         }
-                        .padding(.top, 16)
+                        .padding(.top, 24)
                     } else {
                         Text("Tap to choose a film")
                             .font(.system(size: 24, weight: .semibold))
@@ -181,7 +181,7 @@ struct AddFilmView: View {
                         else {
                             self.isShowingSheet = false
                             self.isShowingSuccessToast = true
-                            addFilm(title: title, review: review, genre: Utils.genresToInt(genres: genres), recommend: recommend, recommendsub: recommendsub, poster: selectedImage ?? Image("NoPoster"))
+                            addFilm(title: title, review: review, genre: Utils.convertedGenresToInt(genres: genres), recommend: recommend, recommendsub: recommendsub, poster: selectedImage ?? Image("NoPoster"))
                         }
                     } label: {
                         Text("Save")

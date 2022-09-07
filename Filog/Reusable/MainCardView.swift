@@ -19,7 +19,6 @@ struct MainCardView: View {
                     .resizable()
                     .aspectRatio(2/3, contentMode: .fit)
                     .frame(width: (UIScreen.main.bounds.size.width - 48) / 2)
-                    .scaledToFit()
                 
                 MainTextView(title: film.title!, review: film.review!, recommend: film.recommend, recommendsub: film.recommendsub)
             }
@@ -56,15 +55,6 @@ struct MainTextView: View {
             if recommend && recommendsub {
                 ZStack {
                     Image(systemName: "heart.fill")
-                    Image(systemName: "heart")
-                        .foregroundColor(Color("LightBlue"))
-                }
-                .foregroundColor(Color("Red"))
-                .font(.system(size: 28))
-                .offset(y: -16)
-            } else if recommend && !recommendsub {
-                ZStack {
-                    Image(systemName: "heart.fill")
                         .offset(x: 16)
                     Image(systemName: "heart")
                         .foregroundColor(Color("LightBlue"))
@@ -74,6 +64,15 @@ struct MainTextView: View {
                         .foregroundColor(Color("LightBlue"))
                 }
                 .padding(.trailing, 16)
+                .foregroundColor(Color("Red"))
+                .font(.system(size: 28))
+                .offset(y: -16)
+            } else if recommend && !recommendsub {
+                ZStack {
+                    Image(systemName: "heart.fill")
+                    Image(systemName: "heart")
+                        .foregroundColor(Color("LightBlue"))
+                }
                 .foregroundColor(Color("Red"))
                 .font(.system(size: 28))
                 .offset(y: -16)

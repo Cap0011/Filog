@@ -39,7 +39,17 @@ class Utils {
         var result = 1
         if genres.count > 0 {
             genres.prefix(3).forEach { genre in
-                result += Int(pow(2.0, Double(Constants.shared.genreDictionary[genre]!)))
+                result += Int(pow(2.0, Double(Constants.shared.genreDictionary[genre] ?? 0)))
+            }
+        }
+        return result
+    }
+    
+    static func convertedGenresToInt(genres: [Int]) -> Int {
+        var result = 1
+        if genres.count > 0 {
+            genres.prefix(3).forEach { genre in
+                result += Int(pow(2.0, Double(genre)))
             }
         }
         return result
