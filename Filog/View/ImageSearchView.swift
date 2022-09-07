@@ -31,25 +31,29 @@ struct ImageSearchView: View {
                         }
                         
                         if self.filmSearchState.films != nil {
-                            ForEach(self.filmSearchState.films!) { film in
-                                FilmSearchRow(film: film)
-                                    .listRowBackground(Color.clear)
-                                .onTapGesture {
-                                    // Pass posterURL and film title, close this sheet
-                                    selectedURL = film.posterURL
-                                    title = film.title
-                                    id = String(film.id)
-                                    self.isShowingSheet = false
+                            LazyVStack {
+                                ForEach(self.filmSearchState.films!) { film in
+                                    FilmSearchRow(film: film)
+                                        .listRowBackground(Color.clear)
+                                    .onTapGesture {
+                                        // Pass posterURL and film title, close this sheet
+                                        selectedURL = film.posterURL
+                                        title = film.title
+                                        id = String(film.id)
+                                        self.isShowingSheet = false
+                                    }
                                 }
                             }
                         }
                     }
+                    .simultaneousGesture(DragGesture().onChanged({ gesture in
+                        withAnimation{
+                            UIApplication.shared.dismissKeyboard()
+                        }
+                    }))
                 }
                 .onAppear {
                     self.filmSearchState.startObserve()
-                }
-                .onDisappear {
-                    
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

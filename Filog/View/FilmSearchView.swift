@@ -28,18 +28,26 @@ struct FilmSearchView: View {
                         }
                         
                         if self.filmSearchState.films != nil {
-                            ForEach(self.filmSearchState.films!) { film in
-                                NavigationLink(destination: FilmDetailView(filmId: film.id)) {
-                                    ZStack {
-                                        FilmSearchRow(film: film)
-                                            .listRowBackground(Color.clear)
-                                        Image(systemName: "chevron.forward")
-                                            .offset(x: 150)
+                            LazyVStack {
+                                ForEach(self.filmSearchState.films!) { film in
+                                    NavigationLink(destination: FilmDetailView(filmId: film.id)) {
+                                        ZStack {
+                                            FilmSearchRow(film: film)
+                                                .listRowBackground(Color.clear)
+                                            Image(systemName: "chevron.forward")
+                                                .offset(x: 150)
+                                                .foregroundColor(.white)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    .simultaneousGesture(DragGesture().onChanged({ gesture in
+                        withAnimation{
+                            UIApplication.shared.dismissKeyboard()
+                        }
+                    }))
                 }
                 .onAppear {
                     self.filmSearchState.startObserve()
