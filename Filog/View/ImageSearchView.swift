@@ -48,7 +48,6 @@ struct ImageSearchView: View {
                                         } else {
                                             genres = []
                                         }
-                                        print(genres)
                                         self.isShowingSheet = false
                                         self.isSelected = true
                                     }
