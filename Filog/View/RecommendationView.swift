@@ -14,6 +14,7 @@ struct RecommendationView: View {
     @ObservedObject private var recommendationsState = FilmListState()
     
     @State private var isLoaded = false
+    @State private var angle = 0.0
     
     var body: some View {
         NavigationView {
@@ -32,10 +33,15 @@ struct RecommendationView: View {
                         
                         Image(systemName: "arrow.clockwise")
                             .foregroundColor(.white)
+                            .rotationEffect(.degrees(angle))
                             .onTapGesture {
+                                withAnimation {
+                                    angle = 360.0
+                                }
                                 Task {
                                     recommendations.load()
                                     await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                    angle = 0.0
                                 }
                             }
                     }
