@@ -17,20 +17,19 @@ struct WatchListView: View {
         NavigationView {
             ZStack(alignment: .top) {
                 Color("Blue").ignoresSafeArea()
-                VStack(spacing: 16) {
-                    ZStack {
-                        Text("Watch List")
-                            .foregroundColor(Color("Red"))
-                            .offset(x: 3)
-                        
-                        Text("Watch List")
-                            .foregroundColor(.white)
-                    }
-                    .font(.system(size: 24, weight: .black))
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 4)
-                    
                     ScrollView {
+                        VStack(spacing: 16) {
+                            ZStack {
+                                Text("Watch List")
+                                    .foregroundColor(Color("Red"))
+                                    .offset(x: 3)
+                                
+                                Text("Watch List")
+                                    .foregroundColor(.white)
+                            }
+                            .font(.system(size: 24, weight: .black))
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 4)
                         LazyVGrid(columns: columns, spacing: 2) {
                             ForEach(Array(dictionary.keys), id: \.self) { key in
                                 if Int(key) != nil {
