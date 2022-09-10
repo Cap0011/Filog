@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct SearchBar: View {
+    let isFocusedFirst: Bool
+    
+    @FocusState private var isFocused: Bool
     
     @Binding var searchTitle: String
     @Binding var isSearching: Bool
@@ -27,21 +30,25 @@ struct SearchBar: View {
                         }
                         TextField("", text: $searchTitle) { startedEditing in
                             if startedEditing {
+                                isFocused = true
                                 withAnimation {
                                     isSearching = true
                                 }
                             }
                         } onCommit: {
+                            isFocused = false
                             withAnimation {
                                 isSearching = false
                             }
                         }
+                        .focused($isFocused)
                     }
                 }
             }
             if isSearching {
                 Button {
                     searchTitle = ""
+                    isFocused = false
                     withAnimation {
                         isSearching = false
                         UIApplication.shared.dismissKeyboard()
@@ -49,6 +56,11 @@ struct SearchBar: View {
                 } label: {
                     Text("Cancel")
                 }
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                isFocused = isFocusedFirst
             }
         }
         .font(.custom(FontManager.rubikGlitch, size: 16))

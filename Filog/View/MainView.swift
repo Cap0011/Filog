@@ -36,7 +36,7 @@ struct MainView: View {
             ZStack {
                 Color("Blue").ignoresSafeArea()
                 VStack(spacing: 16) {
-                        SearchBar(searchTitle: $searchTitle, isSearching: $isSearching)
+                    SearchBar(isFocusedFirst: false, searchTitle: $searchTitle, isSearching: $isSearching)
                             .padding(.top, 10)
                         GenreScrollView(selected: $genre)
                         ScrollView(showsIndicators: false) {
