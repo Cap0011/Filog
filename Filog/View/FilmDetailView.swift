@@ -10,10 +10,12 @@ import CachedAsyncImage
 
 struct FilmDetailView: View {
     let filmId: Int
+    
     @ObservedObject private var filmDetailState = FilmDetailState()
     @ObservedObject private var filmSmiliarState = FilmListState()
     @ObservedObject private var filmRecommendationState = FilmListState()
     
+    @State var isLoaded = false
     @State var isShowingAddToast = false
     @State var isShowingRemoveToast = false
     @State var isShowingSuccessToast = false
@@ -39,10 +41,14 @@ struct FilmDetailView: View {
         .toast(message: "Removed from your watch list", isShowing: $isShowingRemoveToast, duration: Toast.short)
         .toast(message: "Your review was successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
         .onAppear {
-            Task {
-                await self.filmDetailState.loadFilm(id: self.filmId)
-                await self.filmSmiliarState.loadSimilarFilms(id: self.filmId)
-                await self.filmRecommendationState.loadRecommendationFilms(id: self.filmId)
+            if !isLoaded {
+                Task {
+                    await self.filmDetailState.loadFilm(id: self.filmId)
+                    await self.filmSmiliarState.loadSimilarFilms(id: self.filmId)
+                    await self.filmRecommendationState.loadRecommendationFilms(id: self.filmId)
+                    
+                    isLoaded = true
+                }
             }
         }
     }

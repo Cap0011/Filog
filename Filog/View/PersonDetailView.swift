@@ -10,7 +10,9 @@ import CachedAsyncImage
 
 struct PersonDetailView: View {
     let id: Int
+    
     @State var readMoreTapped = false
+    @State var isLoaded = false
     
     @ObservedObject private var personDetailState = PersonDetailState()
     
@@ -118,8 +120,11 @@ struct PersonDetailView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            Task {
-                await self.personDetailState.loadPerson(id: self.id)
+            if !isLoaded {
+                Task {
+                    await self.personDetailState.loadPerson(id: self.id)
+                    isLoaded = true
+                }
             }
         }
     }
