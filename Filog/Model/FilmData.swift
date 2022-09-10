@@ -42,6 +42,19 @@ struct FilmData: Decodable, Identifiable {
         return URL(string: "https://image.tmdb.org/t/p/w342\(posterPath ?? "")")!
     }
     
+    var netflixSearchURL: URL? {
+        var query = ""
+        title.forEach { character in
+            if character == " " { query.append("%20") }
+            else if character == ":" { query.append("%3A") }
+            else if character == "'" {query.append("%27")}
+            else if character == "," {query.append("%2C")}
+            else if character.isLetter { query.append(character) }
+        }
+        
+        return URL(string: "nflx://www.netflix.com/search?q=\(query)")
+    }
+    
     var genreText: String {
         if self.genres != nil && self.genres!.count > 0 {
             var text = ""

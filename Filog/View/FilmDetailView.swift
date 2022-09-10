@@ -98,6 +98,19 @@ struct FilmDetailListView: View {
                         }
                         
                         HStack(spacing: 12) {
+                            if film.netflixSearchURL != nil {
+                                Link(destination: film.netflixSearchURL!) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .foregroundColor(.black)
+                                            .frame(width: 30, height: 30)
+                                        Image("netflix")
+                                            .resizable()
+                                            .frame(width: 22, height: 40)
+                                            .scaledToFit()
+                                    }
+                                }
+                            }
                             Spacer()
                             if !isAlreadyOnList {
                                 Image(systemName: "text.badge.plus")
