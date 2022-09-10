@@ -129,21 +129,24 @@ struct FilmDetailListView: View {
                 }
                 
                 VStack(alignment: .leading) {
-                    Text("Overview")
-                        .font(.system(size: 18, weight: .black))
-                        .foregroundColor(Color("Red"))
-                        .padding(.bottom, 8)
-                        .padding(.horizontal, 16)
-                    Text(film.overview)
-                        .padding(.bottom, 16)
-                        .padding(.horizontal, 16)
-                    
-                    Text("Director")
-                        .font(.system(size: 18, weight: .black))
-                        .foregroundColor(Color("Red"))
-                        .padding(.bottom, 8)
-                        .padding(.horizontal, 16)
-                    if film.directors != nil {
+                    if !film.overview.isEmpty {
+                        Text("Overview")
+                            .font(.system(size: 18, weight: .black))
+                            .foregroundColor(Color("Red"))
+                            .padding(.bottom, 8)
+                            .padding(.horizontal, 16)
+                        Text(film.overview)
+                            .padding(.bottom, 16)
+                            .padding(.horizontal, 16)
+                    }
+
+                    if film.directors != nil && film.directors!.count > 0 {
+                        Text("Director")
+                            .font(.system(size: 18, weight: .black))
+                            .foregroundColor(Color("Red"))
+                            .padding(.bottom, 8)
+                            .padding(.horizontal, 16)
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack(spacing: 16) {
                                 ForEach(film.directors!){ director in
@@ -158,12 +161,13 @@ struct FilmDetailListView: View {
                         .padding(.bottom, 16)
                     }
                     
-                    Text("Cast")
-                        .font(.system(size: 18, weight: .black))
-                        .foregroundColor(Color("Red"))
-                        .padding(.bottom, 8)
-                        .padding(.horizontal, 16)
-                    if film.cast != nil {
+                    if film.cast != nil && film.cast!.count > 0 {
+                        Text("Cast")
+                            .font(.system(size: 18, weight: .black))
+                            .foregroundColor(Color("Red"))
+                            .padding(.bottom, 8)
+                            .padding(.horizontal, 16)
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack(spacing: 16) {
                                 ForEach(film.cast!.prefix(10)){ cast in
@@ -185,24 +189,24 @@ struct FilmDetailListView: View {
                 .foregroundColor(.white)
                 .font(.system(size: 16, weight: .regular))
                 
-                Text("Videos")
-                    .font(.system(size: 18, weight: .black))
-                    .foregroundColor(Color("Red"))
-                    .padding(.bottom, 8)
-                    .padding(.horizontal, 16)
-                
                 if film.videos != nil && film.videos!.results.count > 0 {
+                    Text("Videos")
+                        .font(.system(size: 18, weight: .black))
+                        .foregroundColor(Color("Red"))
+                        .padding(.bottom, 8)
+                        .padding(.horizontal, 16)
+                    
                     YoutubeCarouselView(videos: film.videos!.results)
                         .padding(.bottom, 16)
                 }
                 
-                Text("Similar films")
-                    .font(.system(size: 18, weight: .black))
-                    .foregroundColor(Color("Red"))
-                    .padding(.bottom, 8)
-                    .padding(.leading, 16)
-                
-                if similarFilms != nil {
+                if similarFilms != nil && similarFilms!.count > 0 {
+                    Text("Similar films")
+                        .font(.system(size: 18, weight: .black))
+                        .foregroundColor(Color("Red"))
+                        .padding(.bottom, 8)
+                        .padding(.leading, 16)
+                    
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 16) {
                             ForEach(similarFilms!) { film in
@@ -217,13 +221,13 @@ struct FilmDetailListView: View {
                     .padding(.bottom, 16)
                 }
                 
-                Text("Also you might like...")
-                    .font(.system(size: 18, weight: .black))
-                    .foregroundColor(Color("Red"))
-                    .padding(.bottom, 8)
-                    .padding(.leading, 16)
-                
-                if recommendationFilms != nil {
+                if recommendationFilms != nil && recommendationFilms!.count > 0 {
+                    Text("Also you might like...")
+                        .font(.system(size: 18, weight: .black))
+                        .foregroundColor(Color("Red"))
+                        .padding(.bottom, 8)
+                        .padding(.leading, 16)
+                    
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 16) {
                             ForEach(recommendationFilms!) { film in
