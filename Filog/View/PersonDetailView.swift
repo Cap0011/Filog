@@ -34,34 +34,36 @@ struct PersonDetailView: View {
                     PersonProfileView(profileURL: personDetailState.person!.profileURL, name: personDetailState.person!.name, birthplace: personDetailState.person!.placeOfBirth, birthday: personDetailState.person!.birthday, deathday: personDetailState.person!.deathday, socials: personDetailState.person!.externalIds)
                     
                     // biography
-                    LazyVStack(alignment: .trailing, spacing: 4) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Biography")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(Color("Red"))
+                    if !personDetailState.person!.biography.isEmpty {
+                        LazyVStack(alignment: .trailing, spacing: 4) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Biography")
+                                    .font(.system(size: 18, weight: .bold))
+                                    .foregroundColor(Color("Red"))
+                                
+                                Text(personDetailState.person!.biography)
+                                    .font(.system(size: 16, weight: .regular))
+                                    .frame(maxHeight: readMoreTapped ? .infinity : 150)
+                                    .lineSpacing(5)
+                            }
                             
-                            Text(personDetailState.person!.biography)
-                                .font(.system(size: 16, weight: .regular))
-                                .frame(maxHeight: readMoreTapped ? .infinity : 150)
-                                .lineSpacing(5)
-                        }
-                        
-                        if !readMoreTapped {
-                            HStack(spacing: 0) {
-                                Text("Read More")
-                                Image(systemName: "chevron.forward")
-                            }
-                            .foregroundColor(Color("Red"))
-                            .onTapGesture {
-                                readMoreTapped = true
+                            if !readMoreTapped {
+                                HStack(spacing: 0) {
+                                    Text("Read More")
+                                    Image(systemName: "chevron.forward")
+                                }
+                                .foregroundColor(Color("Red"))
+                                .onTapGesture {
+                                    readMoreTapped = true
+                                }
                             }
                         }
+                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.top, 8)
-                    .padding(.horizontal, 16)
                     
                     // Cast
-                    if personDetailState.person!.cast != nil {
+                    if personDetailState.person!.cast != nil && personDetailState.person!.cast!.count > 0 {
                         VStack(alignment: .leading) {
                             Text("Cast")
                                 .font(.system(size: 18, weight: .bold))
@@ -84,12 +86,12 @@ struct PersonDetailView: View {
                         }
                         .padding(.top, 8)
                         .onAppear {
-                            sortedCast = personDetailState.person?.cast!.sorted(by: { $0.yearText > $1.yearText })
+                            sortedCast = personDetailState.person!.cast!.sorted(by: { $0.yearText > $1.yearText })
                         }
                     }
                     
                     // Crew
-                    if personDetailState.person!.crew != nil {
+                    if personDetailState.person!.crew != nil && personDetailState.person!.crew!.count > 0 {
                         VStack(alignment: .leading) {
                             Text("Crew")
                                 .font(.system(size: 18, weight: .bold))
@@ -112,7 +114,7 @@ struct PersonDetailView: View {
                         }
                         .padding(.top, 8)
                         .onAppear {
-                            sortedCrew = personDetailState.person?.crew!.sorted(by: { $0.yearText > $1.yearText })
+                            sortedCrew = personDetailState.person!.crew!.sorted(by: { $0.yearText > $1.yearText })
                         }
                     }
                 }
