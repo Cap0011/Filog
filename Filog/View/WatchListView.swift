@@ -30,13 +30,24 @@ struct WatchListView: View {
                             .font(.system(size: 24, weight: .black))
                             .padding(.horizontal, 16)
                             .padding(.bottom, 4)
-                        LazyVGrid(columns: columns, spacing: 2) {
-                            ForEach(Array(dictionary.keys), id: \.self) { key in
-                                if Int(key) != nil {
-                                    WatchListPosterCard(filmID: Int(key)!, posterURL: URL(string: dictionary[key]!))
+                            
+                            if dictionary.count == 0 {
+                                VStack(spacing: 8) {
+                                    Text("There's no film on your watch list 😢")
+                                    Text("Find films on Explore tab or For You tab and add them to your list!")
+                                }
+                                .font(.system(size: 16, weight: .heavy))
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 8)
+                            } else  {
+                                LazyVGrid(columns: columns, spacing: 2) {
+                                    ForEach(Array(dictionary.keys), id: \.self) { key in
+                                        if Int(key) != nil {
+                                            WatchListPosterCard(filmID: Int(key)!, posterURL: URL(string: dictionary[key]!))
+                                        }
+                                    }
                                 }
                             }
-                        }
                     }
                 }
                 .padding(.top, 8)

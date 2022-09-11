@@ -60,8 +60,10 @@ struct RecommendationView: View {
                     } else {
                         if recommendations.filmIDs.isEmpty {
                             Text("Leave more reviews to get personalised film recommendations!")
+                                .font(.system(size: 16, weight: .heavy))
                                 .foregroundColor(.white)
                                 .multilineTextAlignment(.center)
+                                .padding(.horizontal, 8)
                         } else {
                             LoadingView(isLoading: recommendationsState.isLoading, error: recommendationsState.error) {
                                 Task {

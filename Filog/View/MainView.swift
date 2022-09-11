@@ -42,9 +42,13 @@ struct MainView: View {
                     
                     if films.count == 0 {
                         Spacer()
-                        Text("There’s no film review you’ve left 😢\nTap the plus button right above to leave one!")
-                            .padding(.horizontal, 16)
-                            .multilineTextAlignment(.center)
+                        VStack(spacing: 8) {
+                            Text("There’s no film review you’ve left 😢")
+                            Text("Tap the plus button right above to leave one!")
+                        }
+                        .font(.system(size: 16, weight: .heavy))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 8)
                         Spacer()
                     } else {
                         ScrollView(showsIndicators: false) {
