@@ -23,7 +23,7 @@ struct MainView: View {
     @State private var isShowingEditSheet = false
     @State private var isShowingActionSheet = false
     @State private var isShowingDetailSheet = false
-
+    
     @State var searchTitle = ""
     @State var isSearching = false
     
@@ -37,8 +37,16 @@ struct MainView: View {
                 Color("Blue").ignoresSafeArea()
                 VStack(spacing: 16) {
                     SearchBar(isFocusedFirst: false, searchTitle: $searchTitle, isSearching: $isSearching)
-                            .padding(.top, 10)
-                        GenreScrollView(selected: $genre)
+                        .padding(.top, 10)
+                    GenreScrollView(selected: $genre)
+                    
+                    if films.count == 0 {
+                        Spacer()
+                        Text("There’s no film review you’ve left 😢\nTap the plus button right above to leave one!")
+                            .padding(.horizontal, 16)
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    } else {
                         ScrollView(showsIndicators: false) {
                             HStack(alignment: .top) {
                                 ForEach(0...1, id: \.self) { column in
@@ -81,6 +89,7 @@ struct MainView: View {
                             }
                         }))
                     }
+                }
                 .onAppear {
                     resultFilms = films.filter{ $0.genre >= 0 }
                     Constants.shared.films = films.filter{ $0.genre >= 0 }
