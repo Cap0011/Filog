@@ -20,6 +20,8 @@ struct FilmDetailView: View {
     @State var isShowingRemoveToast = false
     @State var isShowingSuccessToast = false
     
+    @State var filmTitle = ""
+    
     var body: some View {
         ZStack {
             Color("Blue").ignoresSafeArea()
@@ -33,13 +35,16 @@ struct FilmDetailView: View {
                 
                 if filmDetailState.film != nil {
                     FilmDetailListView(film: filmDetailState.film!, similarFilms: filmSmiliarState.films, recommendationFilms: filmRecommendationState.films, isShowingAddToast: $isShowingAddToast, isShowingRemoveToast: $isShowingRemoveToast, isShowingSuccessToast: $isShowingSuccessToast)
+                        .onAppear {
+                            filmTitle = filmDetailState.film!.title
+                        }
                 }
             }
             .ignoresSafeArea()
         }
-        .toast(message: "Added to your watch list", isShowing: $isShowingAddToast, duration: Toast.short)
-        .toast(message: "Removed from your watch list", isShowing: $isShowingRemoveToast, duration: Toast.short)
-        .toast(message: "Your review was successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
+        .toast(message: "<\(filmTitle)> has added to your watch list", isShowing: $isShowingAddToast, duration: Toast.short)
+        .toast(message: "<\(filmTitle)> has removed from your watch list", isShowing: $isShowingRemoveToast, duration: Toast.short)
+        .toast(message: "Your review has successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
         .onAppear {
             if !isLoaded {
                 Task {

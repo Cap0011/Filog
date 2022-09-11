@@ -139,8 +139,8 @@ struct MainView: View {
                         }
                     }
                 }
-                .toast(message: "Your review was successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
-                .toast(message: "Your review was successfully edited!", isShowing: $isShowingEditToast, duration: Toast.short)
+                .toast(message: "Your review has successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
+                .toast(message: "Your review has successfully edited!", isShowing: $isShowingEditToast, duration: Toast.short)
                 .sheet(isPresented: $isShowingSheet) {
                     AddFilmView(isShowingSheet: self.$isShowingSheet, isShowingSuccessToast: $isShowingSuccessToast)
                 }
