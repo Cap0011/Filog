@@ -28,7 +28,10 @@ struct FilmCastCard: View {
             
             ZStack(alignment: .topLeading) {
                 Rectangle()
+                    .foregroundColor(Color("Blue"))
+                Rectangle()
                     .foregroundColor(.white)
+                    .opacity(0.9)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(name)
                         .font(.system(size: 14, weight: .bold))
@@ -37,6 +40,8 @@ struct FilmCastCard: View {
                         Text(character!)
                             .lineLimit(3)
                             .font(.system(size: 12, weight: .light))
+                            .padding(.horizontal, 2)
+                            .padding(.top, 1)
                     }
                 }
                 .padding(.horizontal, 8)
@@ -48,7 +53,6 @@ struct FilmCastCard: View {
             .offset(y: -32)
             .padding(.bottom, -32)
         }
-        .opacity(0.9)
         .cornerRadius(4)
         .shadow(radius: 4)
     }
