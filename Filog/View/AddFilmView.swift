@@ -22,7 +22,7 @@ struct AddFilmView: View {
     @State private var showErrorToast = false
     
     @State private var selectedImage: Image?
-    @State private var isShowingSearchSheet = true
+    @State private var isShowingSearchSheet = false
     
     @State private var review = ""
     @State private var recommend = true
@@ -188,6 +188,11 @@ struct AddFilmView: View {
                             .font(.system(size: 17, weight: .heavy))
                     }
                 }
+            }
+        }
+        .onAppear {
+            if id.isEmpty {
+                isShowingSearchSheet = true
             }
         }
     }
