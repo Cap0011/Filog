@@ -21,29 +21,31 @@ struct RecommendationView: View {
             ZStack(alignment: .top) {
                 Color("Blue").ignoresSafeArea()
                 VStack(spacing: 16) {
-                    HStack(spacing: 8) {
-                        ZStack {
-                            Text("Films you might love")
-                                .foregroundColor(Color("Red"))
-                                .offset(x: 3)
-                            
-                            Text("Films you might love")
-                                .foregroundColor(.white)
-                        }
+                    ZStack {
+                        Text("Films you might love")
+                            .foregroundColor(Color("Red"))
+                            .offset(x: 3)
                         
-                        Image(systemName: "arrow.clockwise")
+                        Text("Films you might love")
                             .foregroundColor(.white)
-                            .rotationEffect(.degrees(angle))
-                            .onTapGesture {
-                                withAnimation {
-                                    angle = 360.0
+                        
+                        HStack {
+                            Spacer()
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.white)
+                                .rotationEffect(.degrees(angle))
+                                .font(.system(size: 24, weight: .semibold))
+                                .onTapGesture {
+                                    withAnimation {
+                                        angle = 360.0
+                                    }
+                                    Task {
+                                        recommendations.load()
+                                        await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                        angle = 0.0
+                                    }
                                 }
-                                Task {
-                                    recommendations.load()
-                                    await recommendationsState.loadFilms(with: recommendations.filmIDs)
-                                    angle = 0.0
-                                }
-                            }
+                        }
                     }
                     .font(.system(size: 24, weight: .black))
                     .padding(.top, 8)
