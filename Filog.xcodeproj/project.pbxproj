@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C765E26028C8B188008A0465 /* SelectedGenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E25F28C8B188008A0465 /* SelectedGenreView.swift */; };
 		C765E26228C8B197008A0465 /* GenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E26128C8B197008A0465 /* GenreView.swift */; };
+		C765E26428CE5649008A0465 /* FilmCastCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E26328CE5649008A0465 /* FilmCastCard.swift */; };
 		C7BDE15328C50ABD00B4F781 /* FilogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BDE15228C50ABD00B4F781 /* FilogApp.swift */; };
 		C7BDE15728C50ABE00B4F781 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7BDE15628C50ABE00B4F781 /* Assets.xcassets */; };
 		C7BDE15A28C50ABE00B4F781 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7BDE15928C50ABE00B4F781 /* Preview Assets.xcassets */; };
@@ -65,6 +66,7 @@
 /* Begin PBXFileReference section */
 		C765E25F28C8B188008A0465 /* SelectedGenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedGenreView.swift; sourceTree = "<group>"; };
 		C765E26128C8B197008A0465 /* GenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreView.swift; sourceTree = "<group>"; };
+		C765E26328CE5649008A0465 /* FilmCastCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmCastCard.swift; sourceTree = "<group>"; };
 		C7BDE14F28C50ABD00B4F781 /* Filog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Filog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BDE15228C50ABD00B4F781 /* FilogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilogApp.swift; sourceTree = "<group>"; };
 		C7BDE15628C50ABE00B4F781 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				C7BDE19128C50B8E00B4F781 /* RecommendationPostersView.swift */,
 				C765E25F28C8B188008A0465 /* SelectedGenreView.swift */,
 				C765E26128C8B197008A0465 /* GenreView.swift */,
+				C765E26328CE5649008A0465 /* FilmCastCard.swift */,
 			);
 			path = Reusable;
 			sourceTree = "<group>";
@@ -349,6 +352,7 @@
 				C7BDE17C28C50B6A00B4F781 /* FilmSearchState.swift in Sources */,
 				C7BDE1BB28C50B9200B4F781 /* TotalView.swift in Sources */,
 				C7BDE18028C50B6A00B4F781 /* Extension.swift in Sources */,
+				C765E26428CE5649008A0465 /* FilmCastCard.swift in Sources */,
 				C7BDE19F28C50B8E00B4F781 /* FilmPosterCard.swift in Sources */,
 				C7BDE1B928C50B9200B4F781 /* ImageSearchView.swift in Sources */,
 				C7BDE18428C50B6A00B4F781 /* Utils.swift in Sources */,
