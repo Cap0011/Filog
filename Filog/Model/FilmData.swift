@@ -52,7 +52,7 @@ struct FilmData: Decodable, Identifiable {
             else if character.isLetter { query.append(character) }
         }
         
-        return URL(string: "nflx://www.netflix.com/search?q=\(query)")
+        return URL(string: "https://www.netflix.com/search?q=\(query)")
     }
     
     var genreText: String {
