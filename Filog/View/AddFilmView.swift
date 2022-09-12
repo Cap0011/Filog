@@ -40,8 +40,13 @@ struct AddFilmView: View {
                                 selectedImage = image
                             }
                     } placeholder: {
-                        Image("White")
-                            .resizable()
+                        if title.isEmpty {
+                            Image("White")
+                                .resizable()
+                        } else {
+                            Image("NoPoster")
+                                .resizable()
+                        }
                     }
                     .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.size.width / 2 - 24)

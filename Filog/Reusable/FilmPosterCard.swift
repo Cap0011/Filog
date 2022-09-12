@@ -20,7 +20,7 @@ struct FilmPosterCard: View {
                 default: Utils.placeholderColor
             }
         }
-        .aspectRatio(168/248, contentMode: .fit)
+        .aspectRatio(2/3, contentMode: .fit)
         .frame(width: 200)
         .cornerRadius(8)
         .shadow(radius: 4)

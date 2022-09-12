@@ -51,7 +51,7 @@ struct RecommendationPosterView: View {
                         default: Utils.placeholderColor
                     }
                 }
-                .aspectRatio(168/248, contentMode: .fit)
+                .aspectRatio(2/3, contentMode: .fit)
                 .cornerRadius(4)
                 .shadow(radius: 4)
                 .frame(width: width)
