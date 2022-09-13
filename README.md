@@ -1,12 +1,6 @@
-<h1 align="center">
-  <br>
-  <img src="https://user-images.githubusercontent.com/59128435/189749160-674c6299-1379-461b-bae0-c41370115220.png" width="20%">
-  <p>
-  Filog
-  </p>
-  <img src="https://user-images.githubusercontent.com/59128435/189745885-b81063f4-d4f3-4188-9d24-2f89a9965363.png">
-  Log what you've watched and what you'll watch
-</h1>
+<img width="1280" alt="github readme preview" src="https://user-images.githubusercontent.com/59128435/189931569-1270606f-f1f1-4ef2-86cb-9268c7641fb5.png">
+
+![Header Image](https://user-images.githubusercontent.com/59128435/189933036-e222b1d5-54a9-472c-a2dc-51e34c6ddc9a.png)
 
 # :pushpin: Features
 
