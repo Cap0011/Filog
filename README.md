@@ -33,6 +33,7 @@
 - UIKit
 - SwiftUI
 - CoreData
+- CoreML
 - TMDB API
 
 # :people_hugging: Author
