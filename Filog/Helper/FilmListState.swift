@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 class FilmListState: ObservableObject {
     
     @Published var films: [FilmData]?
@@ -19,73 +20,77 @@ class FilmListState: ObservableObject {
         self.filmService = filmService
     }
     
-    func loadFilms(with endpoint: FilmListEndpoint) {
+    func loadFilms(with endpoint: FilmListEndpoint) async {
         self.films = nil
         self.isLoading = false
         
-        self.filmService.fetchFilms(from: endpoint) { [weak self] (result) in
-            guard let self = self else { return }
+        do {
+            let films = try await filmService.fetchFilms(from: endpoint)
+            self.films = films
             self.isLoading = false
-
-            switch result {
-            case .success(let response):
-                self.films = response.results
-            case .failure(let error):
-                self.error = error as NSError
-            }
+        } catch {
+            self.isLoading = false
+            self.error = error as NSError
         }
     }
     
-    func loadFilms(with ids: [String]) {
+    func loadFilms(with ids: [String]) async {
         self.films = []
         self.isLoading = false
         
-        ids.forEach { id in
-            self.filmService.fetchFilm(id: Int(id)!) { [weak self] (result) in
-                guard let self = self else { return }
-                self.isLoading = false
-
-                switch result {
-                case .success(let film):
-                    self.films!.append(film)
-                case .failure(let error):
-                    self.error = error as NSError
+        let convertedIDs = ids.map { Int($0) }
+        
+        do {
+            let films = try await withThrowingTaskGroup(of: FilmData?.self) { group -> [FilmData] in
+                for id in convertedIDs {
+                    group.addTask {
+                        return try? await self.filmService.fetchFilm(id: id!)
+                    }
                 }
+                
+                var collected = [FilmData]()
+                
+                for try await value in group {
+                    if value != nil {
+                        collected.append(value!)
+                    }
+                }
+                return collected
             }
+            
+            self.films = films
+            self.isLoading = false
+        } catch {
+            self.isLoading = false
+            self.error = error as NSError
         }
     }
     
-    func loadSimilarFilms(id: Int) {
+    func loadSimilarFilms(id: Int) async {
         self.films = nil
         self.isLoading = false
         
-        self.filmService.fetchSimilarFilms(id: id) { [weak self] (result) in
-            guard let self = self else { return }
+        do {
+            let films = try await filmService.fetchSimilarFilms(id: id)
+            self.films = films
             self.isLoading = false
-
-            switch result {
-            case .success(let response):
-                self.films = response.results
-            case .failure(let error):
-                self.error = error as NSError
-            }
+        } catch {
+            self.isLoading = false
+            self.error = error as NSError
         }
     }
     
-    func loadRecommendationFilms(id: Int) {
+    func loadRecommendationFilms(id: Int) async {
         self.films = nil
         self.isLoading = false
         
-        self.filmService.fetchRecommendationFilms(id: id) { [weak self] (result) in
-            guard let self = self else { return }
+        do {
+            let films = try await filmService.fetchRecommendationFilms(id: id)
+            self.films = films
             self.isLoading = false
-
-            switch result {
-            case .success(let response):
-                self.films = response.results
-            case .failure(let error):
-                self.error = error as NSError
-            }
+        } catch {
+            self.isLoading = false
+            self.error = error as NSError
         }
     }
 }

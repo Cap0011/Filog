@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct FilmListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(sortDescriptors: [
@@ -21,6 +22,7 @@ struct FilmListView: View {
     @ObservedObject private var popularState = FilmListState()
     
     @State var isShowingSearchView = false
+    @State private var isLoaded = false
     @ObservedObject var filmSearchState = FilmSearchState()
     
     var body: some View {
@@ -54,7 +56,9 @@ struct FilmListView: View {
                                     .padding(.top, 16)
                             } else {
                                 LoadingView(isLoading: nowPlayingState.isLoading, error: nowPlayingState.error) {
-                                    self.nowPlayingState.loadFilms(with: .nowPlaying)
+                                    Task {
+                                        await self.nowPlayingState.loadFilms(with: .nowPlaying)
+                                    }
                                 }
                             }
                             
@@ -62,7 +66,9 @@ struct FilmListView: View {
                                 FilmBackdropCarouselView(title: "Upcoming", films: upcomingState.films!)
                             } else {
                                 LoadingView(isLoading: upcomingState.isLoading, error: upcomingState.error) {
-                                    self.upcomingState.loadFilms(with: .upcoming)
+                                    Task {
+                                        await self.upcomingState.loadFilms(with: .upcoming)
+                                    }
                                 }
                             }
                             
@@ -70,7 +76,9 @@ struct FilmListView: View {
                                 FilmBackdropCarouselView(title: "Top rated", films: topRatedState.films!)
                             } else {
                                 LoadingView(isLoading: topRatedState.isLoading, error: topRatedState.error) {
-                                    self.topRatedState.loadFilms(with: .topRated)
+                                    Task {
+                                        await self.topRatedState.loadFilms(with: .topRated)
+                                    }
                                 }
                             }
                             
@@ -78,7 +86,9 @@ struct FilmListView: View {
                                 FilmBackdropCarouselView(title: "Popular", films: popularState.films!)
                             } else {
                                 LoadingView(isLoading: popularState.isLoading, error: popularState.error) {
-                                    self.popularState.loadFilms(with: .popular)
+                                    Task {
+                                        await self.popularState.loadFilms(with: .popular)
+                                    }
                                 }
                             }
                         }
@@ -100,11 +110,16 @@ struct FilmListView: View {
         }
         .onAppear {
             Constants.shared.films = films.filter{ $0.genre >= 0 }
-            
-            self.nowPlayingState.loadFilms(with: .nowPlaying)
-            self.upcomingState.loadFilms(with: .upcoming)
-            self.topRatedState.loadFilms(with: .topRated)
-            self.popularState.loadFilms(with: .popular)
+            if !isLoaded {
+                Task {
+                    await self.nowPlayingState.loadFilms(with: .nowPlaying)
+                    await self.upcomingState.loadFilms(with: .upcoming)
+                    await self.topRatedState.loadFilms(with: .topRated)
+                    await self.popularState.loadFilms(with: .popular)
+                    
+                    isLoaded = true
+                }
+            }
         }
         
     }

@@ -22,7 +22,7 @@ struct FilmPosterCarouselView: View {
                     .foregroundColor(Color("Red"))
                 
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
+                    LazyHStack(spacing: 16) {
                         ForEach(self.films) { film in
                             NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                                 FilmPosterCard(film: film)

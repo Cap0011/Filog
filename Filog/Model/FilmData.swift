@@ -22,6 +22,7 @@ struct FilmData: Decodable, Identifiable {
     let runtime: Int?
     let releaseDate: String?
     let adult: Bool
+    let genreIds: [Int]?
     
     let genres: [FilmGenre]?
     let credits: FilmCredit?
@@ -41,6 +42,19 @@ struct FilmData: Decodable, Identifiable {
         return URL(string: "https://image.tmdb.org/t/p/w342\(posterPath ?? "")")!
     }
     
+    var netflixSearchURL: URL? {
+        var query = ""
+        title.forEach { character in
+            if character == " " { query.append("%20") }
+            else if character == ":" { query.append("%3A") }
+            else if character == "'" {query.append("%27")}
+            else if character == "," {query.append("%2C")}
+            else if character.isLetter { query.append(character) }
+        }
+        
+        return URL(string: "https://www.netflix.com/search?q=\(query)")
+    }
+    
     var genreText: String {
         if self.genres != nil && self.genres!.count > 0 {
             var text = ""
@@ -51,6 +65,16 @@ struct FilmData: Decodable, Identifiable {
         } else {
             return "n/a"
         }
+    }
+    
+    var genresToNumber: Int {
+        var result = 1
+        if self.genres != nil && self.genres!.count > 0 {
+            self.genres!.prefix(3).forEach { genre in
+                result += Int(pow(2.0, Double(Constants.shared.genreDictionary[genre.id]!)))
+            }
+        }
+        return result
     }
     
     var yearText: String {
@@ -100,6 +124,7 @@ struct FilmData: Decodable, Identifiable {
 
 struct FilmGenre: Decodable {
     let name: String
+    let id: Int
 }
 
 struct FilmCredit: Decodable {

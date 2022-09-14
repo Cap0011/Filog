@@ -10,7 +10,9 @@ import CachedAsyncImage
 
 struct PersonDetailView: View {
     let id: Int
+    
     @State var readMoreTapped = false
+    @State var isLoaded = false
     
     @ObservedObject private var personDetailState = PersonDetailState()
     
@@ -22,7 +24,9 @@ struct PersonDetailView: View {
             Color("Blue").ignoresSafeArea()
             ScrollView {
                 LoadingView(isLoading: self.personDetailState.isLoading, error: self.personDetailState.error) {
-                    self.personDetailState.loadPerson(id: self.id)
+                    Task {
+                        await self.personDetailState.loadPerson(id: self.id)
+                    }
                 }
                 
                 if personDetailState.person != nil {
@@ -30,34 +34,36 @@ struct PersonDetailView: View {
                     PersonProfileView(profileURL: personDetailState.person!.profileURL, name: personDetailState.person!.name, birthplace: personDetailState.person!.placeOfBirth, birthday: personDetailState.person!.birthday, deathday: personDetailState.person!.deathday, socials: personDetailState.person!.externalIds)
                     
                     // biography
-                    VStack(alignment: .trailing, spacing: 4) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Biography")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(Color("Red"))
+                    if !personDetailState.person!.biography.isEmpty {
+                        LazyVStack(alignment: .trailing, spacing: 4) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Biography")
+                                    .font(.system(size: 18, weight: .bold))
+                                    .foregroundColor(Color("Red"))
+                                
+                                Text(personDetailState.person!.biography)
+                                    .font(.system(size: 16, weight: .regular))
+                                    .frame(maxHeight: readMoreTapped ? .infinity : 150)
+                                    .lineSpacing(5)
+                            }
                             
-                            Text(personDetailState.person!.biography)
-                                .font(.system(size: 16, weight: .regular))
-                                .frame(maxHeight: readMoreTapped ? .infinity : 150)
-                                .lineSpacing(5)
-                        }
-                        
-                        if !readMoreTapped {
-                            HStack(spacing: 0) {
-                                Text("Read More")
-                                Image(systemName: "chevron.forward")
-                            }
-                            .foregroundColor(Color("Red"))
-                            .onTapGesture {
-                                readMoreTapped = true
+                            if !readMoreTapped {
+                                HStack(spacing: 0) {
+                                    Text("Read More")
+                                    Image(systemName: "chevron.forward")
+                                }
+                                .foregroundColor(Color("Red"))
+                                .onTapGesture {
+                                    readMoreTapped = true
+                                }
                             }
                         }
+                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.top, 8)
-                    .padding(.horizontal, 16)
                     
                     // Cast
-                    if personDetailState.person!.cast != nil {
+                    if personDetailState.person!.cast != nil && personDetailState.person!.cast!.count > 0 {
                         VStack(alignment: .leading) {
                             Text("Cast")
                                 .font(.system(size: 18, weight: .bold))
@@ -66,7 +72,7 @@ struct PersonDetailView: View {
                                 .padding(.leading, 16)
                             ScrollView(.horizontal, showsIndicators: false) {
                                 if sortedCast != nil {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(sortedCast!) { cast in
                                             NavigationLink(destination: FilmDetailView(filmId: cast.id)) {
                                                 FilmCastCard(name: "\(cast.title) (\(cast.yearText))", character: cast.character, profileURL: cast.posterURL)
@@ -74,17 +80,18 @@ struct PersonDetailView: View {
                                         }
                                     }
                                     .padding(.horizontal, 16)
+                                    .frame(height: 245)
                                 }
                             }
                         }
                         .padding(.top, 8)
                         .onAppear {
-                            sortedCast = personDetailState.person?.cast!.sorted(by: { $0.yearText > $1.yearText })
+                            sortedCast = personDetailState.person!.cast!.sorted(by: { $0.yearText > $1.yearText })
                         }
                     }
                     
                     // Crew
-                    if personDetailState.person!.crew != nil {
+                    if personDetailState.person!.crew != nil && personDetailState.person!.crew!.count > 0 {
                         VStack(alignment: .leading) {
                             Text("Crew")
                                 .font(.system(size: 18, weight: .bold))
@@ -93,7 +100,7 @@ struct PersonDetailView: View {
                                 .padding(.leading, 16)
                             ScrollView(.horizontal, showsIndicators: false) {
                                 if sortedCrew != nil {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(personDetailState.person!.crew!) { crew in
                                             NavigationLink(destination: FilmDetailView(filmId: crew.id)) {
                                                 FilmCastCard(name: "\(crew.title) (\(crew.yearText))", character: crew.department, profileURL: crew.posterURL)
@@ -101,12 +108,13 @@ struct PersonDetailView: View {
                                         }
                                     }
                                     .padding(.horizontal, 16)
+                                    .frame(height: 245)
                                 }
                             }
                         }
                         .padding(.top, 8)
                         .onAppear {
-                            sortedCrew = personDetailState.person?.crew!.sorted(by: { $0.yearText > $1.yearText })
+                            sortedCrew = personDetailState.person!.crew!.sorted(by: { $0.yearText > $1.yearText })
                         }
                     }
                 }
@@ -114,7 +122,12 @@ struct PersonDetailView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            self.personDetailState.loadPerson(id: self.id)
+            if !isLoaded {
+                Task {
+                    await self.personDetailState.loadPerson(id: self.id)
+                    isLoaded = true
+                }
+            }
         }
     }
 }
@@ -129,14 +142,15 @@ struct PersonProfileView: View {
     
     var body: some View {
         VStack {
-            CachedAsyncImage(url: profileURL)  { image in
-                image
-                    .resizable()
-                    .cornerRadius(8)
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 8)
-                    .foregroundColor(.gray)
+            CachedAsyncImage(url: profileURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                    default: Utils.placeholderColor
+                }
             }
+            .cornerRadius(8)
             .aspectRatio(2/3, contentMode: .fit)
             .frame(width: 150)
             

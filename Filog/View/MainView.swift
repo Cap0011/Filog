@@ -18,86 +18,74 @@ struct MainView: View {
     @State private var selectedFilm: FetchedResults<Film>.Element?
     
     @State private var isShowingSheet = false
+    @State var isShowingSuccessToast = false
+    @State var isShowingEditToast = false
     @State private var isShowingEditSheet = false
     @State private var isShowingActionSheet = false
     @State private var isShowingDetailSheet = false
-
+    
     @State var searchTitle = ""
     @State var isSearching = false
     
     @State private var genre = 0
     
     @State var refresh: Bool = false
-
+    
     var body: some View {
         NavigationView {
             ZStack {
                 Color("Blue").ignoresSafeArea()
                 VStack(spacing: 16) {
-                        SearchBar(searchTitle: $searchTitle, isSearching: $isSearching)
-                            .padding(.top, 10)
-                        GenreScrollView(selected: $genre, isAllIncluded: true)
+                    SearchBar(isFocusedFirst: false, searchTitle: $searchTitle, isSearching: $isSearching)
+                        .padding(.top, 10)
+                    GenreScrollView(selected: $genre)
+                    
+                    if films.count == 0 {
+                        Spacer()
+                        VStack(spacing: 8) {
+                            Text("There’s no film review you’ve left 😢")
+                            Text("Tap the plus button right above to leave one!")
+                        }
+                        .font(.system(size: 16, weight: .heavy))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 8)
+                        Spacer()
+                    } else {
                         ScrollView(showsIndicators: false) {
                             HStack(alignment: .top) {
-                                VStack(spacing: 16) {
-                                    ForEach(Array(stride(from: 0, to: resultFilms.count, by: 2)), id: \.self) { idx in
-                                        MainCardView(film: resultFilms[idx])
-                                            .padding(.leading, 16)
-                                            .confirmationDialog(selectedFilm?.title ?? "", isPresented: $isShowingActionSheet, titleVisibility: .visible) {
-                                                Button("See film info", role: .none) {
-                                                    // Open Detail View
-                                                    isShowingDetailSheet.toggle()
-                                                }
-                                                Button("Edit", role: .none) {
-                                                    // Open Edit Sheet
-                                                    isShowingEditSheet.toggle()
-                                                }
-                                                Button("Delete", role: .destructive) {
-                                                    // Delete
-                                                    deleteFilm(object: selectedFilm!)
-                                                }
-                                                Button("Cancel", role: .cancel) {
-                                                    isShowingActionSheet = false
-                                                }
+                                ForEach(0...1, id: \.self) { column in
+                                    LazyVStack(spacing: 16) {
+                                        ForEach(0..<resultFilms.count, id: \.self) { idx in
+                                            if idx % 2 == column {
+                                                MainCardView(film: resultFilms[idx])
+                                                    .confirmationDialog(selectedFilm?.title ?? "", isPresented: $isShowingActionSheet, titleVisibility: .visible) {
+                                                        Button("See film info", role: .none) {
+                                                            // Open Detail View
+                                                            isShowingDetailSheet.toggle()
+                                                        }
+                                                        Button("Edit", role: .none) {
+                                                            // Open Edit Sheet
+                                                            isShowingEditSheet.toggle()
+                                                        }
+                                                        Button("Delete", role: .destructive) {
+                                                            // Delete
+                                                            deleteFilm(object: selectedFilm!)
+                                                            Constants.shared.films = films.filter{ $0.genre >= 0 }
+                                                        }
+                                                        Button("Cancel", role: .cancel) {
+                                                            isShowingActionSheet = false
+                                                        }
+                                                    }
+                                                    .onTapGesture {
+                                                        selectedFilm = resultFilms[idx]
+                                                        isShowingActionSheet = true
+                                                    }
                                             }
-                                            .onTapGesture {
-                                                selectedFilm = resultFilms[idx]
-                                                isShowingActionSheet = true
-                                            }
+                                        }
                                     }
                                 }
-                                .frame(width: UIScreen.main.bounds.size.width / 2)
-                                
-                                VStack(spacing: 16) {
-                                    ForEach(Array(stride(from: 1, to: resultFilms.count, by: 2)), id: \.self) { idx in
-                                        MainCardView(film: resultFilms[idx])
-                                            .padding(.trailing, 16)
-                                            .confirmationDialog(selectedFilm?.title ?? "", isPresented: $isShowingActionSheet, titleVisibility: .visible) {
-                                                Button("See film info", role: .none) {
-                                                    // Open Detail View
-                                                    isShowingDetailSheet.toggle()
-                                                }
-                                                Button("Edit", role: .none) {
-                                                    // Open Edit Sheet
-                                                    isShowingEditSheet.toggle()
-                                                }
-                                                Button("Delete", role: .destructive) {
-                                                    // Delete
-                                                    deleteFilm(object: selectedFilm!)
-                                                    Constants.shared.films = films.filter{ $0.genre >= 0 }
-                                                }
-                                                Button("Cancel", role: .cancel) {
-                                                    isShowingActionSheet = false
-                                                }
-                                            }
-                                            .onTapGesture {
-                                                selectedFilm = resultFilms[idx]
-                                                isShowingActionSheet = true
-                                            }
-                                    }
-                                }
-                                .frame(width: UIScreen.main.bounds.size.width / 2)
                             }
+                            .padding(.horizontal, 16)
                         }
                         .simultaneousGesture(DragGesture().onChanged({ gesture in
                             withAnimation{
@@ -105,19 +93,27 @@ struct MainView: View {
                             }
                         }))
                     }
+                }
                 .onAppear {
                     resultFilms = films.filter{ $0.genre >= 0 }
                     Constants.shared.films = films.filter{ $0.genre >= 0 }
                 }
                 .onChange(of: genre) { genre in
                     if genre == 0 { resultFilms = films.filter{ $0.genre >= 0 } }
-                    else { resultFilms = films.filter{ $0.genre == genre } }
+                    else { resultFilms = films.filter{ Utils.decodeGenres(number: Int($0.genre) - 1).contains(genre) } }
                     if isSearching && searchTitle != "" { resultFilms = resultFilms.filter{ $0.title!.lowercased().contains(searchTitle.lowercased()) } }
                 }
                 .onChange(of: searchTitle, perform: { title in
                     if title != "" { resultFilms = films.filter{ $0.title!.lowercased().contains(title.lowercased()) } }
-                    else if genre == 0 { resultFilms = films.filter{ $0.genre >= 0 } }
-                    else { resultFilms = films.filter{ $0.genre == genre } }
+                    else if genre != 0 { resultFilms = films.filter { Utils.decodeGenres(number: Int($0.genre) - 1).contains(genre) } }
+                    else { resultFilms = films.filter{ $0.genre >= 0 } }
+                })
+                .onChange(of: isSearching, perform: { isSearching in
+                    if !isSearching {
+                        searchTitle = ""
+                        if genre == 0 { resultFilms = films.filter{ $0.genre >= 0 } }
+                        else { resultFilms = films.filter{ Utils.decodeGenres(number: Int($0.genre) - 1).contains(genre) } }
+                    }
                 })
                 .onChange(of: isShowingSheet, perform: { _ in
                     resultFilms = films.filter{ $0.genre >= 0 }
@@ -143,11 +139,13 @@ struct MainView: View {
                         }
                     }
                 }
+                .toast(message: "Your review has successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
+                .toast(message: "Your review has successfully edited!", isShowing: $isShowingEditToast, duration: Toast.short)
                 .sheet(isPresented: $isShowingSheet) {
-                    AddFilmView(isShowingSheet: self.$isShowingSheet)
+                    AddFilmView(isShowingSheet: self.$isShowingSheet, isShowingSuccessToast: $isShowingSuccessToast)
                 }
                 .sheet(isPresented: $isShowingEditSheet) {
-                    EditFilmView(isShowingSheet: self.$isShowingEditSheet, film: $selectedFilm)
+                    EditFilmView(isShowingSheet: self.$isShowingEditSheet, isShowingSuccessToast: $isShowingEditToast, film: $selectedFilm)
                 }
                 .sheet(isPresented: $isShowingDetailSheet) {
                     if selectedFilm != nil {

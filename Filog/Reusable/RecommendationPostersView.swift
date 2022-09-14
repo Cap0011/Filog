@@ -13,12 +13,14 @@ struct RecommendationPostersView: View {
     
     var body: some View {
         VStack {
+            Spacer()
+            
             NavigationLink(destination: FilmDetailView(filmId: films.first!.id)) {
                 RecommendationPosterView(film: films.first!, width: UIScreen.main.bounds.size.width / 2, rank: 1, color: Color("Red"), fontSize: 20)
-                    .padding(.bottom, 16)
             }
+            
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 24) {
+                LazyHStack(spacing: 24) {
                     ForEach(1..<films.count) { idx in
                         NavigationLink(destination: FilmDetailView(filmId: films[idx].id)) {
                             RecommendationPosterView(film: films[idx], width: (UIScreen.main.bounds.size.width - 32) / 2.5, rank: idx + 1, color: Color("Blue"), fontSize: 18)
@@ -41,15 +43,16 @@ struct RecommendationPosterView: View {
     var body: some View {
         VStack {
             ZStack(alignment: .bottomLeading) {
-                CachedAsyncImage(url: film.posterURL)  { image in
-                    image
-                        .resizable()
-                } placeholder: {
-                    Image("NoPoster")
-                        .resizable()
+                CachedAsyncImage(url: film.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                        default: Utils.placeholderColor
+                    }
                 }
-                .aspectRatio(168/248, contentMode: .fit)
-                .cornerRadius(8)
+                .aspectRatio(2/3, contentMode: .fit)
+                .cornerRadius(4)
                 .shadow(radius: 4)
                 .frame(width: width)
                 

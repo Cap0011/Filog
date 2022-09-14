@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 import Foundation
 
+@MainActor
 class FilmSearchState: ObservableObject {
     
     @Published var query = ""
@@ -37,11 +38,15 @@ class FilmSearchState: ObservableObject {
                 self?.error = nil
                 return text
                 
-        }.throttle(for: 1, scheduler: DispatchQueue.main, latest: true)
-            .sink { [weak self] in self?.search(query: $0) }
+            }.debounce(for: 1, scheduler: DispatchQueue.main)
+            .sink { [weak self] (query: String) in
+                guard let self = self else { return }
+                Task { await self.search(query: query) }
+            }
+        
     }
     
-    func search(query: String) {
+    func search(query: String) async {
         self.films = nil
         self.isLoading = false
         self.error = nil
@@ -51,16 +56,15 @@ class FilmSearchState: ObservableObject {
         }
         
         self.isLoading = true
-        self.filmService.searchFilm(query: query) {[weak self] (result) in
-            guard let self = self, self.query == query else { return }
-            
+        
+        do {
+            let films = try await filmService.searchFilm(query: query)
+            guard query == self.query else { return }
             self.isLoading = false
-            switch result {
-            case .success(let response):
-                self.films = response.results
-            case .failure(let error):
-                self.error = error as NSError
-            }
+            self.films = films
+        } catch {
+            self.isLoading = false
+            self.error = error as NSError
         }
     }
     

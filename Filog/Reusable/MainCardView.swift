@@ -18,10 +18,9 @@ struct MainCardView: View {
                 img
                     .resizable()
                     .aspectRatio(2/3, contentMode: .fit)
-                    .frame(width: UIScreen.main.bounds.size.width / 2 - 24)
-                    .scaledToFit()
+                    .frame(width: (UIScreen.main.bounds.size.width - 48) / 2)
                 
-                MainTextView(title: film.title!, review: film.review!, recommend: film.recommend)
+                MainTextView(title: film.title!, review: film.review!, recommend: film.recommend, recommendsub: film.recommendsub)
             }
             .background(.black)
             .padding(.top, -12)
@@ -34,14 +33,10 @@ struct MainTextView: View {
     var title: String
     var review: String
     var recommend: Bool
+    var recommendsub: Bool
     
     var body: some View {
         ZStack(alignment: .top) {
-            RoundedRectangle(cornerRadius: 18)
-                .frame(width: 36, height: 36)
-                .foregroundColor(Color("LightBlue"))
-                .offset(y: -18)
-            
             VStack(spacing: 4) {
                 Text(title)
                     .font(.system(size: 18, weight: .black))
@@ -57,16 +52,39 @@ struct MainTextView: View {
             .padding(.top, 12)
             .padding(.horizontal, 8)
             
-            if recommend {
-                Image(systemName: "heart.fill")
-                    .foregroundColor(Color("Red"))
-                    .font(.system(size: 20))
-                    .offset(y: -12)
+            if recommend && recommendsub {
+                ZStack {
+                    Image(systemName: "heart.fill")
+                        .offset(x: 16)
+                    Image(systemName: "heart")
+                        .foregroundColor(Color("LightBlue"))
+                        .offset(x: 16)
+                    Image(systemName: "heart.fill")
+                    Image(systemName: "heart")
+                        .foregroundColor(Color("LightBlue"))
+                }
+                .padding(.trailing, 16)
+                .foregroundColor(Color("Red"))
+                .font(.system(size: 28))
+                .offset(y: -16)
+            } else if recommend && !recommendsub {
+                ZStack {
+                    Image(systemName: "heart.fill")
+                    Image(systemName: "heart")
+                        .foregroundColor(Color("LightBlue"))
+                }
+                .foregroundColor(Color("Red"))
+                .font(.system(size: 28))
+                .offset(y: -16)
             } else {
-                Image(systemName: "heart.slash")
-                    .foregroundColor(Color("Red"))
-                    .font(.system(size: 20))
-                    .offset(y: -12)
+                ZStack {
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(Color("LightBlue"))
+                    Image(systemName: "heart")
+                }
+                .foregroundColor(Color("Red"))
+                .font(.system(size: 26))
+                .offset(y: -15)
             }
         }
         .frame(width: UIScreen.main.bounds.size.width / 2 - 24)

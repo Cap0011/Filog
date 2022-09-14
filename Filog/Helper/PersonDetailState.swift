@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 class PersonDetailState: ObservableObject {
     
     private let filmService: FilmDataService
@@ -19,19 +20,17 @@ class PersonDetailState: ObservableObject {
         self.filmService = filmService
     }
     
-    func loadPerson(id: Int) {
+    func loadPerson(id: Int) async {
         self.person = nil
         self.isLoading = false
-        self.filmService.fetchPerson(id: id) { [weak self] (result) in
-            guard let self = self else { return }
-            
+        
+        do {
+            let person = try await self.filmService.fetchPerson(id: id)
+            self.person = person
             self.isLoading = false
-            switch result {
-            case .success(let person):
-                self.person = person
-            case .failure(let error):
-                self.error = error as NSError
-            }
+        } catch {
+            self.isLoading = false
+            self.error = error as NSError
         }
     }
 }

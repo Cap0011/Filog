@@ -14,61 +14,76 @@ struct RecommendationView: View {
     @ObservedObject private var recommendationsState = FilmListState()
     
     @State private var isLoaded = false
+    @State private var angle = 0.0
     
     var body: some View {
         NavigationView {
             ZStack(alignment: .top) {
                 Color("Blue").ignoresSafeArea()
                 VStack(spacing: 16) {
-                    HStack(spacing: 8) {
-                        ZStack {
-                            Text("Films you might love")
-                                .foregroundColor(Color("Red"))
-                                .offset(x: 3)
-                            
-                            Text("Films you might love")
-                                .foregroundColor(.white)
-                        }
+                    ZStack {
+                        Text("Films you might love")
+                            .foregroundColor(Color("Red"))
+                            .offset(x: 3)
                         
-                        Image(systemName: "arrow.clockwise")
+                        Text("Films you might love")
                             .foregroundColor(.white)
-                            .onTapGesture {
-                                recommendations.load()
-                                recommendationsState.loadFilms(with: recommendations.filmIDs)
-                            }
+                        
+                        HStack {
+                            Spacer()
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.white)
+                                .rotationEffect(.degrees(angle))
+                                .font(.system(size: 24, weight: .semibold))
+                                .onTapGesture {
+                                    withAnimation {
+                                        angle = 360.0
+                                    }
+                                    Task {
+                                        recommendations.load()
+                                        await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                        angle = 0.0
+                                    }
+                                }
+                        }
                     }
                     .font(.system(size: 24, weight: .black))
-                    .padding(.top, 64)
+                    .padding(.top, 8)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 4)
                     
-                    if recommendationsState.films != nil && recommendationsState.films!.count == 50 {
+                    if recommendationsState.films != nil && recommendationsState.films!.count > 0 {
+                        Spacer()
+                        
                         RecommendationPostersView(films: recommendationsState.films!)
-                            .padding(.top, 16)
                             .onAppear {
                                 isLoaded = true
                             }
                     } else {
                         if recommendations.filmIDs.isEmpty {
                             Text("Leave more reviews to get personalised film recommendations!")
+                                .font(.system(size: 16, weight: .heavy))
                                 .foregroundColor(.white)
                                 .multilineTextAlignment(.center)
+                                .padding(.horizontal, 8)
                         } else {
                             LoadingView(isLoading: recommendationsState.isLoading, error: recommendationsState.error) {
-                                recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                Task {
+                                    await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                                }
                             }
                         }
                     }
                 }
-                .ignoresSafeArea()
             }
-            .ignoresSafeArea()
             .navigationBarHidden(true)
         }
         .onAppear {
             if !isLoaded {
-                recommendations.load()
-                recommendationsState.loadFilms(with: recommendations.filmIDs)
+                Task {
+                    recommendations.load()
+                    await recommendationsState.loadFilms(with: recommendations.filmIDs)
+                }
             }
         }
     }

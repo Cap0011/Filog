@@ -14,12 +14,13 @@ struct FilmSearchRow: View {
     var body: some View {
         VStack {
             HStack(spacing: 24) {
-                CachedAsyncImage(url: film.posterURL)  { image in
-                    image
-                        .resizable()
-                } placeholder: {
-                    Image("NoPoster")
-                        .resizable()
+                CachedAsyncImage(url: film.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                        default: Utils.placeholderColor
+                    }
                 }
                 .aspectRatio(168/248 ,contentMode: .fit)
                 .frame(width: 80)

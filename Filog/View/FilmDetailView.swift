@@ -10,33 +10,51 @@ import CachedAsyncImage
 
 struct FilmDetailView: View {
     let filmId: Int
+    
     @ObservedObject private var filmDetailState = FilmDetailState()
     @ObservedObject private var filmSmiliarState = FilmListState()
     @ObservedObject private var filmRecommendationState = FilmListState()
     
+    @State var isLoaded = false
     @State var isShowingAddToast = false
     @State var isShowingRemoveToast = false
+    @State var isShowingSuccessToast = false
+    
+    @State var filmTitle = ""
     
     var body: some View {
         ZStack {
             Color("Blue").ignoresSafeArea()
             ScrollView {
                 LoadingView(isLoading: self.filmDetailState.isLoading, error: self.filmDetailState.error) {
-                    self.filmDetailState.loadFilm(id: self.filmId)
+                    Task {
+                        await self.filmDetailState.loadFilm(id: self.filmId)
+                    }
                 }
+                .padding(.top, 100)
                 
                 if filmDetailState.film != nil {
-                    FilmDetailListView(film: filmDetailState.film!, similarFilms: filmSmiliarState.films, recommendationFilms: filmRecommendationState.films, isShowingAddToast: $isShowingAddToast, isShowingRemoveToast: $isShowingRemoveToast)
+                    FilmDetailListView(film: filmDetailState.film!, similarFilms: filmSmiliarState.films, recommendationFilms: filmRecommendationState.films, isShowingAddToast: $isShowingAddToast, isShowingRemoveToast: $isShowingRemoveToast, isShowingSuccessToast: $isShowingSuccessToast)
+                        .onAppear {
+                            filmTitle = filmDetailState.film!.title
+                        }
                 }
             }
             .ignoresSafeArea()
         }
-        .toast(message: "Added to your watch list", isShowing: $isShowingAddToast, duration: Toast.short)
-        .toast(message: "Removed from your watch list", isShowing: $isShowingRemoveToast, duration: Toast.short)
+        .toast(message: "<\(filmTitle)> has added to your watch list", isShowing: $isShowingAddToast, duration: Toast.short)
+        .toast(message: "<\(filmTitle)> has removed from your watch list", isShowing: $isShowingRemoveToast, duration: Toast.short)
+        .toast(message: "Your review has successfully added!", isShowing: $isShowingSuccessToast, duration: Toast.short)
         .onAppear {
-            self.filmDetailState.loadFilm(id: self.filmId)
-            self.filmSmiliarState.loadSimilarFilms(id: self.filmId)
-            self.filmRecommendationState.loadRecommendationFilms(id: self.filmId)
+            if !isLoaded {
+                Task {
+                    await self.filmDetailState.loadFilm(id: self.filmId)
+                    await self.filmSmiliarState.loadSimilarFilms(id: self.filmId)
+                    await self.filmRecommendationState.loadRecommendationFilms(id: self.filmId)
+                    
+                    isLoaded = true
+                }
+            }
         }
     }
 }
@@ -49,15 +67,17 @@ struct FilmDetailListView: View {
     @State private var selectedTrailer: FilmVideo?
     
     @State var isShowingSheet = false
+    
     @Binding var isShowingAddToast: Bool
     @Binding var isShowingRemoveToast: Bool
+    @Binding var isShowingSuccessToast: Bool
     
     @State var isAlreadyOnList = false
         
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color("Blue").ignoresSafeArea()
-            VStack(alignment: .leading) {
+            LazyVStack(alignment: .leading) {
                 ZStack(alignment: .bottomTrailing) {
                     FilmDetailImage(imageURL: self.film.backdropURL)
                     FilmRatingCircle(value: film.voteAverage * 10)
@@ -83,6 +103,19 @@ struct FilmDetailListView: View {
                         }
                         
                         HStack(spacing: 12) {
+                            if film.netflixSearchURL != nil {
+                                Link(destination: film.netflixSearchURL!) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .foregroundColor(.black)
+                                            .frame(width: 30, height: 30)
+                                        Image("netflix")
+                                            .resizable()
+                                            .frame(width: 22, height: 40)
+                                            .scaledToFit()
+                                    }
+                                }
+                            }
                             Spacer()
                             if !isAlreadyOnList {
                                 Image(systemName: "text.badge.plus")
@@ -114,23 +147,26 @@ struct FilmDetailListView: View {
                 }
                 
                 VStack(alignment: .leading) {
-                    Text("Overview")
-                        .font(.system(size: 18, weight: .black))
-                        .foregroundColor(Color("Red"))
-                        .padding(.bottom, 8)
-                        .padding(.horizontal, 16)
-                    Text(film.overview)
-                        .padding(.bottom, 16)
-                        .padding(.horizontal, 16)
-                    
-                    Text("Director")
-                        .font(.system(size: 18, weight: .black))
-                        .foregroundColor(Color("Red"))
-                        .padding(.bottom, 8)
-                        .padding(.horizontal, 16)
-                    if film.directors != nil {
+                    if !film.overview.isEmpty {
+                        Text("Overview")
+                            .font(.system(size: 18, weight: .black))
+                            .foregroundColor(Color("Red"))
+                            .padding(.bottom, 8)
+                            .padding(.horizontal, 16)
+                        Text(film.overview)
+                            .padding(.bottom, 16)
+                            .padding(.horizontal, 16)
+                    }
+
+                    if film.directors != nil && film.directors!.count > 0 {
+                        Text("Director")
+                            .font(.system(size: 18, weight: .black))
+                            .foregroundColor(Color("Red"))
+                            .padding(.bottom, 8)
+                            .padding(.horizontal, 16)
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
+                            LazyHStack(spacing: 16) {
                                 ForEach(film.directors!){ director in
                                     NavigationLink(destination: PersonDetailView(id: director.id)) {
                                         FilmCastCard(name: director.name, character: nil, profileURL: director.profileURL)
@@ -138,18 +174,20 @@ struct FilmDetailListView: View {
                                 }
                             }
                             .padding(.horizontal, 16)
+                            .frame(height: 225)
                         }
                         .padding(.bottom, 16)
                     }
                     
-                    Text("Cast")
-                        .font(.system(size: 18, weight: .black))
-                        .foregroundColor(Color("Red"))
-                        .padding(.bottom, 8)
-                        .padding(.horizontal, 16)
-                    if film.cast != nil {
+                    if film.cast != nil && film.cast!.count > 0 {
+                        Text("Cast")
+                            .font(.system(size: 18, weight: .black))
+                            .foregroundColor(Color("Red"))
+                            .padding(.bottom, 8)
+                            .padding(.horizontal, 16)
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
+                            LazyHStack(spacing: 16) {
                                 ForEach(film.cast!.prefix(10)){ cast in
                                     NavigationLink(destination: PersonDetailView(id: cast.id)) {
                                         FilmCastCard(name: cast.name, character: cast.character, profileURL: cast.profileURL)
@@ -157,6 +195,7 @@ struct FilmDetailListView: View {
                                 }
                             }
                             .padding(.horizontal, 16)
+                            .frame(height: 245)
                         }
                         .padding(.bottom, 16)
                     }
@@ -168,26 +207,26 @@ struct FilmDetailListView: View {
                 .foregroundColor(.white)
                 .font(.system(size: 16, weight: .regular))
                 
-                Text("Videos")
-                    .font(.system(size: 18, weight: .black))
-                    .foregroundColor(Color("Red"))
-                    .padding(.bottom, 8)
-                    .padding(.horizontal, 16)
-                
                 if film.videos != nil && film.videos!.results.count > 0 {
+                    Text("Videos")
+                        .font(.system(size: 18, weight: .black))
+                        .foregroundColor(Color("Red"))
+                        .padding(.bottom, 8)
+                        .padding(.horizontal, 16)
+                    
                     YoutubeCarouselView(videos: film.videos!.results)
                         .padding(.bottom, 16)
                 }
                 
-                Text("Similar films")
-                    .font(.system(size: 18, weight: .black))
-                    .foregroundColor(Color("Red"))
-                    .padding(.bottom, 8)
-                    .padding(.leading, 16)
-                
-                if similarFilms != nil {
+                if similarFilms != nil && similarFilms!.count > 0 {
+                    Text("Similar films")
+                        .font(.system(size: 18, weight: .black))
+                        .foregroundColor(Color("Red"))
+                        .padding(.bottom, 8)
+                        .padding(.leading, 16)
+                    
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        LazyHStack(spacing: 16) {
                             ForEach(similarFilms!) { film in
                                 NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                                     RecommendationPosterView(film: film, width: (UIScreen.main.bounds.size.width - 32) / 2.5, rank: nil, color: Color("Blue"), fontSize: 20)
@@ -195,19 +234,20 @@ struct FilmDetailListView: View {
                             }
                         }
                         .padding(.horizontal, 16)
+                        .frame(height: (UIScreen.main.bounds.size.width - 32) / 2.5 / 2 * 3 + 20)
                     }
                     .padding(.bottom, 16)
                 }
                 
-                Text("Also you might like...")
-                    .font(.system(size: 18, weight: .black))
-                    .foregroundColor(Color("Red"))
-                    .padding(.bottom, 8)
-                    .padding(.leading, 16)
-                
-                if recommendationFilms != nil {
+                if recommendationFilms != nil && recommendationFilms!.count > 0 {
+                    Text("Also you might like...")
+                        .font(.system(size: 18, weight: .black))
+                        .foregroundColor(Color("Red"))
+                        .padding(.bottom, 8)
+                        .padding(.leading, 16)
+                    
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        LazyHStack(spacing: 16) {
                             ForEach(recommendationFilms!) { film in
                                 NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                                     RecommendationPosterView(film: film, width: (UIScreen.main.bounds.size.width - 32) / 2.5, rank: nil, color: Color("Blue"), fontSize: 20)
@@ -215,11 +255,12 @@ struct FilmDetailListView: View {
                             }
                         }
                         .padding(.horizontal, 16)
+                        .frame(height: (UIScreen.main.bounds.size.width - 32) / 2.5 / 2 * 3 + 20)
                     }
                 }
             }
             .sheet(isPresented: $isShowingSheet, content: {
-                AddFilmView(isShowingSheet: $isShowingSheet, selectedURL: film.posterURL, title: film.title, id: String(film.id))
+                AddFilmView(isShowingSheet: $isShowingSheet, isShowingSuccessToast: $isShowingSuccessToast, selectedURL: film.posterURL, title: film.title, id: String(film.id), isSelected: true, genres: film.genres?.prefix(3).map { Constants.shared.genreDictionary[$0.id] ?? 0 } ?? [])
             })
             .lineSpacing(5)
             .ignoresSafeArea()
@@ -256,16 +297,46 @@ struct FilmDetailImage: View {
     
     var body: some View {
         
-        CachedAsyncImage(url: imageURL)  { image in
-            image
-                .resizable()
-        } placeholder: {
-            Image("NoPosterBackdrop")
-                .resizable()
+        GeometryReader { geometry in
+            CachedAsyncImage(url: imageURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                default: Utils.placeholderColor
+                }
+            }
+            .aspectRatio(9/5, contentMode: .fill)
+            .frame(width: geometry.size.width, height: self.getHeightForHeaderImage(geometry))
+            .clipped()
+            .offset(x: 0, y: self.getOffsetForHeaderImage(geometry))
+        }.frame(height: UIScreen.main.bounds.size.width * 5 / 9)
+    }
+    
+    private func getScrollOffset(_ geometry: GeometryProxy) -> CGFloat {
+        geometry.frame(in: .global).minY
+    }
+    
+    private func getOffsetForHeaderImage(_ geometry: GeometryProxy) -> CGFloat {
+        let offset = getScrollOffset(geometry)
+        
+        // Image was pulled down
+        if offset > 0 {
+            return -offset
         }
-        .aspectRatio(270/152, contentMode: .fit)
-        .frame(width: UIScreen.main.bounds.size.width)
-        .shadow(radius: 4)
+        
+        return 0
+    }
+    
+    private func getHeightForHeaderImage(_ geometry: GeometryProxy) -> CGFloat {
+        let offset = getScrollOffset(geometry)
+        let imageHeight = geometry.size.height
+
+        if offset > 0 {
+            return imageHeight + offset
+        }
+
+        return imageHeight
     }
 }
 
@@ -273,12 +344,13 @@ struct FilmPosterImage: View {
     let imageURL: URL
     
     var body: some View {
-        CachedAsyncImage(url: imageURL)  { image in
-            image
-                .resizable()
-        } placeholder: {
-            Image("NoPoster")
-                .resizable()
+        CachedAsyncImage(url: imageURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                default: Utils.placeholderColor
+            }
         }
         .aspectRatio(2/3, contentMode: .fit)
         .frame(width: 120)
@@ -313,50 +385,5 @@ struct FilmRatingCircle: View {
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.white)
         }
-    }
-}
-
-struct FilmCastCard: View {
-    let name: String
-    let character: String?
-    let profileURL: URL
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            CachedAsyncImage(url: profileURL)  { image in
-                image
-                    .resizable()
-            } placeholder: {
-                RoundedRectangle(cornerRadius: 4)
-                    .foregroundColor(.gray)
-            }
-            .aspectRatio(2/3, contentMode: .fill)
-            .frame(width: 120)
-            
-            ZStack(alignment: .topLeading) {
-                Rectangle()
-                    .foregroundColor(.white)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name)
-                        .font(.system(size: 14, weight: .bold))
-                        .padding(.top, 8)
-                    if character != nil {
-                        Text(character!)
-                            .lineLimit(3)
-                            .font(.system(size: 12, weight: .light))
-                    }
-                }
-                .padding(.horizontal, 8)
-                .lineSpacing(2)
-                .foregroundColor(.black)
-                .multilineTextAlignment(.leading)
-            }
-            .frame(width: 120, height: (character != nil) ? 90 : 70)
-            .offset(y: -32)
-            .padding(.bottom, -32)
-        }
-        .opacity(0.9)
-        .cornerRadius(4)
-        .shadow(radius: 4)
     }
 }
