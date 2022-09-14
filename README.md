@@ -30,8 +30,6 @@
 - CoreML
 - TMDB API
 
-# :people_hugging: Author
+# :people_hugging: Contacts
 * email: <5165511@naver.com>
 * github: [@Cap0011](https://github.com/Cap0011)
-
-# :lock_with_ink_pen: License
