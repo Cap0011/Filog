@@ -73,9 +73,9 @@ class Recommender: ObservableObject {
             let result = try model.prediction(input: input)
             var tempFilms = [String]()
             
-            result.recommendations.sort(by: { result.scores[$0] ?? 0 > result.scores[$1] ?? 0 })
+            let sortedResult = result.recommendations.sorted(by: { result.scores[$0] ?? 0 > result.scores[$1] ?? 0 })
             
-            for id in result.recommendations {
+            for id in sortedResult {
                 if Constants.shared.MLtoTMDB[String(id)] != nil {
                     tempFilms.append(Constants.shared.MLtoTMDB[String(id)]!)
                 }
