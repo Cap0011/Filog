@@ -22,7 +22,7 @@ struct TotalView: View {
                     Image(systemName: "doc.text.magnifyingglass")
                     Text("Explore")
                 }
-            MainView()
+            WatchedView()
                 .tabItem {
                     Image(systemName: "film")
                     Text("Watched")

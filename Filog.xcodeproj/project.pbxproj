@@ -3,11 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		C72752C828D25B5700013F46 /* MyMovieRecommender.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = C72752C728D25B5700013F46 /* MyMovieRecommender.mlmodel */; };
+		C7415BA32D92A60200F7B222 /* WatchedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7415BA22D92A60200F7B222 /* WatchedView.swift */; };
+		C7415BA52D92AAA600F7B222 /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7415BA42D92AAA600F7B222 /* Pretendard-Medium.ttf */; };
+		C7415BA72D92AAB400F7B222 /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7415BA62D92AAB400F7B222 /* Pretendard-Regular.ttf */; };
+		C7415BA92D92AABB00F7B222 /* Pretendard-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7415BA82D92AABB00F7B222 /* Pretendard-SemiBold.ttf */; };
 		C765E26028C8B188008A0465 /* SelectedGenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E25F28C8B188008A0465 /* SelectedGenreView.swift */; };
 		C765E26228C8B197008A0465 /* GenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E26128C8B197008A0465 /* GenreView.swift */; };
 		C765E26428CE5649008A0465 /* FilmCastCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E26328CE5649008A0465 /* FilmCastCard.swift */; };
@@ -65,6 +69,10 @@
 
 /* Begin PBXFileReference section */
 		C72752C728D25B5700013F46 /* MyMovieRecommender.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MyMovieRecommender.mlmodel; sourceTree = "<group>"; };
+		C7415BA22D92A60200F7B222 /* WatchedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchedView.swift; sourceTree = "<group>"; };
+		C7415BA42D92AAA600F7B222 /* Pretendard-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.ttf"; sourceTree = "<group>"; };
+		C7415BA62D92AAB400F7B222 /* Pretendard-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.ttf"; sourceTree = "<group>"; };
+		C7415BA82D92AABB00F7B222 /* Pretendard-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.ttf"; sourceTree = "<group>"; };
 		C765E25F28C8B188008A0465 /* SelectedGenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedGenreView.swift; sourceTree = "<group>"; };
 		C765E26128C8B197008A0465 /* GenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreView.swift; sourceTree = "<group>"; };
 		C765E26328CE5649008A0465 /* FilmCastCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmCastCard.swift; sourceTree = "<group>"; };
@@ -121,6 +129,10 @@
 		C7BDE1CB28C50CD900B4F781 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C7415BAA2D92AB2D00F7B222 /* Extension */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Extension; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		C7BDE14C28C50ABD00B4F781 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -152,6 +164,7 @@
 		C7BDE15128C50ABD00B4F781 /* Filog */ = {
 			isa = PBXGroup;
 			children = (
+				C7415BAA2D92AB2D00F7B222 /* Extension */,
 				C7BDE1CB28C50CD900B4F781 /* Info.plist */,
 				C7BDE1C628C50C5C00B4F781 /* FilmList.xcdatamodeld */,
 				C7BDE15228C50ABD00B4F781 /* FilogApp.swift */,
@@ -177,6 +190,9 @@
 		C7BDE16028C50B6300B4F781 /* Font */ = {
 			isa = PBXGroup;
 			children = (
+				C7415BA82D92AABB00F7B222 /* Pretendard-SemiBold.ttf */,
+				C7415BA62D92AAB400F7B222 /* Pretendard-Regular.ttf */,
+				C7415BA42D92AAA600F7B222 /* Pretendard-Medium.ttf */,
 				C7BDE16128C50B6300B4F781 /* FontManager.swift */,
 				C7BDE16228C50B6300B4F781 /* Inconsolata-Black.ttf */,
 				C7BDE16328C50B6300B4F781 /* RubikGlitch-Regular.ttf */,
@@ -254,6 +270,7 @@
 				C7BDE1B228C50B9200B4F781 /* PersonDetailView.swift */,
 				C7BDE1B328C50B9200B4F781 /* WatchListView.swift */,
 				C7BDE1B428C50B9200B4F781 /* FilmListView.swift */,
+				C7415BA22D92A60200F7B222 /* WatchedView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -273,6 +290,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				C7415BAA2D92AB2D00F7B222 /* Extension */,
+			);
 			name = Filog;
 			packageProductDependencies = (
 				C7BDE1C428C50C0A00B4F781 /* CachedAsyncImage */,
@@ -289,7 +309,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					C7BDE14E28C50ABD00B4F781 = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -322,11 +342,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7415BA92D92AABB00F7B222 /* Pretendard-SemiBold.ttf in Resources */,
 				C7BDE16828C50B6300B4F781 /* Inconsolata-Regular.ttf in Resources */,
 				C7BDE15A28C50ABE00B4F781 /* Preview Assets.xcassets in Resources */,
+				C7415BA72D92AAB400F7B222 /* Pretendard-Regular.ttf in Resources */,
 				C7BDE17928C50B6A00B4F781 /* links.csv in Resources */,
 				C7BDE16628C50B6300B4F781 /* Inconsolata-Black.ttf in Resources */,
 				C7BDE16728C50B6300B4F781 /* RubikGlitch-Regular.ttf in Resources */,
+				C7415BA52D92AAA600F7B222 /* Pretendard-Medium.ttf in Resources */,
 				C7BDE15728C50ABE00B4F781 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,6 +400,7 @@
 				C7BDE17E28C50B6A00B4F781 /* Secret.swift in Sources */,
 				C7BDE1B628C50B9200B4F781 /* FilmSearchView.swift in Sources */,
 				C7BDE1BA28C50B9200B4F781 /* FilmDetailView.swift in Sources */,
+				C7415BA32D92A60200F7B222 /* WatchedView.swift in Sources */,
 				C7BDE1C828C50C5C00B4F781 /* FilmList.xcdatamodeld in Sources */,
 				C7BDE1A428C50B8E00B4F781 /* FilmSearchRow.swift in Sources */,
 				C7BDE1B828C50B9200B4F781 /* FilmDetailSheetView.swift in Sources */,
@@ -395,6 +419,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -427,6 +452,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -455,6 +481,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -487,6 +514,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -523,6 +551,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -530,6 +559,10 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jio.Filog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -554,6 +587,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -561,6 +595,10 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jio.Filog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
