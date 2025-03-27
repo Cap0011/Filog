@@ -97,13 +97,17 @@ struct WatchedView: View {
                 
                 ToolbarItem(placement: .principal) {
                     Text("Watched")
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.primaryBlack)
                         .font(.semibold20)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Image(systemName: "plus")
-                        .foregroundStyle(.primaryBlue)
+                    NavigationLink(destination: FindView()) {
+                        Image(systemName: "plus")
+                            .foregroundStyle(.primaryBlue)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
                 }
             }
         }

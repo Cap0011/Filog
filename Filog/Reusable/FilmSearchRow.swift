@@ -12,38 +12,45 @@ struct FilmSearchRow: View {
     var film: FilmData
     
     var body: some View {
-        VStack {
-            HStack(spacing: 24) {
+        VStack(spacing: 12) {
+            HStack(spacing: 12) {
                 CachedAsyncImage(url: film.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
                         switch phase {
                         case .success(let image):
                             image
                                 .resizable()
-                        default: Utils.placeholderColor
+                        default: Color.grayf4
                     }
                 }
-                .aspectRatio(168/248 ,contentMode: .fit)
-                .frame(width: 80)
+                .aspectRatio(168/248 ,contentMode: .fill)
+                .frame(width: 50)
                 .cornerRadius(4)
                 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(film.title)
-                        .font(.system(size: 20, weight: .black))
+                        .lineLimit(1)
+                        .font(.regular16)
+                        .foregroundStyle(.primaryBlack)
+                        .frame(height: 22)
+                    
                     Text(film.yearText)
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.regular14)
+                        .foregroundStyle(.gray7A)
+                        .frame(height: 20)
                 }
-                .multilineTextAlignment(.leading)
                 .foregroundColor(.white)
+                
                 Spacer()
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
             
             Rectangle()
-                .frame(height: 0.3)
-                .foregroundColor(Color("LightGrey"))
-                .padding(.horizontal, 16)
+                .frame(height: 1)
+                .foregroundStyle(.grayf4)
+                .padding(.horizontal, -5)
         }
+        .background(.white)
     }
 }
 
