@@ -22,7 +22,9 @@ struct FindView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     ForEach(viewModel.searchResults) { film in
-                        FilmSearchRow(film: film, query: viewModel.searchText)
+                        NavigationLink(destination: EditReviewView(film: film)) {
+                            FilmSearchRow(film: film, query: viewModel.searchText)
+                        }
                     }
                 }
                 .padding(.top, 24)
