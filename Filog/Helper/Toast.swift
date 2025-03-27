@@ -27,19 +27,23 @@ struct Toast: ViewModifier {
     private var toastView: some View {
         VStack {
             Spacer()
+            
             if isShowing {
                 Group {
-                    Text(message)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(config.textColor)
-                        .font(config.font)
-                        .padding(8)
+                    HStack {
+                        Text(message)
+                            .foregroundColor(config.textColor)
+                            .font(config.font)
+                            .frame(height: 22)
+                            .padding(.vertical, 13)
+                            .padding(.horizontal, 16)
+                        
+                        Spacer()
+                    }
                 }
-                .background(config.backgroundColor)
-                .cornerRadius(8)
-                .onTapGesture {
-                    isShowing = false
-                }
+                .background(config.backgroundColor.shadow(color: .black.opacity(0.04), radius: 6, x: 4, y: 4))
+                .background(.regularMaterial)
+                .cornerRadius(24)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + config.duration) {
                         isShowing = false
@@ -48,7 +52,7 @@ struct Toast: ViewModifier {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 18)
+        .padding(.bottom, 20)
         .animation(config.animation, value: isShowing)
         .transition(config.transition)
     }
@@ -61,9 +65,9 @@ struct Toast: ViewModifier {
         let transition: AnyTransition
         let animation: Animation
         
-        init(textColor: Color = .black,
-             font: Font = .system(size: 16),
-             backgroundColor: Color = Color("Red"),
+        init(textColor: Color = .primaryBlack,
+             font: Font = .regular16,
+             backgroundColor: Color = .white.opacity(0.8),
              duration: TimeInterval = Toast.short,
              transition: AnyTransition = .opacity,
              animation: Animation = .linear(duration: 0.3)) {
