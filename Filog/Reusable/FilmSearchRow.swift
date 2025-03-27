@@ -9,7 +9,8 @@ import SwiftUI
 import CachedAsyncImage
 
 struct FilmSearchRow: View {
-    var film: FilmData
+    let film: FilmData
+    var query: String? = nil
     
     var body: some View {
         VStack(spacing: 12) {
@@ -27,10 +28,8 @@ struct FilmSearchRow: View {
                 .cornerRadius(4)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(film.title)
+                    Text(highlightedString(from: film.title, query: query ?? ""))
                         .lineLimit(1)
-                        .font(.regular16)
-                        .foregroundStyle(.primaryBlack)
                         .frame(height: 22)
                     
                     Text(film.yearText)
@@ -51,6 +50,30 @@ struct FilmSearchRow: View {
                 .padding(.horizontal, -5)
         }
         .background(.white)
+    }
+    
+    func highlightedString(from text: String, query: String) -> AttributedString {
+        let words = text.split(separator: " ").map { String($0) }
+        var attributedString = AttributedString("")
+        
+        let queryWords = query.split(separator: " ").map { String($0) }
+        
+        for word in words {
+            var string = AttributedString(word)
+            string.foregroundColor = .gray3C
+            string.font = .medium16
+            
+            for queryWord in queryWords {
+                if let range = string.range(of: queryWord, options: .caseInsensitive) {
+                    string[range].foregroundColor = Color.gray7A
+                    string[range].font = .regular16
+                }
+            }
+            attributedString.append(AttributedString(" "))
+            attributedString.append(string)
+        }
+        
+        return attributedString
     }
 }
 
