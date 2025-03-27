@@ -10,6 +10,7 @@ import CachedAsyncImage
 
 struct EditReviewView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @StateObject private var toastManager = ToastManager.shared
     @FocusState private var isFocused: Bool
     let ratingTitles = ["Not Really", "Probably", "For Sure"]
     
@@ -46,6 +47,7 @@ struct EditReviewView: View {
                 }
             }
         }
+        .toast(message: ToastType.empty.message, isShowing: $toastManager.isShowingToast, duration: Toast.short)
         .onTapGesture {
             isFocused = false
         }
@@ -75,9 +77,9 @@ struct EditReviewView: View {
                     .frame(height: 22)
                     .onTapGesture {
                         if reviewText.isEmpty {
-                            // TODO: Alert toast message !
+                            toastManager.isShowingToast.toggle()
                         } else {
-                            // TODO: Save data and return to WatchedView
+                            // TODO: Save data, show toast message and return to WatchedView
                         }
                     }
             }
