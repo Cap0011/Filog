@@ -27,6 +27,17 @@ class FilmService {
             .map(\.results)
             .eraseToAnyPublisher()
     }
+
+    func fetchFilms(from endpoint: FilmListEndpoint) -> AnyPublisher<[FilmData], Error> {
+        guard let url = makeURL(for: "movie/\(endpoint.rawValue)") else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        
+        return fetchData(from: url)
+            .decode(type: FilmResponse.self, decoder: Utils.jsonDecoder)
+            .map(\.results)
+            .eraseToAnyPublisher()
+    }
     
     private func makeURL(for endpoint: String, queryItemValues: [String: String]? = nil) -> URL? {
         guard let url = URL(string: "\(baseURL)/\(endpoint)") else { return nil }

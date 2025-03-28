@@ -9,12 +9,12 @@ import SwiftUI
 
 @MainActor
 struct FilmListView: View {
-    @ObservedObject private var nowPlayingState = FilmListState()
-    @ObservedObject private var upcomingState = FilmListState()
-    @ObservedObject private var topRatedState = FilmListState()
-    @ObservedObject private var popularState = FilmListState()
+    @State private var viewModels = [FilmListViewModel]()
     
-    @State private var isLoaded = false
+    @StateObject private var nowPlayingViewModel = FilmListViewModel(endpoint: .nowPlaying)
+    @StateObject private var upcomingViewModel = FilmListViewModel(endpoint: .upcoming)
+    @StateObject private var popularViewModel = FilmListViewModel(endpoint: .popular)
+    @StateObject private var topRatedViewModel = FilmListViewModel(endpoint: .topRated)
     
     var body: some View {
         NavigationView {
@@ -23,46 +23,14 @@ struct FilmListView: View {
                     .padding(.top, 24)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 28)
-                
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: 28) {
-                        if let films = nowPlayingState.films {
-                            FilmCarouselView(title: "Now Playing", films: films, imageType: .largePoster)
-                        } else {
-                            LoadingView(isLoading: nowPlayingState.isLoading, error: nowPlayingState.error) {
-                                Task {
-                                    await self.nowPlayingState.loadFilms(with: .nowPlaying)
-                                }
-                            }
-                        }
-                        
-                        if let films = upcomingState.films {
-                            FilmCarouselView(title: "Upcoming", films: films, imageType: .smallPoster)
-                        } else {
-                            LoadingView(isLoading: upcomingState.isLoading, error: upcomingState.error) {
-                                Task {
-                                    await self.upcomingState.loadFilms(with: .upcoming)
-                                }
-                            }
-                        }
-                        
-                        if let films = popularState.films {
-                            FilmCarouselView(title: "Popular", films: films, imageType: .backdrop)
-                        } else {
-                            LoadingView(isLoading: topRatedState.isLoading, error: topRatedState.error) {
-                                Task {
-                                    await self.topRatedState.loadFilms(with: .topRated)
-                                }
-                            }
-                        }
-                        
-                        if let films = topRatedState.films {
-                            FilmCarouselView(title: "Top rated", films: films, imageType: .backdrop)
-                        } else {
-                            LoadingView(isLoading: popularState.isLoading, error: popularState.error) {
-                                Task {
-                                    await self.popularState.loadFilms(with: .popular)
-                                }
+                        ForEach(viewModels, id: \.endpoint) { viewModel in
+                            if let films = viewModel.films {
+                                FilmCarouselView(title: viewModel.endpoint.text, films: films, imageType: viewModel.endpoint.imageType)
+                            } else {
+                                loadingView
                             }
                         }
                     }
@@ -73,20 +41,11 @@ struct FilmListView: View {
             .background(.white)
             .navigationBarTitleDisplayMode(.inline)
         }
+        .task {
+            viewModels = [nowPlayingViewModel, upcomingViewModel, popularViewModel, topRatedViewModel]
+        }
         .readSize { size in
             Utils.screenWidth = size.width
-        }
-        .onAppear {
-            if !isLoaded {
-                Task {
-                    await self.nowPlayingState.loadFilms(with: .nowPlaying)
-                    await self.upcomingState.loadFilms(with: .upcoming)
-                    await self.topRatedState.loadFilms(with: .topRated)
-                    await self.popularState.loadFilms(with: .popular)
-                    
-                    isLoaded = true
-                }
-            }
         }
     }
     
@@ -108,6 +67,14 @@ struct FilmListView: View {
                 Spacer()
             }
             .padding(.horizontal, 12)
+        }
+    }
+    
+    var loadingView: some View {
+        HStack {
+            Spacer()
+            ActivityIndicatorView()
+            Spacer()
         }
     }
 }
