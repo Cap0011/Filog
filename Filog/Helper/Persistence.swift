@@ -22,3 +22,20 @@ struct PersistenceController {
         }
     }
 }
+
+extension PersistenceController {
+    func save() {
+        guard container.viewContext.hasChanges else { return }
+        
+        do {
+            try container.viewContext.save()
+        } catch {
+            print("Failed to save the context:", error.localizedDescription)
+        }
+    }
+    
+    func delete(item: Film) {
+        container.viewContext.delete(item)
+        save()
+    }
+}

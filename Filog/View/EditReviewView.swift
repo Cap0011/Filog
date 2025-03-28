@@ -10,11 +10,15 @@ import CachedAsyncImage
 
 struct EditReviewView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.managedObjectContext) private var viewContext
+    
     @StateObject private var toastManager = ToastManager.shared
     @FocusState private var isFocused: Bool
     let ratingTitles = ["Not Really", "Probably", "For Sure"]
     
     let film: FilmData
+    
+    @State private var filmImage: Image?
 
     @State private var selectedDate = Date()
     @State private var reviewText = ""
@@ -47,7 +51,7 @@ struct EditReviewView: View {
                 }
             }
         }
-        .toast(message: ToastType.empty.message, isShowing: $toastManager.isShowingToast, duration: Toast.short)
+        .toast(message: ToastType.empty.message, isShowing: $toastManager.isShowingEmptyToast, duration: Toast.short)
         .onTapGesture {
             isFocused = false
         }
@@ -77,9 +81,12 @@ struct EditReviewView: View {
                     .frame(height: 22)
                     .onTapGesture {
                         if reviewText.isEmpty {
-                            toastManager.isShowingToast.toggle()
+                            toastManager.isShowingEmptyToast.toggle()
                         } else {
                             // TODO: Save data, show toast message and return to WatchedView
+                            saveReview(id: String(film.id), title: film.title, review: reviewText, recommend: selectedRating > 0 ? true : false, recommendsub: selectedRating == 2 ? true : false, poster: filmImage)
+                            Utils.resetToRootView()
+                            toastManager.isShowingSaveToast.toggle()
                         }
                     }
             }
@@ -93,6 +100,9 @@ struct EditReviewView: View {
                 case .success(let image):
                     image
                         .resizable()
+                        .onAppear {
+                            filmImage = image
+                        }
                 default: Color.grayf4
                 }
             }
@@ -127,7 +137,7 @@ struct EditReviewView: View {
                 .font(.medium17)
                 .padding(.horizontal, 4)
             
-            Text("\(selectedDate.formattedString(format: "MMMM")) \(ordinalSuffix(for: selectedDate)), \(String(selectedDate.get(.year)))")
+            Text("\(selectedDate.formattedString(format: "MMMM")) \(selectedDate.get(.day))\(ordinalSuffix(for: selectedDate)), \(String(selectedDate.get(.year)))")
                 .foregroundStyle(.primaryBlack)
                 .font(.regular16)
                 .padding(.horizontal, 12)
@@ -230,7 +240,26 @@ struct EditReviewView: View {
         case 3:
             return day == 13 ? "th" : "rd"
         default:
-            return "\(day)th"
+            return "th"
+        }
+    }
+    
+    private func saveReview(id: String, title: String, review: String, recommend: Bool, recommendsub: Bool, poster: Image?, selectedDate: Date? = nil) {
+        let newFilm = Film(context: viewContext)
+        newFilm.id = id
+        newFilm.title = title
+        newFilm.recommend = recommend
+        newFilm.recommendsub = recommendsub
+        newFilm.review = review
+        newFilm.poster = poster.snapshot().pngData()
+        newFilm.createdAt = Date()
+        newFilm.watchedAt = selectedDate
+        
+        do {
+            try viewContext.save()
+            print("Task saved successfully!")
+        } catch {
+            print("Failed to save task: \(error)")
         }
     }
 }

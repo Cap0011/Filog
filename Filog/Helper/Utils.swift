@@ -54,4 +54,14 @@ class Utils {
         }
         return result
     }
+    
+    static func resetToRootView() {
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow }) else { return }
+        
+        window.rootViewController = UIHostingController(rootView: WatchedView().environment(\.managedObjectContext, PersistenceController.shared.container.viewContext))
+        window.makeKeyAndVisible()
+    }
 }

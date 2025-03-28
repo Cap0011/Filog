@@ -13,6 +13,7 @@ struct WatchedView: View {
         entity: Film.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Film.createdAt, ascending: true)]
     ) var films: FetchedResults<Film>
+    @StateObject private var toastManager = ToastManager.shared
     
     private let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 8), count: 3)
     private let sortBy = ["Newest Reviews", "Oldest Reviews", "Recently Watched", "Earliest Watched"]
@@ -72,6 +73,7 @@ struct WatchedView: View {
                     .scrollIndicators(.hidden)
                 }
             }
+            .toast(message: ToastType.save.message, isShowing: $toastManager.isShowingSaveToast, duration: Toast.short)
             .onAppear {
                 updateSortedFilms()
             }

@@ -9,7 +9,6 @@ import SwiftUI
 
 @main
 struct FilmLogApp: App {
-    
     let persistenceContainer = PersistenceController.shared
     
     var body: some Scene {

@@ -10,5 +10,6 @@ import Foundation
 class ToastManager: ObservableObject {
     static let shared = ToastManager()
     
-    @Published var isShowingToast: Bool = false
+    @Published var isShowingEmptyToast: Bool = false
+    @Published var isShowingSaveToast: Bool = false
 }

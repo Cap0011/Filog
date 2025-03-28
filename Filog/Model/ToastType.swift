@@ -7,11 +7,14 @@
 
 enum ToastType {
     case empty
+    case save
     
     var message: String {
         switch self {
         case .empty:
             return "Write your thoughts before proceeding."
+        case .save:
+            return "Your review has been successfully saved!"
         }
     }
 }
