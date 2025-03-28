@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class FilmViewModel: ObservableObject {
+class FilmSearchViewModel: ObservableObject {
     @Published var searchResults: [FilmData] = []
     @Published var searchText: String = ""
 

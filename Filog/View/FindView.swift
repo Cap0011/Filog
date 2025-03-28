@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FindView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @StateObject private var viewModel = FilmViewModel()
+    @StateObject private var viewModel = FilmSearchViewModel()
 
     @FocusState var isFocused: Bool
     
