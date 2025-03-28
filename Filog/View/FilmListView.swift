@@ -9,107 +9,74 @@ import SwiftUI
 
 @MainActor
 struct FilmListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(sortDescriptors: [
-        SortDescriptor(\.title)
-    ])
-    
-    private var films: FetchedResults<Film>
-    
     @ObservedObject private var nowPlayingState = FilmListState()
     @ObservedObject private var upcomingState = FilmListState()
     @ObservedObject private var topRatedState = FilmListState()
     @ObservedObject private var popularState = FilmListState()
     
-    @State var isShowingSearchView = false
     @State private var isLoaded = false
-    @ObservedObject var filmSearchState = FilmSearchState()
     
     var body: some View {
         NavigationView {
-            ZStack {
-                Color("Blue").ignoresSafeArea()
-                VStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 8)
-                            .foregroundColor(.white)
-                            .frame(height: 32)
-                        HStack(spacing: 16) {
-                            Image(systemName: "magnifyingglass")
-                                .padding(.leading, 8)
-                            Text("Look up films")
-                                .font(.custom(FontManager.rubikGlitch, size: 16))
-                            Spacer()
+            VStack(alignment: .leading, spacing: 0) {
+                searchButton
+                    .padding(.top, 24)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 28)
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 28) {
+                        if let films = nowPlayingState.films {
+                            FilmCarouselView(title: "Now Playing", films: films, imageType: .largePoster)
+                        } else {
+                            LoadingView(isLoading: nowPlayingState.isLoading, error: nowPlayingState.error) {
+                                Task {
+                                    await self.nowPlayingState.loadFilms(with: .nowPlaying)
+                                }
+                            }
                         }
-                        .foregroundColor(Color("Blue"))
-                    }
-                    .padding(.top, 10)
-                    .padding(.horizontal, 16)
-                    .onTapGesture {
-                        isShowingSearchView.toggle()
-                    }
-                    
-                    ScrollView {
-                        VStack(alignment: .leading) {
-                            if nowPlayingState.films != nil {
-                                FilmPosterCarouselView(title: "Now Playing", films: nowPlayingState.films!)
-                                    .padding(.top, 16)
-                            } else {
-                                LoadingView(isLoading: nowPlayingState.isLoading, error: nowPlayingState.error) {
-                                    Task {
-                                        await self.nowPlayingState.loadFilms(with: .nowPlaying)
-                                    }
+                        
+                        if let films = upcomingState.films {
+                            FilmCarouselView(title: "Upcoming", films: films, imageType: .smallPoster)
+                        } else {
+                            LoadingView(isLoading: upcomingState.isLoading, error: upcomingState.error) {
+                                Task {
+                                    await self.upcomingState.loadFilms(with: .upcoming)
                                 }
                             }
-                            
-                            if upcomingState.films != nil {
-                                FilmBackdropCarouselView(title: "Upcoming", films: upcomingState.films!)
-                            } else {
-                                LoadingView(isLoading: upcomingState.isLoading, error: upcomingState.error) {
-                                    Task {
-                                        await self.upcomingState.loadFilms(with: .upcoming)
-                                    }
+                        }
+                        
+                        if let films = popularState.films {
+                            FilmCarouselView(title: "Popular", films: films, imageType: .backdrop)
+                        } else {
+                            LoadingView(isLoading: topRatedState.isLoading, error: topRatedState.error) {
+                                Task {
+                                    await self.topRatedState.loadFilms(with: .topRated)
                                 }
                             }
-                            
-                            if topRatedState.films != nil {
-                                FilmBackdropCarouselView(title: "Top rated", films: topRatedState.films!)
-                            } else {
-                                LoadingView(isLoading: topRatedState.isLoading, error: topRatedState.error) {
-                                    Task {
-                                        await self.topRatedState.loadFilms(with: .topRated)
-                                    }
-                                }
-                            }
-                            
-                            if popularState.films != nil {
-                                FilmBackdropCarouselView(title: "Popular", films: popularState.films!)
-                            } else {
-                                LoadingView(isLoading: popularState.isLoading, error: popularState.error) {
-                                    Task {
-                                        await self.popularState.loadFilms(with: .popular)
-                                    }
+                        }
+                        
+                        if let films = topRatedState.films {
+                            FilmCarouselView(title: "Top rated", films: films, imageType: .backdrop)
+                        } else {
+                            LoadingView(isLoading: popularState.isLoading, error: popularState.error) {
+                                Task {
+                                    await self.popularState.loadFilms(with: .popular)
                                 }
                             }
                         }
                     }
+                    .padding(.bottom, 44)
                 }
+                .scrollIndicators(.hidden)
             }
-            .sheet(isPresented: $isShowingSearchView) {
-                FilmSearchView(filmSearchState: filmSearchState, isShowingSheet: self.$isShowingSearchView)
-            }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Filog")
-                        .font(.custom(FontManager.rubikGlitch, size: 20))
-                        .foregroundColor(.white)
-                        .accessibilityAddTraits(.isHeader)
-                }
-            }
+            .background(.white)
             .navigationBarTitleDisplayMode(.inline)
         }
+        .readSize { size in
+            Utils.screenWidth = size.width
+        }
         .onAppear {
-            Constants.shared.films = films.filter{ $0.genre >= 0 }
             if !isLoaded {
                 Task {
                     await self.nowPlayingState.loadFilms(with: .nowPlaying)
@@ -121,7 +88,27 @@ struct FilmListView: View {
                 }
             }
         }
-        
+    }
+    
+    var searchButton: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .frame(height: 38)
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.05), radius: 8, x: 2, y: 2)
+            
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.gray7A)
+                
+                Text("Look up films and people")
+                    .font(.regular16)
+                    .foregroundStyle(.graya7)
+                    
+                Spacer()
+            }
+            .padding(.horizontal, 12)
+        }
     }
 }
 

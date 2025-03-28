@@ -20,7 +20,7 @@ struct FilmSearchRow: View {
                         case .success(let image):
                             image
                                 .resizable()
-                        default: Color.grayf4
+                        default: Utils.placeholderColor
                     }
                 }
                 .aspectRatio(168/248 ,contentMode: .fill)

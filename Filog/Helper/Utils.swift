@@ -21,7 +21,9 @@ class Utils {
         return dateFormatter
     }()
     
-    static let placeholderColor: Color = Color.gray.opacity(0.1)
+    static var screenWidth: CGFloat = 0.0
+    
+    static let placeholderColor: Color = .grayf4
     
     static func decodeGenres(number: Int) -> [Int] {
         var array = [Int]()
