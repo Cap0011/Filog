@@ -37,7 +37,6 @@ struct FilmSearchRow: View {
                         .foregroundStyle(.gray7A)
                         .frame(height: 20)
                 }
-                .foregroundColor(.white)
                 
                 Spacer()
             }
@@ -69,8 +68,8 @@ struct FilmSearchRow: View {
                     string[range].font = .regular16
                 }
             }
-            attributedString.append(AttributedString(" "))
             attributedString.append(string)
+            attributedString.append(AttributedString(" "))
         }
         
         return attributedString
