@@ -20,6 +20,8 @@
 		C7415C722D95A93200F7B222 /* ToastType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7415C712D95A92E00F7B222 /* ToastType.swift */; };
 		C7415C772D9681CC00F7B222 /* FilmListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7415C762D9681C400F7B222 /* FilmListViewModel.swift */; };
 		C7415C792D96834C00F7B222 /* FilmListEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7415C782D96834200F7B222 /* FilmListEndpoint.swift */; };
+		C7415C7B2D96A5D500F7B222 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7415C7A2D96A5D500F7B222 /* SearchView.swift */; };
+		C7415C832D96C1D200F7B222 /* SearchHistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7415C822D96C1CA00F7B222 /* SearchHistoryManager.swift */; };
 		C765E26028C8B188008A0465 /* SelectedGenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E25F28C8B188008A0465 /* SelectedGenreView.swift */; };
 		C765E26228C8B197008A0465 /* GenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E26128C8B197008A0465 /* GenreView.swift */; };
 		C765E26428CE5649008A0465 /* FilmCastCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765E26328CE5649008A0465 /* FilmCastCard.swift */; };
@@ -88,6 +90,8 @@
 		C7415C712D95A92E00F7B222 /* ToastType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastType.swift; sourceTree = "<group>"; };
 		C7415C762D9681C400F7B222 /* FilmListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmListViewModel.swift; sourceTree = "<group>"; };
 		C7415C782D96834200F7B222 /* FilmListEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmListEndpoint.swift; sourceTree = "<group>"; };
+		C7415C7A2D96A5D500F7B222 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		C7415C822D96C1CA00F7B222 /* SearchHistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHistoryManager.swift; sourceTree = "<group>"; };
 		C765E25F28C8B188008A0465 /* SelectedGenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedGenreView.swift; sourceTree = "<group>"; };
 		C765E26128C8B197008A0465 /* GenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreView.swift; sourceTree = "<group>"; };
 		C765E26328CE5649008A0465 /* FilmCastCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmCastCard.swift; sourceTree = "<group>"; };
@@ -218,6 +222,7 @@
 		C7BDE16928C50B6A00B4F781 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				C7415C822D96C1CA00F7B222 /* SearchHistoryManager.swift */,
 				C7415C762D9681C400F7B222 /* FilmListViewModel.swift */,
 				C7415C0A2D950AAB00F7B222 /* FilmSearchViewModel.swift */,
 				C7BDE16A28C50B6A00B4F781 /* Constants.swift */,
@@ -292,6 +297,7 @@
 				C7415BA22D92A60200F7B222 /* WatchedView.swift */,
 				C7415C062D93A31300F7B222 /* FindView.swift */,
 				C7415C0E2D95807800F7B222 /* EditReviewView.swift */,
+				C7415C7A2D96A5D500F7B222 /* SearchView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -385,6 +391,7 @@
 				C7BDE1A228C50B8E00B4F781 /* FilmCarouselView.swift in Sources */,
 				C7BDE17B28C50B6A00B4F781 /* FilmDetailState.swift in Sources */,
 				C7BDE1A028C50B8E00B4F781 /* YoutubeCarouselView.swift in Sources */,
+				C7415C832D96C1D200F7B222 /* SearchHistoryManager.swift in Sources */,
 				C7BDE1BF28C50B9200B4F781 /* WatchListView.swift in Sources */,
 				C7BDE18528C50B6A00B4F781 /* Toast.swift in Sources */,
 				C7415C702D95A81B00F7B222 /* ToastManager.swift in Sources */,
@@ -417,6 +424,7 @@
 				C7BDE19C28C50B8E00B4F781 /* GenreScrollView.swift in Sources */,
 				C7BDE1BC28C50B9200B4F781 /* EditFilmView.swift in Sources */,
 				C7BDE18328C50B6A00B4F781 /* FilmDataService.swift in Sources */,
+				C7415C7B2D96A5D500F7B222 /* SearchView.swift in Sources */,
 				C7BDE18228C50B6A00B4F781 /* FilmDataStore.swift in Sources */,
 				C7BDE19E28C50B8E00B4F781 /* SearchBar.swift in Sources */,
 				C7BDE1C028C50B9200B4F781 /* FilmListView.swift in Sources */,

@@ -19,10 +19,12 @@ struct FilmListView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
-                searchButton
-                    .padding(.top, 24)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 28)
+                NavigationLink(destination: SearchView()) {
+                    searchButton
+                        .padding(.top, 24)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 28)
+                }
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 28) {

@@ -25,6 +25,14 @@ class Utils {
     
     static let placeholderColor: Color = .grayf4
     
+    static var backButton: some View {
+        Image(systemName: "chevron.backward")
+            .font(.system(size: 24))
+            .foregroundStyle(.primaryBlack)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+    }
+    
     static func decodeGenres(number: Int) -> [Int] {
         var array = [Int]()
         let binaryString = String(number, radix: 2).reversed()

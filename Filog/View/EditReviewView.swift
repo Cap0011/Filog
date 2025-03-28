@@ -60,10 +60,7 @@ struct EditReviewView: View {
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Image(systemName: "chevron.backward")
-                    .foregroundStyle(.primaryBlack)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+                Utils.backButton
                     .onTapGesture {
                         self.presentationMode.wrappedValue.dismiss()
                     }

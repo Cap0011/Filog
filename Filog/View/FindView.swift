@@ -11,8 +11,6 @@ struct FindView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @StateObject private var viewModel = FilmSearchViewModel()
 
-    @FocusState var isFocused: Bool
-    
     var body: some View {
         VStack(spacing: 0) {
             MySearchBar(text: $viewModel.searchText, placeholder: "Search by film title")
@@ -31,18 +29,12 @@ struct FindView: View {
             }
             .scrollIndicators(.hidden)
         }
-        .onAppear {
-            isFocused = true
-        }
         .background(.white)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Image(systemName: "chevron.backward")
-                    .foregroundStyle(.primaryBlack)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+                Utils.backButton
                     .onTapGesture {
                         self.presentationMode.wrappedValue.dismiss()
                     }
