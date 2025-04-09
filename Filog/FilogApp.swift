@@ -14,6 +14,7 @@ struct FilmLogApp: App {
     var body: some Scene {
         WindowGroup {
             TotalView()
+                .preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceContainer.container.viewContext)
         }
     }

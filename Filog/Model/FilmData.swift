@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 struct FilmResponse: Decodable {
     let results: [FilmData]
@@ -173,5 +174,13 @@ struct FilmVideo: Decodable, Identifiable {
     
     var youtubeThumbnailURL: URL? {
         return URL(string: "https://img.youtube.com/vi/\(key)/0.jpg")
+    }
+}
+
+extension FilmData: Searchable {
+    static func search(query: String) -> AnyPublisher<[FilmData], Never> {
+        FilmService.shared.searchFilms(query: query)
+            .replaceError(with: [])
+            .eraseToAnyPublisher()
     }
 }

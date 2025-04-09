@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FindView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @StateObject private var viewModel = FilmSearchViewModel()
+    @StateObject private var viewModel = SearchViewModel<FilmData>()
 
     var body: some View {
         VStack(spacing: 0) {

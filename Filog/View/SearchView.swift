@@ -9,8 +9,10 @@ import SwiftUI
 
 struct SearchView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @StateObject private var viewModel = FilmSearchViewModel()
+    @StateObject private var viewModel = SearchViewModel<FilmData>()
     @StateObject private var historyManager = SearchHistoryManager.shared
+    
+    @State private var shouldNavigate = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -26,6 +28,7 @@ struct SearchView: View {
                     .onSubmit {
                         historyManager.addHistory(viewModel.searchText)
                         // TODO: Move to SearchResultView
+                        shouldNavigate = true
                     }
                     .padding(.trailing, 20)
             }
@@ -46,13 +49,21 @@ struct SearchView: View {
                                         viewModel.searchText = film.title
                                         historyManager.addHistory(viewModel.searchText)
                                         // TODO: Move to SearchResultView
+                                        shouldNavigate = true
                                     }
                             }
                         }
                     }
                 }
-                .menuIndicator(.hidden)
+                .scrollIndicators(.hidden)
                 .padding(.top, 24)
+            }
+            
+            NavigationLink(
+                destination: SearchResultView(filmViewModel: viewModel),
+                isActive: $shouldNavigate
+            ) {
+                EmptyView()
             }
         }
         .background(.white)
@@ -94,6 +105,7 @@ struct SearchView: View {
                                 .onTapGesture {
                                     viewModel.searchText = historyManager.history[index]
                                     // TODO: Move to SearchResultView
+                                    shouldNavigate = true
                                 }
                         }
                     }

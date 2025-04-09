@@ -8,21 +8,23 @@
 import Combine
 import Foundation
 
-class FilmSearchViewModel: ObservableObject {
-    @Published var searchResults: [FilmData] = []
+protocol Searchable: Decodable, Identifiable {
+    static func search(query: String) -> AnyPublisher<[Self], Never>
+}
+
+class SearchViewModel<T: Searchable>: ObservableObject {
+    @Published var searchResults: [T] = []
     @Published var searchText: String = ""
 
     init() {
         $searchText
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
             .removeDuplicates()
-            .flatMap { query -> AnyPublisher<[FilmData], Never> in
+            .flatMap { query -> AnyPublisher<[T], Never> in
                 guard !query.isEmpty else {
                     return Just([]).eraseToAnyPublisher()
                 }
-                return FilmService.shared.searchFilms(query: query)
-                    .replaceError(with: [])
-                    .eraseToAnyPublisher()
+                return T.search(query: query)
             }
             .assign(to: &$searchResults)
     }
