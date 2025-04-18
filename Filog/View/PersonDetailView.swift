@@ -11,192 +11,276 @@ import CachedAsyncImage
 struct PersonDetailView: View {
     let id: Int
     
-    @State var readMoreTapped = false
-    @State var isLoaded = false
-    
-    @ObservedObject private var personDetailState = PersonDetailState()
-    
-    @State var sortedCast: [Cast]?
-    @State var sortedCrew: [Crew]?
+    @StateObject private var personViewModel = DetailViewModel<Person>()
     
     var body: some View {
         ZStack {
             Color("Blue").ignoresSafeArea()
             ScrollView {
-                LoadingView(isLoading: self.personDetailState.isLoading, error: self.personDetailState.error) {
-                    Task {
-                        await self.personDetailState.loadPerson(id: self.id)
-                    }
-                }
-                
-                if personDetailState.person != nil {
-                    // PersonProfileView
-                    PersonProfileView(profileURL: personDetailState.person!.profileURL, name: personDetailState.person!.name, birthplace: personDetailState.person!.placeOfBirth, birthday: personDetailState.person!.birthday, deathday: personDetailState.person!.deathday, socials: personDetailState.person!.externalIds)
-                    
-                    // biography
-                    if !personDetailState.person!.biography.isEmpty {
-                        LazyVStack(alignment: .trailing, spacing: 4) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Biography")
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(Color("Red"))
-                                
-                                Text(personDetailState.person!.biography)
-                                    .font(.system(size: 16, weight: .regular))
-                                    .frame(maxHeight: readMoreTapped ? .infinity : 150)
-                                    .lineSpacing(5)
-                            }
-                            
-                            if !readMoreTapped {
-                                HStack(spacing: 0) {
-                                    Text("Read More")
-                                    Image(systemName: "chevron.forward")
-                                }
-                                .foregroundColor(Color("Red"))
-                                .onTapGesture {
-                                    readMoreTapped = true
-                                }
-                            }
-                        }
-                        .padding(.top, 8)
-                        .padding(.horizontal, 16)
-                    }
-                    
-                    // Cast
-                    if personDetailState.person!.cast != nil && personDetailState.person!.cast!.count > 0 {
-                        VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 0) {
+                    if let person = personViewModel.detail {
+                        personProfile
+                        
+                        if let casts = person.combinedCredits?.cast {
                             Text("Cast")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(Color("Red"))
-                                .padding(.bottom, 8)
-                                .padding(.leading, 16)
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                if sortedCast != nil {
-                                    LazyHStack(spacing: 16) {
-                                        ForEach(sortedCast!) { cast in
-                                            NavigationLink(destination: FilmDetailView(filmId: cast.id)) {
-                                                FilmCastCard(name: "\(cast.title) (\(cast.yearText))", character: cast.character, profileURL: cast.posterURL)
-                                            }
-                                        }
+                                .font(.semibold17)
+                                .foregroundStyle(.primaryBlue)
+                                .frame(height: 24)
+                                .padding(.top, 28)
+                                .padding(.horizontal, 20)
+                            
+                            ScrollView(.horizontal) {
+                                HStack(spacing: 12) {
+                                    ForEach(casts) { cast in
+                                        CastCard(cast: cast)
                                     }
-                                    .padding(.horizontal, 16)
-                                    .frame(height: 245)
                                 }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 16)
                             }
+                            .scrollIndicators(.hidden)
                         }
-                        .padding(.top, 8)
-                        .onAppear {
-                            sortedCast = personDetailState.person!.cast!.sorted(by: { $0.yearText > $1.yearText })
-                        }
-                    }
-                    
-                    // Crew
-                    if personDetailState.person!.crew != nil && personDetailState.person!.crew!.count > 0 {
-                        VStack(alignment: .leading) {
+                        
+                        if let crews = person.combinedCredits?.crew{
                             Text("Crew")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(Color("Red"))
-                                .padding(.bottom, 8)
-                                .padding(.leading, 16)
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                if sortedCrew != nil {
-                                    LazyHStack(spacing: 16) {
-                                        ForEach(personDetailState.person!.crew!) { crew in
-                                            NavigationLink(destination: FilmDetailView(filmId: crew.id)) {
-                                                FilmCastCard(name: "\(crew.title) (\(crew.yearText))", character: crew.department, profileURL: crew.posterURL)
-                                            }
-                                        }
+                                .font(.semibold17)
+                                .foregroundStyle(.primaryBlue)
+                                .frame(height: 24)
+                                .padding(.top, 28)
+                                .padding(.horizontal, 20)
+                            
+                            ScrollView(.horizontal) {
+                                HStack(spacing: 12) {
+                                    ForEach(crews) { crew in
+                                        CrewCard(crew: crew)
                                     }
-                                    .padding(.horizontal, 16)
-                                    .frame(height: 245)
                                 }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 16)
                             }
-                        }
-                        .padding(.top, 8)
-                        .onAppear {
-                            sortedCrew = personDetailState.person!.crew!.sorted(by: { $0.yearText > $1.yearText })
+                            .scrollIndicators(.hidden)
                         }
                     }
                 }
+                .padding(.bottom, 40)
             }
+            .scrollIndicators(.hidden)
         }
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            if !isLoaded {
-                Task {
-                    await self.personDetailState.loadPerson(id: self.id)
-                    isLoaded = true
+        .task {
+            personViewModel.id = self.id
+        }
+    }
+    
+    var personProfile: some View {
+        Group {
+            if let person = personViewModel.detail {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(spacing: 12) {
+                        CachedAsyncImage(url: person.profileURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                            default: Utils.placeholderColor
+                            }
+                        }
+                        .cornerRadius(8)
+                        .aspectRatio(2/3, contentMode: .fit)
+                        .frame(width: 104)
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(person.name)
+                                .font(.semibold20)
+                                .foregroundStyle(.primaryBlack)
+                                .frame(height: 24)
+                                .padding(.top, 4)
+                            
+                            Text(person.knownForDepartment)
+                                .font(.regular18)
+                                .foregroundStyle(.gray3C)
+                                .frame(height: 24)
+                                .padding(.top, 4)
+                            
+                            Spacer()
+                            
+                            if let social = person.externalIds, let url = social.instagramURL {
+                                Link(destination: url) {
+                                    Image("instagram")
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .padding(4)
+                                }
+                            }
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                    Group {
+                        Text("Place of birth")
+                            .font(.semibold17)
+                            .foregroundStyle(.primaryBlue)
+                            .frame(height: 24)
+                            .padding(.top, 28)
+                        
+                        Text(person.placeOfBirth ?? "N/A")
+                            .font(.regular16)
+                            .foregroundStyle(.primaryBlack)
+                            .frame(height: 22)
+                            .padding(.top, 8)
+                        
+                        Text("Birthdate")
+                            .font(.semibold17)
+                            .foregroundStyle(.primaryBlue)
+                            .frame(height: 24)
+                            .padding(.top, 24)
+                        
+                        Text(birthdateText(birthday: person.birthday, deathday: person.deathday))
+                            .font(.regular16)
+                            .foregroundStyle(.primaryBlack)
+                            .frame(height: 22)
+                            .padding(.top, 8)
+                        
+                        if let biography = person.biography {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Biography")
+                                    .font(.semibold17)
+                                    .foregroundStyle(.primaryBlue)
+                                    .frame(height: 24)
+                                    .padding(.top, 24)
+                                
+                                Text(biography)
+                                    .font(.regular16)
+                                    .foregroundStyle(.primaryBlack)
+                                    .padding(.top, 8)
+                                    .lineSpacing(8)
+                            }
+                        }
+                    }
                 }
+                .padding(.horizontal, 20)
+            } else {
+                EmptyView()
             }
         }
     }
-}
-
-struct PersonProfileView: View {
-    let profileURL: URL
-    let name: String
-    let birthplace: String?
-    let birthday: String?
-    let deathday: String?
-    let socials: Social?
     
-    var body: some View {
-        VStack {
-            CachedAsyncImage(url: profileURL, transaction: Transaction(animation: .easeInOut)) { phase in
+    struct CastCard: View {
+        let cast: Cast
+        
+        var body: some View {
+            VStack(spacing: 0) {
+                CachedAsyncImage(url: cast.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
                     switch phase {
                     case .success(let image):
                         image
                             .resizable()
                     default: Utils.placeholderColor
-                }
-            }
-            .cornerRadius(8)
-            .aspectRatio(2/3, contentMode: .fit)
-            .frame(width: 150)
-            
-            Text(name)
-                .font(.system(size: 20, weight: .black))
-                .padding(.top, 8)
-            
-            if birthplace != nil {
-                Text(birthplace!)
-                    .font(.system(size: 16, weight: .thin))
-                    .padding(.top, 1)
-            }
-            
-            if birthday != nil {
-                Text("\(birthday!) ~ \(deathday ?? "")")
-                    .font(.system(size: 14, weight: .ultraLight))
-            }
-            
-            if socials != nil {
-                HStack(spacing: 24) {
-                    if socials!.instagramURL != nil {
-                        Link(destination: socials!.instagramURL!) {
-                            Image("instagram")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                        }
-                    }
-                    
-                    if socials!.facebookURL != nil {
-                        Link(destination: socials!.facebookURL!) {
-                            Image("facebook")
-                                .resizable()
-                                .frame(width: 32, height: 32)
-                        }
-                    }
-                    
-                    if socials!.twitterURL != nil {
-                        Link(destination: socials!.twitterURL!) {
-                            Image("twitter")
-                                .resizable()
-                                .frame(width: 32, height: 25)
-                                .tint(.white)
-                        }
                     }
                 }
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 104, height: 154)
+                
+                ZStack(alignment: .topLeading) {
+                    Rectangle()
+                        .foregroundStyle(.white)
+                        .frame(width: 104, height: 104)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(cast.title ?? "N/A")
+                            .font(.regular14)
+                            .foregroundStyle(.primaryBlack)
+                            .frame(width: 96, alignment: .leading)
+                            .lineLimit(3)
+                            .padding(.top, 8)
+                        
+                        Text(cast.character ?? "N/A")
+                            .font(.regular12)
+                            .foregroundStyle(.gray7A)
+                            .frame(width: 96, alignment: .leading)
+                            .lineLimit(2)
+                        
+                        Spacer()
+                        
+                        Text(cast.yearText)
+                            .font(.regular12)
+                            .foregroundStyle(.gray7A)
+                            .frame(height: 16)
+                            .padding(.bottom, 8)
+                    }
+                    .frame(height: 104)
+                    .padding(.horizontal, 4)
+                }
             }
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .shadow(color: .black.opacity(0.12), radius: 4, x: 4, y: 4)
         }
+    }
+    
+    struct CrewCard: View {
+        let crew: Crew
+        
+        var body: some View {
+            VStack(spacing: 0) {
+                CachedAsyncImage(url: crew.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                    default: Utils.placeholderColor
+                    }
+                }
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 104, height: 154)
+                
+                ZStack(alignment: .topLeading) {
+                    Rectangle()
+                        .foregroundStyle(.white)
+                        .frame(width: 104, height: 104)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(crew.title ?? "N/A")
+                            .font(.regular14)
+                            .foregroundStyle(.primaryBlack)
+                            .frame(width: 96, alignment: .leading)
+                            .lineLimit(3)
+                        
+                        Text(crew.department ?? "N/A")
+                            .font(.regular12)
+                            .foregroundStyle(.gray7A)
+                            .frame(width: 96, alignment: .leading)
+                            .lineLimit(2)
+                        
+                        Spacer()
+                        
+                        Text(crew.yearText)
+                            .font(.regular12)
+                            .foregroundStyle(.gray7A)
+                            .frame(height: 16)
+                            .padding(.bottom, 8)
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 4)
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .shadow(color: .black.opacity(0.12), radius: 4, x: 4, y: 4)
+        }
+    }
+    
+    func birthdateText(birthday: String?, deathday: String?) -> String {
+        guard let birthday = birthday else {
+            return "N/A"
+        }
+        
+        let birthDate = Utils.dateFormatter.date(from: birthday)
+        let endDate = deathday.flatMap { Utils.dateFormatter.date(from: $0) } ?? Date()
+        let age = Calendar.current.dateComponents([.year], from: birthDate!, to: endDate).year
+        
+        guard let deathday = deathday else {
+            return "\(birthday) (\(age ?? 0) years old)"
+        }
+        return "\(birthday) ~ \(deathday) (\(age ?? 0) years old)"
     }
 }

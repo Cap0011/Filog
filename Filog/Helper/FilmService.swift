@@ -68,6 +68,16 @@ class FilmService {
             .eraseToAnyPublisher()
     }
     
+    func fetchDetail<T: DetailFetchable>(id: Int) -> AnyPublisher<T, Error> {
+        guard let url = makeURL(for: "\(T.detailPathComponent)/\(id)", queryItemValues: T.queryItems) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        
+        return fetchData(from: url)
+            .decode(type: T.self, decoder: Utils.jsonDecoder)
+            .eraseToAnyPublisher()
+    }
+    
     private func makeURL(for endpoint: String, queryItemValues: [String: String]? = nil) -> URL? {
         guard let url = URL(string: "\(baseURL)/\(endpoint)") else { return nil }
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
