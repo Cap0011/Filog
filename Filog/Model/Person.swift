@@ -46,43 +46,44 @@ struct KnownFor: Decodable {
 struct CombinedCredits: Decodable {
     let cast: [Cast]
     let crew: [Crew]
-}
+    
+    struct Cast: Decodable, Identifiable {
+        let id: Int
+        let character: String?
+        let title: String?
+        let releaseDate: String?
+        let posterPath: String?
+        let mediaType: String?
+        
+        var posterURL: URL? {
+            guard let path = posterPath else { return nil }
+            return URL(string: "https://image.tmdb.org/t/p/w185\(path)")
+        }
+        
+        var yearText: String {
+            guard let date = releaseDate else { return "" }
+            return String(date.prefix(4))
+        }
+    }
 
-struct Cast: Decodable, Identifiable {
-    let id: Int
-    let character: String?
-    let title: String?
-    let releaseDate: String?
-    let posterPath: String?
-    let mediaType: String?
-    
-    var posterURL: URL? {
-        guard let path = posterPath else { return nil }
-        return URL(string: "https://image.tmdb.org/t/p/w185\(path)")
-    }
-    
-    var yearText: String {
-        guard let date = releaseDate else { return "" }
-        return String(date.prefix(4))
-    }
-}
-
-struct Crew: Decodable, Identifiable {
-    let id: Int
-    let department: String?
-    let title: String?
-    let releaseDate: String?
-    let posterPath: String?
-    let mediaType: String?
-    
-    var posterURL: URL? {
-        guard let path = posterPath else { return nil }
-        return URL(string: "https://image.tmdb.org/t/p/w185\(path)")
-    }
-    
-    var yearText: String {
-        guard let date = releaseDate else { return "" }
-        return String(date.prefix(4))
+    struct Crew: Decodable, Identifiable, Hashable {
+        let id: Int
+        let department: String?
+        let job: String?
+        let title: String?
+        let releaseDate: String?
+        let posterPath: String?
+        let mediaType: String?
+        
+        var posterURL: URL? {
+            guard let path = posterPath else { return nil }
+            return URL(string: "https://image.tmdb.org/t/p/w185\(path)")
+        }
+        
+        var yearText: String {
+            guard let date = releaseDate else { return "" }
+            return String(date.prefix(4))
+        }
     }
 }
 

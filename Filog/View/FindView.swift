@@ -20,7 +20,7 @@ struct FindView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     ForEach(viewModel.searchResults) { film in
-                        NavigationLink(destination: EditReviewView(film: film)) {
+                        NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                             FilmSearchRow(film: film, query: viewModel.searchText)
                         }
                     }

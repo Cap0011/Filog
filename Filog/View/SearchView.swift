@@ -43,10 +43,10 @@ struct SearchView: View {
                 ScrollView {
                     VStack(spacing: 0) {
                         ForEach(viewModel.searchResults) { film in
-                            NavigationLink(destination: EditReviewView(film: film)) {
+                            NavigationLink(destination: FilmDetailView(filmId: film.id)) {
                                 FilmSearchRow(film: film, query: viewModel.searchText)
                                     .onTapGesture {
-                                        viewModel.searchText = film.title
+                                        viewModel.searchText = film.displayTitle
                                         historyManager.addHistory(viewModel.searchText)
                                         // TODO: Move to SearchResultView
                                         shouldNavigate = true

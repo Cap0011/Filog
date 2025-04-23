@@ -26,11 +26,17 @@ class Utils {
     static let placeholderColor: Color = .grayf4
     
     static var backButton: some View {
-        Image(systemName: "chevron.backward")
-            .font(.system(size: 24))
-            .foregroundStyle(.primaryBlack)
-            .frame(width: 44, height: 44)
-            .contentShape(Rectangle())
+        ZStack {
+            Circle()
+                .frame(width: 44, height: 44)
+                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 4)
+                .foregroundStyle(.white.opacity(0.6))
+                .background(.ultraThickMaterial.opacity(0.3))
+            
+            Image(systemName: "chevron.backward")
+                .foregroundStyle(.primaryBlue)
+        }
+        .clipShape(Circle())
     }
     
     static func decodeGenres(number: Int) -> [Int] {

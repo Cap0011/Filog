@@ -79,7 +79,7 @@ struct RecommendationPosterView: View {
                     .offset(x: -30)
                 }
             }
-            Text(film.title)
+            Text(film.title ?? "N/A")
                 .lineLimit(1)
                 .frame(width: width)
                 .font(.system(size: 16, weight: .black))

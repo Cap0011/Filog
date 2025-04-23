@@ -14,166 +14,117 @@ struct FilmResponse: Decodable {
 
 struct FilmData: Decodable, Identifiable {
     let id: Int
-    let title: String
+    let adult: Bool?
     let backdropPath: String?
+    let genres: [Genre]?
+    let originalLanguage: String?
+    let overview: String?
     let posterPath: String?
-    let overview: String
-    let voteAverage: Double
-    let voteCount: Int
-    let runtime: Int?
     let releaseDate: String?
-    let adult: Bool
-    let genreIds: [Int]?
+    let runtime: Int?
+    let tagline: String?
+    let title: String?
+    let voteAverage: Double?
     
-    let genres: [FilmGenre]?
-    let credits: FilmCredit?
-    let videos: FilmVideoResponse?
+    let credits: CreditResponse?
+    let recommendations: FilmResponse?
+    let similar: FilmResponse?
+    let videos: VideoResponse?
     
-    static let yearFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy"
-        return formatter
-    }()
-    
-    var backdropURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w780\(backdropPath ?? "")")!
+    var backdropURL: URL? {
+        guard let path = backdropPath else { return nil }
+        return URL(string: "https://image.tmdb.org/t/p/w780\(path)")
     }
     
-    var posterURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w342\(posterPath ?? "")")!
+    var posterURL: URL? {
+        guard let path = posterPath else { return nil }
+        return URL(string: "https://image.tmdb.org/t/p/w342\(path)")
     }
     
-    var netflixSearchURL: URL? {
-        var query = ""
-        title.forEach { character in
-            if character == " " { query.append("%20") }
-            else if character == ":" { query.append("%3A") }
-            else if character == "'" {query.append("%27")}
-            else if character == "," {query.append("%2C")}
-            else if character.isLetter { query.append(character) }
-        }
-        
-        return URL(string: "https://www.netflix.com/search?q=\(query)")
+    var displayTitle: String {
+        title ?? "N/A"
     }
     
-    var genreText: String {
-        if self.genres != nil && self.genres!.count > 0 {
-            var text = ""
-            self.genres!.prefix(3).forEach { genre in
-                text = "\(text)\(genre.name), "
-            }
-            return String(text.dropLast(2))
-        } else {
-            return "n/a"
-        }
-    }
-    
-    var genresToNumber: Int {
-        var result = 1
-        if self.genres != nil && self.genres!.count > 0 {
-            self.genres!.prefix(3).forEach { genre in
-                result += Int(pow(2.0, Double(Constants.shared.genreDictionary[genre.id]!)))
-            }
-        }
-        return result
+    var displayDate: String {
+        guard let date = releaseDate else { return "N/A" }
+        return date.replacingOccurrences(of: "-", with: ".")
     }
     
     var yearText: String {
-        guard let releaseDate = self.releaseDate, let date = Utils.dateFormatter.date(from: releaseDate) else {
-            return "n/a"
-        }
-        return FilmData.yearFormatter.string(from: date)
+        guard let date = releaseDate else { return "N/A" }
+        return String(date.prefix(4))
     }
     
-    var durationText: String {
-        guard let runtime = self.runtime, runtime > 0 else {
-            return "n/a"
-        }
-        
+    var displayRuntime: String {
+        guard let runtime = runtime, runtime > 0 else { return "N/A" }
         return "\(runtime / 60)h \(runtime % 60)m"
     }
     
-    var adultText: String {
-        if adult { return " · R" }
-        else { return "" }
+    var genresText: String {
+        guard let genres = genres else { return "N/A" }
+        return genres.map { $0.name }.joined(separator: ", ")
     }
-    
-    var cast: [FilmCast]? {
-        credits?.cast
-    }
-    
-    var crew: [FilmCrew]? {
-        credits?.crew
-    }
-    
-    var directors: [FilmCrew]? {
-        crew?.filter { $0.job.lowercased() == "director" }
-    }
-    
-    var producers: [FilmCrew]? {
-        crew?.filter { $0.job.lowercased() == "producer" }
-    }
-    
-    var screenWriters: [FilmCrew]? {
-        crew?.filter { $0.job.lowercased() == "story" }
-    }
-    
-    var youtubeTrailers: [FilmVideo]? {
-        videos?.results.filter { $0.youtubeURL != nil }
-    }
-}
 
-struct FilmGenre: Decodable {
-    let name: String
-    let id: Int
-}
-
-struct FilmCredit: Decodable {
-    let cast: [FilmCast]
-    let crew: [FilmCrew]
-}
-
-struct FilmCast: Decodable, Identifiable {
-    let id: Int
-    let character: String
-    let name: String
-    let profilePath: String?
-    
-    var profileURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w185\(profilePath ?? "")")!
+    struct Genre: Decodable {
+        let name: String
     }
-}
-
-struct FilmCrew: Decodable, Identifiable {
-    let id: Int
-    let job: String
-    let name: String
-    let profilePath: String?
     
-    var profileURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w185\(profilePath ?? "")")!
-    }
-}
-
-struct FilmVideoResponse: Decodable {
-    let results: [FilmVideo]
-}
-
-struct FilmVideo: Decodable, Identifiable {
-    let id: String
-    let key: String
-    let name: String
-    let site: String
-    
-    var youtubeURL: URL? {
-        guard site == "YouTube" else {
-            return nil
+    struct CreditResponse: Decodable {
+        let cast: [Cast]
+        let crew: [Crew]
+        
+        var director: [Crew]? {
+            crew.filter { $0.job?.lowercased() == "director" }
         }
-        return URL(string: "https://youtube.com/watch?v=\(key)")
+        
+        struct Cast: Decodable, Identifiable {
+            let id: Int
+            let name: String?
+            let profilePath: String?
+            let character: String?
+
+            var profileURL: URL? {
+                guard let path = profilePath else { return nil }
+                return URL(string: "https://image.tmdb.org/t/p/w185\(path)")
+            }
+        }
+        
+        struct Crew: Decodable, Identifiable {
+            let id: Int
+            let name: String?
+            let profilePath: String?
+            let job: String?
+
+            var profileURL: URL? {
+                guard let path = profilePath else { return nil }
+                return URL(string: "https://image.tmdb.org/t/p/w185\(path)")
+            }
+        }
     }
     
-    var youtubeThumbnailURL: URL? {
-        return URL(string: "https://img.youtube.com/vi/\(key)/0.jpg")
+    struct VideoResponse: Decodable {
+        let results: [Video]
+        
+        var youtubeTrailers: [Video]? {
+            results.filter { $0.youtubeURL != nil }
+        }
+        
+        struct Video: Decodable, Identifiable {
+            let id: String
+            let name: String?
+            let key: String?
+            let site: String?
+            
+            var youtubeURL: URL? {
+                guard site == "YouTube", let key = key else { return nil }
+                return URL(string: "https://youtube.com/watch?v=\(key)")
+            }
+            
+            var youtubeThumbnailURL: URL? {
+                guard let key = key else { return nil }
+                return URL(string: "https://img.youtube.com/vi/\(key)/0.jpg")
+            }
+        }
     }
 }
 
@@ -183,4 +134,12 @@ extension FilmData: Searchable {
             .replaceError(with: [])
             .eraseToAnyPublisher()
     }
+}
+
+extension FilmData: DetailFetchable {
+    static var detailPathComponent = "movie"
+    
+    static var queryItems: [String : String]? = [
+        "append_to_response": "videos,credits,recommendations,similar"
+    ]
 }

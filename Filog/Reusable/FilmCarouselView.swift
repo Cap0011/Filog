@@ -61,7 +61,7 @@ struct FilmCarouselView: View {
             }
         }
         
-        func imageURL(film: FilmData) -> URL {
+        func imageURL(film: FilmData) -> URL? {
             switch self {
             case .backdrop:
                 return film.backdropURL
@@ -89,7 +89,7 @@ struct FilmCarouselView: View {
                             VStack(spacing: 4 + (imageType == .largePoster ? 4 : 0)) {
                                 FilmImageView(url: imageType.imageURL(film: film), imageType: imageType)
                                 
-                                Text(film.title)
+                                Text(film.displayTitle)
                                     .lineLimit(1)
                                     .font(imageType.font)
                                     .frame(width: imageType.width - 8, height: 20, alignment: imageType.alignment)

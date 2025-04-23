@@ -10,7 +10,7 @@ import Foundation
 protocol FilmDataService {
     func fetchFilms(from endpoint: FilmListEndpoint) async throws -> [FilmData]
     func fetchFilm(id: Int) async throws -> FilmData
-    func fetchPerson(id: Int) async throws -> PersonData
+//    func fetchPerson(id: Int) async throws -> PersonData
     func fetchSimilarFilms(id: Int) async throws -> [FilmData]
     func fetchRecommendationFilms(id: Int) async throws -> [FilmData]
     func searchFilm(query: String) async throws -> [FilmData]

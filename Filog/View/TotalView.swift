@@ -32,11 +32,11 @@ struct TotalView: View {
                     Image(systemName: "list.and.film")
                     Text("To Watch")
                 }
-            RecommendationView()
-                .tabItem {
-                    Image(systemName: "rays")
-                    Text("For You")
-                }
+//            RecommendationView()
+//                .tabItem {
+//                    Image(systemName: "rays")
+//                    Text("For You")
+//                }
         }
         .preferredColorScheme(.dark)
     }

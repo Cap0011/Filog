@@ -14,58 +14,72 @@ struct PersonDetailView: View {
     @StateObject private var personViewModel = DetailViewModel<Person>()
     
     var body: some View {
-        ZStack {
-            Color("Blue").ignoresSafeArea()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    if let person = personViewModel.detail {
-                        personProfile
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                if let person = personViewModel.detail {
+                    personProfile
+                    
+                    if let casts = person.combinedCredits?.cast, casts.count > 0 {
+                        Text("Cast")
+                            .font(.semibold17)
+                            .foregroundStyle(.primaryBlue)
+                            .frame(height: 24)
+                            .padding(.top, 28)
+                            .padding(.horizontal, 20)
                         
-                        if let casts = person.combinedCredits?.cast {
-                            Text("Cast")
-                                .font(.semibold17)
-                                .foregroundStyle(.primaryBlue)
-                                .frame(height: 24)
-                                .padding(.top, 28)
-                                .padding(.horizontal, 20)
-                            
-                            ScrollView(.horizontal) {
-                                HStack(spacing: 12) {
-                                    ForEach(casts) { cast in
-                                        CastCard(cast: cast)
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 12) {
+                                ForEach(casts.sorted(by: { Int($0.yearText) ?? 0 > Int($1.yearText) ?? 0 })) { cast in
+                                    if let mediaType = cast.mediaType {
+                                        if mediaType == "movie" {
+                                            NavigationLink(destination: FilmDetailView(filmId: cast.id)) {
+                                                CastCard(cast: cast)
+                                            }
+                                        } else if mediaType == "tv" {
+                                            
+                                        }
                                     }
                                 }
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 16)
                             }
-                            .scrollIndicators(.hidden)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
                         }
+                        .scrollIndicators(.hidden)
+                    }
+                    
+                    if let crews = person.combinedCredits?.crew, crews.count > 0 {
+                        Text("Crew")
+                            .font(.semibold17)
+                            .foregroundStyle(.primaryBlue)
+                            .frame(height: 24)
+                            .padding(.top, 28)
+                            .padding(.horizontal, 20)
                         
-                        if let crews = person.combinedCredits?.crew{
-                            Text("Crew")
-                                .font(.semibold17)
-                                .foregroundStyle(.primaryBlue)
-                                .frame(height: 24)
-                                .padding(.top, 28)
-                                .padding(.horizontal, 20)
-                            
-                            ScrollView(.horizontal) {
-                                HStack(spacing: 12) {
-                                    ForEach(crews) { crew in
-                                        CrewCard(crew: crew)
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 12) {
+                                ForEach(crews.sorted { Int($0.yearText) ?? 0 > Int($1.yearText) ?? 0 }, id: \.self) { crew in
+                                    if let mediaType = crew.mediaType {
+                                        if mediaType == "movie" {
+                                            NavigationLink(destination: FilmDetailView(filmId: crew.id)) {
+                                                CrewCard(crew: crew)
+                                            }
+                                        } else if mediaType == "tv" {
+                                            
+                                        }
                                     }
                                 }
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 16)
                             }
-                            .scrollIndicators(.hidden)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
                         }
+                        .scrollIndicators(.hidden)
                     }
                 }
-                .padding(.bottom, 40)
             }
-            .scrollIndicators(.hidden)
+            .padding(.bottom, 40)
         }
+        .scrollIndicators(.hidden)
+        .background(.white)
         .navigationBarTitleDisplayMode(.inline)
         .task {
             personViewModel.id = self.id
@@ -167,20 +181,11 @@ struct PersonDetailView: View {
     }
     
     struct CastCard: View {
-        let cast: Cast
+        let cast: CombinedCredits.Cast
         
         var body: some View {
-            VStack(spacing: 0) {
-                CachedAsyncImage(url: cast.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                    default: Utils.placeholderColor
-                    }
-                }
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 104, height: 154)
+            VStack(alignment:.leading, spacing: 0) {
+                ProfileImage(imageURL: cast.posterURL)
                 
                 ZStack(alignment: .topLeading) {
                     Rectangle()
@@ -193,12 +198,14 @@ struct PersonDetailView: View {
                             .foregroundStyle(.primaryBlack)
                             .frame(width: 96, alignment: .leading)
                             .lineLimit(3)
+                            .multilineTextAlignment(.leading)
                             .padding(.top, 8)
                         
                         Text(cast.character ?? "N/A")
                             .font(.regular12)
                             .foregroundStyle(.gray7A)
                             .frame(width: 96, alignment: .leading)
+                            .multilineTextAlignment(.leading)
                             .lineLimit(2)
                         
                         Spacer()
@@ -219,37 +226,29 @@ struct PersonDetailView: View {
     }
     
     struct CrewCard: View {
-        let crew: Crew
+        let crew: CombinedCredits.Crew
         
         var body: some View {
-            VStack(spacing: 0) {
-                CachedAsyncImage(url: crew.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                    default: Utils.placeholderColor
-                    }
-                }
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 104, height: 154)
+            VStack(alignment:.leading, spacing: 0) {
+                ProfileImage(imageURL: crew.posterURL)
                 
                 ZStack(alignment: .topLeading) {
                     Rectangle()
                         .foregroundStyle(.white)
-                        .frame(width: 104, height: 104)
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(crew.title ?? "N/A")
                             .font(.regular14)
                             .foregroundStyle(.primaryBlack)
                             .frame(width: 96, alignment: .leading)
+                            .multilineTextAlignment(.leading)
                             .lineLimit(3)
                         
                         Text(crew.department ?? "N/A")
                             .font(.regular12)
                             .foregroundStyle(.gray7A)
                             .frame(width: 96, alignment: .leading)
+                            .multilineTextAlignment(.leading)
                             .lineLimit(2)
                         
                         Spacer()
@@ -258,7 +257,6 @@ struct PersonDetailView: View {
                             .font(.regular12)
                             .foregroundStyle(.gray7A)
                             .frame(height: 16)
-                            .padding(.bottom, 8)
                     }
                     .padding(.vertical, 8)
                     .padding(.horizontal, 4)
@@ -283,4 +281,8 @@ struct PersonDetailView: View {
         }
         return "\(birthday) ~ \(deathday) (\(age ?? 0) years old)"
     }
+}
+
+#Preview {
+    PersonDetailView(id: 1138699)
 }

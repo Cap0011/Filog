@@ -41,7 +41,8 @@ struct SearchResultView: View {
                 ScrollView(.vertical) {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(filmViewModel.searchResults) { film in
-                            ContentResultRow(title: film.title, year: film.yearText, posterURL: film.posterURL)
+                            NavigationLink(destination: FilmDetailView(filmId: film.id)) {
+                                ContentResultRow(title: film.displayTitle, year: film.yearText, posterURL: film.posterURL)}
                         }
                     }
                     .padding(.top, 16)

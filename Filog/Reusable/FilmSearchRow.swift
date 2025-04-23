@@ -28,7 +28,7 @@ struct FilmSearchRow: View {
                 .cornerRadius(4)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(highlightedString(from: film.title, query: query ?? ""))
+                    Text(highlightedString(from: film.title ?? "N/A", query: query ?? ""))
                         .lineLimit(1)
                         .frame(height: 22)
                     

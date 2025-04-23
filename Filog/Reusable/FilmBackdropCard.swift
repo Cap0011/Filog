@@ -26,7 +26,7 @@ struct FilmBackdropCard: View {
             .cornerRadius(8)
             .shadow(radius: 4)
             
-            Text(film.title)
+            Text(film.title ?? "N/A")
                 .frame(width: 262, alignment: .leading)
                 .font(.system(size: 16, weight: .bold))
                 .foregroundColor(.white)
