@@ -110,7 +110,7 @@ struct PersonDetailView: View {
                                 .frame(height: 24)
                                 .padding(.top, 4)
                             
-                            Text(person.knownForDepartment)
+                            Text(person.knownForDepartment ?? "")
                                 .font(.regular18)
                                 .foregroundStyle(.gray3C)
                                 .frame(height: 24)

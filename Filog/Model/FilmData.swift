@@ -65,10 +65,6 @@ struct FilmData: Decodable, Identifiable {
         return genres.map { $0.name }.joined(separator: ", ")
     }
 
-    struct Genre: Decodable {
-        let name: String
-    }
-    
     struct CreditResponse: Decodable {
         let cast: [Cast]
         let crew: [Crew]
@@ -101,29 +97,33 @@ struct FilmData: Decodable, Identifiable {
             }
         }
     }
+}
+
+struct Genre: Decodable {
+    let name: String
+}
+
+struct VideoResponse: Decodable {
+    let results: [Video]
     
-    struct VideoResponse: Decodable {
-        let results: [Video]
+    var youtubeTrailers: [Video]? {
+        results.filter { $0.youtubeURL != nil }
+    }
+    
+    struct Video: Decodable, Identifiable {
+        let id: String
+        let name: String?
+        let key: String?
+        let site: String?
         
-        var youtubeTrailers: [Video]? {
-            results.filter { $0.youtubeURL != nil }
+        var youtubeURL: URL? {
+            guard site == "YouTube", let key = key else { return nil }
+            return URL(string: "https://youtube.com/watch?v=\(key)")
         }
         
-        struct Video: Decodable, Identifiable {
-            let id: String
-            let name: String?
-            let key: String?
-            let site: String?
-            
-            var youtubeURL: URL? {
-                guard site == "YouTube", let key = key else { return nil }
-                return URL(string: "https://youtube.com/watch?v=\(key)")
-            }
-            
-            var youtubeThumbnailURL: URL? {
-                guard let key = key else { return nil }
-                return URL(string: "https://img.youtube.com/vi/\(key)/0.jpg")
-            }
+        var youtubeThumbnailURL: URL? {
+            guard let key = key else { return nil }
+            return URL(string: "https://img.youtube.com/vi/\(key)/0.jpg")
         }
     }
 }

@@ -14,7 +14,7 @@ struct PersonSearchResponse: Decodable {
 
 struct Person: Decodable, Identifiable {
     let id: Int
-    let knownForDepartment: String
+    let knownForDepartment: String?
     let name: String
     let profilePath: String?
     let knownFor: [KnownFor]?

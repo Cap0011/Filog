@@ -53,7 +53,7 @@ struct SearchResultView: View {
                 ScrollView(.vertical) {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(showViewModel.searchResults) { show in
-                            ContentResultRow(title: show.name, year: show.year, posterURL: show.posterURL)
+                            ContentResultRow(title: show.name ?? "N/A", year: show.year, posterURL: show.posterURL)
                         }
                     }
                     .padding(.top, 24)
@@ -167,7 +167,7 @@ struct SearchResultView: View {
                             .lineLimit(1)
                         
                         HStack(spacing: 8) {
-                            Text(person.knownForDepartment)
+                            Text(person.knownForDepartment ?? "")
                                 .foregroundStyle(.primaryBlack)
                                 .lineLimit(1)
                             

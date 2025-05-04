@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C72752C828D25B5700013F46 /* MyMovieRecommender.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = C72752C728D25B5700013F46 /* MyMovieRecommender.mlmodel */; };
+		C73DB1F12DC7272F00C6EAFB /* TVDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73DB1F02DC7272F00C6EAFB /* TVDetailView.swift */; };
 		C7415BA32D92A60200F7B222 /* WatchedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7415BA22D92A60200F7B222 /* WatchedView.swift */; };
 		C7415BA52D92AAA600F7B222 /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7415BA42D92AAA600F7B222 /* Pretendard-Medium.ttf */; };
 		C7415BA72D92AAB400F7B222 /* Pretendard-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7415BA62D92AAB400F7B222 /* Pretendard-Regular.ttf */; };
@@ -86,6 +87,7 @@
 
 /* Begin PBXFileReference section */
 		C72752C728D25B5700013F46 /* MyMovieRecommender.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MyMovieRecommender.mlmodel; sourceTree = "<group>"; };
+		C73DB1F02DC7272F00C6EAFB /* TVDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDetailView.swift; sourceTree = "<group>"; };
 		C7415BA22D92A60200F7B222 /* WatchedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchedView.swift; sourceTree = "<group>"; };
 		C7415BA42D92AAA600F7B222 /* Pretendard-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.ttf"; sourceTree = "<group>"; };
 		C7415BA62D92AAB400F7B222 /* Pretendard-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.ttf"; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 				C7415C0E2D95807800F7B222 /* EditReviewView.swift */,
 				C7415C7A2D96A5D500F7B222 /* SearchView.swift */,
 				C7415C8A2D96D6F400F7B222 /* SearchResultView.swift */,
+				C73DB1F02DC7272F00C6EAFB /* TVDetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -463,6 +466,7 @@
 				C7BDE17A28C50B6A00B4F781 /* PersonDetailState.swift in Sources */,
 				C7BDE1B528C50B9200B4F781 /* RecommendationView.swift in Sources */,
 				C7BDE17E28C50B6A00B4F781 /* Secret.swift in Sources */,
+				C73DB1F12DC7272F00C6EAFB /* TVDetailView.swift in Sources */,
 				C7415CAC2DB3D92100F7B222 /* ParallaxHeaderImage.swift in Sources */,
 				C7BDE1B628C50B9200B4F781 /* FilmSearchView.swift in Sources */,
 				C7BDE1BA28C50B9200B4F781 /* FilmDetailView.swift in Sources */,
