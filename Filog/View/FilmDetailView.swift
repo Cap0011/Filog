@@ -326,50 +326,6 @@ struct FilmDetailView: View {
         }
     }
     
-    struct VideoCard: View {
-        let thumbnailURL: URL?
-        let title: String?
-        
-        var body: some View {
-            VStack(alignment: .leading, spacing: 8) {
-                ZStack {
-                    CachedAsyncImage(url: thumbnailURL, transaction: Transaction(animation: .easeInOut)) { phase in
-                            switch phase {
-                            case .success(let image):
-                                image
-                                    .resizable()
-                            default: Utils.placeholderColor
-                        }
-                    }
-                    .scaledToFill()
-                    .frame(width: 270, height: 150, alignment: .center)
-                    .clipped()
-                    .aspectRatio(contentMode: .fit)
-                    .cornerRadius(4)
-                    .shadow(radius: 4)
-                    
-                    ZStack {
-                        Circle()
-                            .frame(width: 44, height: 44)
-                            .foregroundStyle(.clear)
-                            .background(.regularMaterial)
-                        
-                        Image(systemName: "play.fill")
-                            .foregroundStyle(.white)
-                    }
-                    .clipShape(Circle())
-                }
-                
-                Text(title ?? "N/A")
-                    .font(.regular14)
-                    .foregroundStyle(.primaryBlack)
-                    .frame(width: 262, height: 20, alignment: .leading)
-                    .lineLimit(1)
-            }
-            .frame(width: 270)
-        }
-    }
-    
     struct FilmCard: View {
         let film: FilmData
         
@@ -424,6 +380,50 @@ struct DirectorCard: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .shadow(color: .black.opacity(0.12), radius: 4, x: 4, y: 4)
+    }
+}
+
+struct VideoCard: View {
+    let thumbnailURL: URL?
+    let title: String?
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ZStack {
+                CachedAsyncImage(url: thumbnailURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                        default: Utils.placeholderColor
+                    }
+                }
+                .scaledToFill()
+                .frame(width: 270, height: 150, alignment: .center)
+                .clipped()
+                .aspectRatio(contentMode: .fit)
+                .cornerRadius(4)
+                .shadow(radius: 4)
+                
+                ZStack {
+                    Circle()
+                        .frame(width: 44, height: 44)
+                        .foregroundStyle(.clear)
+                        .background(.regularMaterial)
+                    
+                    Image(systemName: "play.fill")
+                        .foregroundStyle(.white)
+                }
+                .clipShape(Circle())
+            }
+            
+            Text(title ?? "N/A")
+                .font(.regular14)
+                .foregroundStyle(.primaryBlack)
+                .frame(width: 262, height: 20, alignment: .leading)
+                .lineLimit(1)
+        }
+        .frame(width: 270)
     }
 }
 

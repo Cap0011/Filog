@@ -97,6 +97,11 @@ struct Show: Decodable, Identifiable {
         let posterPath: String?
         let seasonNumber: Int?
         let voteAverage: Double?
+        
+        var posterURL: URL? {
+            guard let path = posterPath else { return nil }
+            return URL(string: "https://image.tmdb.org/t/p/w780\(path)")
+        }
     }
     
     struct CreditResponse: Decodable {

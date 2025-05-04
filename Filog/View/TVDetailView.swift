@@ -112,6 +112,35 @@ struct TVDetailView: View {
                 }
             }
             
+            if let seasons = show.seasons {
+                VStack(alignment: .leading, spacing: 8) {
+                    subTitle(text: "Seasons")
+                    
+                    HStack {
+                        Spacer()
+                        
+                        Text("\(seasons.count) seasons, \(seasons.compactMap { $0.episodeCount }.reduce(0, +)) episodes")
+                            .font(.regular16)
+                            .foregroundStyle(.primaryBlue)
+                            .padding(.horizontal, 24)
+                    }
+                    
+                    TabView {
+                        ForEach(seasons, id: \.id) { season in
+                            VStack {
+                                SeasonCard(season: season)
+                                    .padding(.horizontal, 16)
+                                
+                                Spacer()
+                            }
+                        }
+                    }
+                    .frame(height: 230)
+                    .tabViewStyle(.page)
+                    .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+                }
+            }
+            
             if let directors = show.createdBy {
                 if directors.count > 0 {
                     VStack(alignment: .leading, spacing: 0) {
@@ -296,6 +325,71 @@ struct TVDetailView: View {
             .frame(width: 96, alignment: .leading)
             .multilineTextAlignment(.leading)
     }
+    
+    struct SeasonCard: View {
+        let season: Show.Season
+        
+        var body: some View {
+            HStack(alignment: .top, spacing: 12) {
+                ZStack(alignment: .topTrailing) {
+                    CachedAsyncImage(url: season.posterURL, transaction: Transaction(animation: .easeInOut)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                        default: Utils.placeholderColor.frame(width: 104, height: 156, alignment: .center)
+                        }
+                    }
+                    .frame(width: 104, height: 156, alignment: .center)
+                    .scaledToFit()
+                    .aspectRatio(contentMode: .fit)
+                    .cornerRadius(8)
+                    
+                    if let voteAverage = season.voteAverage {
+                        RatingCircle(value: voteAverage * 10, size: 34, font: .semibold14)
+                            .padding(8)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(season.name ?? "Season \(season.seasonNumber ?? 0)")
+                        .font(.medium17)
+                        .foregroundStyle(.primaryBlack)
+                        .padding(.top, 8)
+                    
+                    HStack {
+                        if let airDate = season.airDate {
+                            Text(airDate.replacingOccurrences(of: "-", with: "."))
+                                .font(.regular14)
+                                .foregroundStyle(.graya7)
+                        }
+                        
+                        Spacer()
+                        
+                        if let episodeCount = season.episodeCount {
+                            Text("\(episodeCount) episodes")
+                                .font(.regular14)
+                                .foregroundStyle(.gray7A)
+                        }
+                    }
+                    .padding(.top, 8)
+                    
+                    if let overview = season.overview {
+                        Text(overview)
+                            .font(.regular14)
+                            .foregroundStyle(.primaryBlack)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(4)
+                            .lineSpacing(2)
+                            .padding(.top, 16)
+                    }
+                }
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 10)
+            .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.white).shadow(color: .black.opacity(0.06), radius: 8))
+        }
+    }
 
     struct CastCard: View {
         let cast: Show.CreditResponse.Cast
@@ -332,51 +426,7 @@ struct TVDetailView: View {
             .shadow(color: .black.opacity(0.12), radius: 4, x: 4, y: 4)
         }
     }
-    
-    struct VideoCard: View {
-        let thumbnailURL: URL?
-        let title: String?
-        
-        var body: some View {
-            VStack(alignment: .leading, spacing: 8) {
-                ZStack {
-                    CachedAsyncImage(url: thumbnailURL, transaction: Transaction(animation: .easeInOut)) { phase in
-                            switch phase {
-                            case .success(let image):
-                                image
-                                    .resizable()
-                            default: Utils.placeholderColor
-                        }
-                    }
-                    .scaledToFill()
-                    .frame(width: 270, height: 150, alignment: .center)
-                    .clipped()
-                    .aspectRatio(contentMode: .fit)
-                    .cornerRadius(4)
-                    .shadow(radius: 4)
-                    
-                    ZStack {
-                        Circle()
-                            .frame(width: 44, height: 44)
-                            .foregroundStyle(.clear)
-                            .background(.regularMaterial)
-                        
-                        Image(systemName: "play.fill")
-                            .foregroundStyle(.white)
-                    }
-                    .clipShape(Circle())
-                }
-                
-                Text(title ?? "N/A")
-                    .font(.regular14)
-                    .foregroundStyle(.primaryBlack)
-                    .frame(width: 262, height: 20, alignment: .leading)
-                    .lineLimit(1)
-            }
-            .frame(width: 270)
-        }
-    }
-    
+
     struct ShowCard: View {
         let show: Show
         
