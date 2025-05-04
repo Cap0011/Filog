@@ -66,7 +66,7 @@ struct FilmDetailView: View {
                     
                     body(film: film)
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 100)
             }
         }
         .ignoresSafeArea()
@@ -165,99 +165,109 @@ struct FilmDetailView: View {
             }
             
             if let directors = film.credits?.director {
-                VStack(alignment: .leading, spacing: 0) {
-                    subTitle(text: "Director")
-                    
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 12) {
-                            ForEach(directors) { director in
-                                NavigationLink(destination: PersonDetailView(id: director.id)) {
-                                    DirectorCard(name: director.name, profileURL: director.profileURL)
+                if directors.count > 0 {
+                    VStack(alignment: .leading, spacing: 0) {
+                        subTitle(text: "Director")
+                        
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 12) {
+                                ForEach(directors) { director in
+                                    NavigationLink(destination: PersonDetailView(id: director.id)) {
+                                        DirectorCard(name: director.name, profileURL: director.profileURL)
+                                    }
                                 }
                             }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
+                        .scrollIndicators(.hidden)
                     }
-                    .scrollIndicators(.hidden)
                 }
             }
             
             if let casts = film.credits?.cast {
-                VStack(alignment: .leading, spacing: 0) {
-                    subTitle(text: "Cast")
-                    
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 12) {
-                            ForEach(casts) { cast in
-                                NavigationLink(destination: PersonDetailView(id: cast.id)) {
-                                    CastCard(cast: cast)
+                if casts.count > 0 {
+                    VStack(alignment: .leading, spacing: 0) {
+                        subTitle(text: "Cast")
+                        
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 12) {
+                                ForEach(casts) { cast in
+                                    NavigationLink(destination: PersonDetailView(id: cast.id)) {
+                                        CastCard(cast: cast)
+                                    }
                                 }
                             }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
+                        .scrollIndicators(.hidden)
                     }
-                    .scrollIndicators(.hidden)
                 }
             }
             
             if let videos = film.videos?.results {
-                VStack(alignment: .leading, spacing: 0) {
-                    subTitle(text: "Videos")
-                    
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 12) {
-                            ForEach(videos) { video in
-                                if let youtubeURL = video.youtubeURL {
-                                    Link(destination: youtubeURL) {
-                                        VideoCard(thumbnailURL: video.youtubeThumbnailURL, title: video.name)
+                if videos.count > 0 {
+                    VStack(alignment: .leading, spacing: 0) {
+                        subTitle(text: "Videos")
+                        
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 12) {
+                                ForEach(videos) { video in
+                                    if let youtubeURL = video.youtubeURL {
+                                        Link(destination: youtubeURL) {
+                                            VideoCard(thumbnailURL: video.youtubeThumbnailURL, title: video.name)
+                                        }
                                     }
                                 }
                             }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
+                        .scrollIndicators(.hidden)
                     }
-                    .scrollIndicators(.hidden)
                 }
             }
             
             if let similar = film.similar?.results {
-                VStack(alignment: .leading, spacing: 0) {
-                    subTitle(text: "Similar films")
-                    
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 12) {
-                            ForEach(similar) { film in
-                                NavigationLink(destination: FilmDetailView(filmId: film.id)) {
-                                    FilmCard(film: film)
+                if similar.count > 0 {
+                    VStack(alignment: .leading, spacing: 0) {
+                        subTitle(text: "Similar films")
+                        
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 12) {
+                                ForEach(similar) { film in
+                                    NavigationLink(destination: FilmDetailView(filmId: film.id)) {
+                                        FilmCard(film: film)
+                                    }
                                 }
                             }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
+                        .scrollIndicators(.hidden)
                     }
-                    .scrollIndicators(.hidden)
                 }
             }
             
             if let recommendations = film.recommendations?.results {
-                VStack(alignment: .leading, spacing: 0) {
-                    subTitle(text: "Also you might like...")
-                    
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 12) {
-                            ForEach(recommendations) { film in
-                                NavigationLink(destination: FilmDetailView(filmId: film.id)) {
-                                    FilmCard(film: film)
+                if recommendations.count > 0 {
+                    VStack(alignment: .leading, spacing: 0) {
+                        subTitle(text: "Also you might like...")
+                        
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 12) {
+                                ForEach(recommendations) { film in
+                                    NavigationLink(destination: FilmDetailView(filmId: film.id)) {
+                                        FilmCard(film: film)
+                                    }
                                 }
                             }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
+                        .scrollIndicators(.hidden)
                     }
-                    .scrollIndicators(.hidden)
                 }
             }
         }

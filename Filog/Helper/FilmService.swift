@@ -32,17 +32,16 @@ class FilmService {
         guard let url = makeURL(for: "search/tv", queryItemValues: ["include_adult": "true", "language": "en-GB", "query": query ]) else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-        print(url)
         return fetchData(from: url)
-//            .decode(type: ShowResponse.self, decoder: Utils.jsonDecoder)
-            .tryMap { data -> ShowResponse in
-                do {
-                    return try Utils.jsonDecoder.decode(ShowResponse.self, from: data)
-                } catch {
-                    print("Decoding error:", error)
-                    throw error
-                }
-            }
+            .decode(type: ShowResponse.self, decoder: Utils.jsonDecoder)
+//            .tryMap { data -> ShowResponse in
+//                do {
+//                    return try Utils.jsonDecoder.decode(ShowResponse.self, from: data)
+//                } catch {
+//                    print("Decoding error:", error)
+//                    throw error
+//                }
+//            }
             .map(\.results)
             .eraseToAnyPublisher()
     }
