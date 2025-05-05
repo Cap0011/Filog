@@ -259,7 +259,7 @@ struct TVDetailView: View {
                 if let similar = show.similar?.results {
                     if similar.count > 0 {
                         VStack(alignment: .leading, spacing: 0) {
-                            subTitle(text: "Similar films")
+                            subTitle(text: "Similar shows")
                             
                             ScrollView(.horizontal) {
                                 HStack(spacing: 12) {

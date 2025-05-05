@@ -36,7 +36,9 @@ struct PersonDetailView: View {
                                                 CastCard(cast: cast)
                                             }
                                         } else if mediaType == "tv" {
-                                            
+                                            NavigationLink(destination: TVDetailView(showId: cast.id)) {
+                                                CastCard(cast: cast)
+                                            }
                                         }
                                     }
                                 }
