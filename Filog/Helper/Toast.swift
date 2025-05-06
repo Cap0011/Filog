@@ -41,9 +41,9 @@ struct Toast: ViewModifier {
                         Spacer()
                     }
                 }
-                .background(config.backgroundColor.shadow(color: .black.opacity(0.04), radius: 6, x: 4, y: 4))
-                .background(.regularMaterial)
+                .background(config.backgroundColor)
                 .cornerRadius(24)
+                .shadow(color: .black.opacity(0.1), radius: 6)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + config.duration) {
                         isShowing = false
