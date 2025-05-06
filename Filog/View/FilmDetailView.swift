@@ -10,13 +10,22 @@ import CachedAsyncImage
 
 struct FilmDetailView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    let filmId: Int
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(sortDescriptors: []) var reviews: FetchedResults<Film>
     
+    let filmId: Int
+
     @StateObject private var filmViewModel = DetailViewModel<FilmData>()
+    @StateObject private var toastManager = ToastManager.shared
     
     @State private var isAlreadyOnWatchlist = false
     @State private var isAddedToWatchlistToastShowing = false
     @State private var isRemovedFromWatchlistToastShowing = false
+    @State private var isDeleteReviewPopupPresented = false
+    
+    @State private var review: Film?
+    
+    @State private var width: CGFloat = 0
 
     var body: some View {
         ScrollView(.vertical) {
@@ -35,9 +44,21 @@ struct FilmDetailView: View {
         .background(.white)
         .toast(message: "Added to watchlist!", isShowing: $isAddedToWatchlistToastShowing, duration: Toast.short)
         .toast(message: "Removed from watchlist!", isShowing: $isRemovedFromWatchlistToastShowing, duration: Toast.short)
+        .toast(message: ToastType.save.message, isShowing: $toastManager.isShowingSaveToast, duration: Toast.short)
+        .popup(isPresented: $isDeleteReviewPopupPresented) {
+            DeletePopupView(isPresented: $isDeleteReviewPopupPresented) {
+                if let review = review {
+                    deleteReview(object: review)
+                }
+            }
+        }
         .task {
             filmViewModel.id = filmId
             isAlreadyOnWatchlist = isAddedToWatchlist(filmID: filmId)
+            review = reviews.filter { $0.id == String(filmId) }.first
+        }
+        .readSize { size in
+            width = size.width
         }
     }
     
@@ -104,20 +125,108 @@ struct FilmDetailView: View {
     
     private func body(film: FilmData) -> some View {
         VStack(alignment: .leading, spacing: 24) {
-            HStack {
+            HStack(spacing: 0) {
                 ButtonView(title: "Watchlist", imageName: isAlreadyOnWatchlist ? "eye" : "plus")
                     .onTapGesture {
                         if isAlreadyOnWatchlist {
                             removeFromWatchlist(filmID: filmId)
+                            print("removeFromWatchlist")
                         } else {
                             addToWatchlist(filmID: filmId, posterURL: film.posterURL)
+                            print("addToWatchlist")
                         }
                         isAlreadyOnWatchlist.toggle()
                     }
+                
+                Spacer()
+                
+                if let review = review {
+                    NavigationLink(destination: EditReviewView(film: film, review: review)) {
+                        ButtonView(title: "Edit review", imageName: "square.and.pencil")
+                    }
+                } else {
+                    NavigationLink(destination: EditReviewView(film: film, review: nil)) {
+                        ButtonView(title: "Write review", imageName: "square.and.pencil")
+                    }
+                }
+                
+                Spacer()
+                
+                if review != nil {
+                    ButtonView(title: "Delete review", imageName: "trash")
+                        .onTapGesture {
+                            isDeleteReviewPopupPresented.toggle()
+                        }
+                } else {
+                    Color.clear.frame(width: 100, height: 1)
+                }
             }
-            .padding(20)
+            .padding(.vertical, 20)
+            .padding(.horizontal, 25)
             .background(.grayf4)
             .padding(.top, 24)
+            
+            if let review = review {
+                VStack(alignment: .leading, spacing: 8) {
+                    subTitle(text: "Your Review")
+                    
+                    if let text = review.review {
+                        Text(text)
+                            .font(.regular16)
+                            .foregroundStyle(.primaryBlack)
+                            .lineSpacing(3)
+                            .frame(width: width == 0 ? 300 : width - 64, alignment: .leading)
+                            .padding(.vertical, 16)
+                            .padding(.horizontal, 12)
+                            .background(RoundedRectangle(cornerRadius: 8).foregroundStyle(.white).shadow(color: .black.opacity(0.04), radius: 6))
+                            .padding(.horizontal, 16)
+                    }
+                    
+                    HStack {
+                        VStack(spacing: 8) {
+                            HStack {
+                                Text("Watch date")
+                                    .font(.regular14)
+                                    .foregroundStyle(.gray3C)
+                                
+                                Spacer()
+                                
+                                Text(review.watchedAt?.formattedString(format: "yyyy.MM.dd") ?? "Unknown")
+                                    .font(.regular14)
+                                    .foregroundStyle(.gray7A)
+                            }
+                            
+                            HStack {
+                                Text("Review date")
+                                    .font(.regular14)
+                                    .foregroundStyle(.gray3C)
+                                
+                                Spacer()
+                                
+                                Text(review.watchedAt?.formattedString(format: "yyyy.mm.dd") ?? "Unknown")
+                                    .font(.regular14)
+                                    .foregroundStyle(.gray7A)
+                            }
+                        }
+                        .frame(width: 163)
+                        
+                        Spacer()
+                        
+                        Image("rating\(!review.recommend ? "0" : !review.recommendsub ? "1" : "2")_selected")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 30)
+                    }
+                    .padding(.top, 8)
+                    .padding(.horizontal, 20)
+                    
+                    Rectangle()
+                        .foregroundStyle(.grayf4)
+                        .frame(height: 1)
+                        .padding(.top, 16)
+                        .padding(.horizontal, 15)
+                }
+            }
             
             if let tagline = film.tagline {
                 HStack {
@@ -127,7 +236,7 @@ struct FilmDetailView: View {
                         .foregroundStyle(.gray7A)
                         .frame(maxWidth: .infinity)
                 }
-                .padding(.top, 40)
+                .padding(.top, 24)
             }
             
             if let overview = film.overview {
@@ -251,6 +360,20 @@ struct FilmDetailView: View {
         }
     }
     
+    private func saveContext() {
+        do {
+            try viewContext.save()
+        } catch {
+            let error = error as NSError
+            fatalError("Unresolved Error: \(error)")
+        }
+    }
+    
+    private func deleteReview(object: Film) {
+        viewContext.delete(object)
+        saveContext()
+    }
+    
     private func addToWatchlist(filmID: Int, posterURL: URL?) {
         var savedDictionary: [String: String] = UserDefaults.standard.dictionary(forKey: "ToWatchFilms") as? [String: String] ?? [:]
         savedDictionary[String(filmID)] = posterURL?.absoluteString
@@ -301,11 +424,13 @@ struct FilmDetailView: View {
         var body: some View {
             VStack(spacing: 8) {
                 Image(systemName: imageName)
+                    .frame(height: 30)
                 
                 Text(title)
                     .font(.regular14)
             }
             .foregroundStyle(.primaryBlue)
+            .frame(width: 100)
             .contentShape(Rectangle())
         }
     }
@@ -362,6 +487,57 @@ struct FilmDetailView: View {
             .shadow(color: .black.opacity(0.12), radius: 4, x: 4, y: 4)
         }
     }
+    
+    struct DeletePopupView: View {
+        @Binding var isPresented: Bool
+        let onDelete: () -> Void
+        
+        var body: some View {
+            VStack(spacing: 0) {
+                Text("Delete")
+                    .font(.semibold18)
+                    .foregroundStyle(.primaryBlack)
+                
+                Text("Are you sure you want to\n delete this item?")
+                    .font(.regular16)
+                    .foregroundStyle(.gray3C)
+                    .padding(.top, 12)
+                    .multilineTextAlignment(.center)
+                
+                HStack(spacing: 0) {
+                    Text("Cancel")
+                        .font(.medium16)
+                        .foregroundStyle(.gray3C)
+                        .frame(width: 128, height: 43)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            isPresented = false
+                        }
+                    
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .foregroundStyle(.primaryBlue)
+                            .frame(width: 128, height: 43)
+                        
+                        Text("Delete")
+                            .font(.medium16)
+                            .foregroundStyle(.white)
+                    }
+                    .onTapGesture {
+                        isPresented = false
+                        onDelete()
+                    }
+                }
+                .padding(.top, 30)
+            }
+            .padding(.top, 30)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 17)
+            .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(.white))
+            .padding(.horizontal, 48)
+        }
+    }
+
 }
 
 #Preview {

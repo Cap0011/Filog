@@ -38,4 +38,8 @@ extension View {
         )
         .onPreferenceChange(SizePreferenceKey.self, perform: onChange)
     }
+    
+    func popup<Content: View>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) -> some View {
+        self.modifier(Popup(isPresented: isPresented, popupContent: content))
+    }
 }

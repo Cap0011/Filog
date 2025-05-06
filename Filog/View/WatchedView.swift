@@ -59,11 +59,10 @@ struct WatchedView: View {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 20) {
                             ForEach(sortedFilms, id: \.id) { film in
-                                if let poster = film.poster, let uiImage = UIImage(data: poster), let title = film.title {
-                                    ReviewThumnailView(image: Image(uiImage: uiImage), title: title, iconName: film.recommend && film.recommendsub ? "best" : (film.recommend ? "like" : "bad"))
-                                        .onTapGesture {
-                                            // TODO: Move to next view
-                                        }
+                                if let poster = film.poster, let uiImage = UIImage(data: poster), let title = film.title, let id = Int(film.id ?? "") {
+                                    NavigationLink(destination: FilmDetailView(filmId: id)) {
+                                        ReviewThumnailView(image: Image(uiImage: uiImage), title: title, iconName: film.recommend && film.recommendsub ? "best" : (film.recommend ? "like" : "bad"))
+                                    }
                                 }
                             }
                         }
