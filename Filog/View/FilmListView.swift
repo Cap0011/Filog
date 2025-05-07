@@ -17,32 +17,30 @@ struct FilmListView: View {
     @StateObject private var topRatedViewModel = FilmListViewModel(endpoint: .topRated)
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 0) {
-                NavigationLink(destination: SearchView()) {
-                    searchButton
-                        .padding(.top, 24)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 28)
-                }
-
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 28) {
-                        ForEach(viewModels, id: \.endpoint) { viewModel in
-                            if let films = viewModel.films {
-                                FilmCarouselView(title: viewModel.endpoint.text, films: films, imageType: viewModel.endpoint.imageType)
-                            } else {
-                                loadingView
-                            }
+        VStack(alignment: .leading, spacing: 0) {
+            NavigationLink(destination: SearchView()) {
+                searchButton
+                    .padding(.top, 24)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 28)
+            }
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 28) {
+                    ForEach(viewModels, id: \.endpoint) { viewModel in
+                        if let films = viewModel.films {
+                            FilmCarouselView(title: viewModel.endpoint.text, films: films, imageType: viewModel.endpoint.imageType)
+                        } else {
+                            loadingView
                         }
                     }
-                    .padding(.bottom, 44)
                 }
-                .scrollIndicators(.hidden)
+                .padding(.bottom, 44)
             }
-            .background(.white)
-            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
         }
+        .background(.white)
+        .navigationBarTitleDisplayMode(.inline)
         .task {
             viewModels = [nowPlayingViewModel, upcomingViewModel, popularViewModel, topRatedViewModel]
         }
@@ -65,7 +63,7 @@ struct FilmListView: View {
                 Text("Look up films and people")
                     .font(.regular16)
                     .foregroundStyle(.graya7)
-                    
+                
                 Spacer()
             }
             .padding(.horizontal, 12)

@@ -10,23 +10,29 @@ import SwiftUI
 struct TotalView: View {
     var body: some View {
         TabView {
-            FilmListView()
-                .tabItem {
-                    Image(systemName: "doc.text.magnifyingglass")
-                    Text("Explore")
-                }
+            NavigationStack {
+                FilmListView()
+            }
+            .tabItem {
+                Image(systemName: "doc.text.magnifyingglass")
+                Text("Explore")
+            }
             
-            WatchedView()
-                .tabItem {
-                    Image(systemName: "film")
-                    Text("Watched")
-                }
+            NavigationStack {
+                WatchedView()
+            }
+            .tabItem {
+                Image(systemName: "film")
+                Text("Watched")
+            }
             
-            WatchListView()
-                .tabItem {
-                    Image(systemName: "list.and.film")
-                    Text("To Watch")
-                }
+            NavigationStack {
+                WatchListView()
+            }
+            .tabItem {
+                Image(systemName: "list.and.film")
+                Text("To Watch")
+            }
         }
         .preferredColorScheme(.light)
     }

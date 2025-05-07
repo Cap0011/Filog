@@ -60,6 +60,7 @@ struct FilmDetailView: View {
         .readSize { size in
             width = size.width
         }
+        .toolbar(.hidden, for: .tabBar)
     }
     
     private func header(film: FilmData) -> some View {
@@ -175,7 +176,7 @@ struct FilmDetailView: View {
                             .font(.regular16)
                             .foregroundStyle(.primaryBlack)
                             .lineSpacing(3)
-                            .frame(width: width == 0 ? 300 : width - 64, alignment: .leading)
+                            .frame(width: max(0, width - 64), alignment: .leading)
                             .padding(.vertical, 16)
                             .padding(.horizontal, 12)
                             .background(RoundedRectangle(cornerRadius: 8).foregroundStyle(.white).shadow(color: .black.opacity(0.04), radius: 6))
@@ -229,14 +230,16 @@ struct FilmDetailView: View {
             }
             
             if let tagline = film.tagline {
-                HStack {
-                    Text(tagline)
-                        .italic()
-                        .font(.system(size: 15))
-                        .foregroundStyle(.gray7A)
-                        .frame(maxWidth: .infinity)
+                if !tagline.isEmpty {
+                    HStack {
+                        Text(tagline)
+                            .italic()
+                            .font(.system(size: 15))
+                            .foregroundStyle(.gray7A)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .padding(.top, 24)
                 }
-                .padding(.top, 24)
             }
             
             if let overview = film.overview {

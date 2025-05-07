@@ -25,6 +25,7 @@ struct TVDetailView: View {
                 .padding(.bottom, 100)
             }
         }
+        .toolbar(.hidden, for: .tabBar)
         .ignoresSafeArea()
         .scrollIndicators(.hidden)
         .navigationBarBackButtonHidden()
