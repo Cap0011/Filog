@@ -9,6 +9,7 @@ import SwiftUI
 import CachedAsyncImage
 
 struct PersonDetailView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     let id: Int
     
     @StateObject private var personViewModel = DetailViewModel<Person>()
@@ -78,13 +79,23 @@ struct PersonDetailView: View {
                     }
                 }
             }
+            .padding(.top, 16)
             .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
         .background(.white)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
         .task {
             personViewModel.id = self.id
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Utils.backButton
+                    .onTapGesture {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
+            }
         }
     }
     
