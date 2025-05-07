@@ -224,13 +224,15 @@ struct EditReviewView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
                     .frame(width: 100, height: 100)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(isSelected ? .primaryBlue : .white)
                     .shadow(color: .black.opacity(0.03), radius: 4, x: 4, y: 4)
 
                 VStack(spacing: 2) {
-                    Image("rating\(index)\(isSelected ? "_selected" : "")")
+                    Image("rating\(index)")
+                        .renderingMode(.template)
+                        .foregroundStyle(isSelected ? .white : .graydb)
                     Text(title)
-                        .foregroundStyle(isSelected ? .primaryBlue : .graydb)
+                        .foregroundStyle(isSelected ? .white : .graydb)
                         .font(.semibold16)
                 }
             }
