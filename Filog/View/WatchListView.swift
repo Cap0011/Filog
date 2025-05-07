@@ -9,51 +9,67 @@ import CachedAsyncImage
 import SwiftUI
 
 struct WatchListView: View {
-    private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    private let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 2), count: 3)
     
     @State private var dictionary = UserDefaults.standard.dictionary(forKey: "ToWatchFilms") as? [String: String] ?? [:]
     
     var body: some View {
-        ZStack(alignment: .top) {
-            Color("Blue").ignoresSafeArea()
-            ScrollView {
-                VStack(spacing: 16) {
-                    ZStack {
-                        Text("Watch List")
-                            .foregroundColor(Color("Red"))
-                            .offset(x: 3)
-                        
-                        Text("Watch List")
-                            .foregroundColor(.white)
-                    }
-                    .font(.system(size: 24, weight: .black))
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 4)
-                    
-                    if dictionary.count == 0 {
-                        VStack(spacing: 8) {
-                            Text("There's no film on your watch list 😢")
-                            Text("Find films on Explore tab or For You tab and add them to your list!")
-                        }
-                        .font(.system(size: 16, weight: .heavy))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 8)
-                    } else  {
-                        LazyVGrid(columns: columns, spacing: 2) {
-                            ForEach(Array(dictionary.keys), id: \.self) { key in
-                                if Int(key) != nil {
-                                    WatchListPosterCard(filmID: Int(key)!, posterURL: URL(string: dictionary[key]!))
-                                }
+        VStack(spacing: 0) {
+            HStack(alignment: .bottom) {
+                Spacer()
+                
+                Text("total \(dictionary.count) films")
+                    .font(.regular15)
+                    .foregroundStyle(.gray7A)
+                    .frame(height: 22)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 8)
+            
+            if dictionary.isEmpty {
+                Spacer()
+                
+                Text("Nothing here yet")
+                    .font(.regular15)
+                    .foregroundStyle(.primaryBlack)
+                    .frame(height: 24)
+                
+                Text("Add some films you want to watch next!")
+                    .font(.regular15)
+                    .foregroundStyle(.primaryBlack)
+                    .frame(height: 24)
+                
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 2) {
+                        ForEach(Array(dictionary.keys), id: \.self) { id in
+                            if let intId = Int(id) {
+                                WatchListPosterCard(filmID: intId, posterURL: URL(string: dictionary[id] ?? ""))
                             }
                         }
                     }
+                    .padding(.bottom, 32)
                 }
+                .scrollIndicators(.hidden)
             }
-            .padding(.top, 8)
         }
-        .navigationBarHidden(true)
+        .padding(.top, 24)
+        .background(.white)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             dictionary = UserDefaults.standard.dictionary(forKey: "ToWatchFilms") as? [String: String] ?? [:]
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Image("Filog")
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Watch List")
+                    .foregroundStyle(.primaryBlack)
+                    .font(.semibold20)
+            }
         }
     }
 }
