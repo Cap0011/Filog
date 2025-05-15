@@ -26,6 +26,15 @@ struct TVDetailView: View {
             }
         }
         .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Utils.backButton
+                    .padding(.vertical, 8)
+                    .onTapGesture {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
+            }
+        }
         .ignoresSafeArea()
         .scrollIndicators(.hidden)
         .navigationBarBackButtonHidden()
@@ -39,14 +48,7 @@ struct TVDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .topLeading) {
                 ParallaxHeaderImage(imageURL: show.backdropURL)
-                
-                Utils.backButton
-                    .padding(.top, 56)
-                    .padding(.leading, 20)
-                    .onTapGesture {
-                        self.presentationMode.wrappedValue.dismiss()
-                    }
-                
+
                 VStack {
                     Spacer()
                     

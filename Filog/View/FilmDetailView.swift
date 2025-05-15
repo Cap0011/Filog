@@ -60,6 +60,15 @@ struct FilmDetailView: View {
         .readSize { size in
             width = size.width
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Utils.backButton
+                    .padding(.vertical, 8)
+                    .onTapGesture {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
+            }
+        }
         .toolbar(.hidden, for: .tabBar)
     }
     
@@ -67,13 +76,6 @@ struct FilmDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .topLeading) {
                 ParallaxHeaderImage(imageURL: film.backdropURL)
-                
-                Utils.backButton
-                    .padding(.top, 56)
-                    .padding(.leading, 20)
-                    .onTapGesture {
-                        self.presentationMode.wrappedValue.dismiss()
-                    }
                 
                 VStack {
                     Spacer()

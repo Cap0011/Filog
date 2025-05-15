@@ -22,23 +22,27 @@ struct WatchedView: View {
     @State private var isShowingSheet = false
     @State private var sortedFilms = [Film]()
     
+    @State private var isGridMode = false
+    
     var body: some View {
         VStack(spacing: 0) {
-            HStack(alignment: .bottom) {
-                sortMenuCapsule
-                    .onTapGesture {
-                        isShowingSheet.toggle()
-                    }
-                
-                Spacer()
-                
-                Text("total \(films.count) reviews")
-                    .font(.regular15)
-                    .foregroundStyle(.gray7A)
-                    .frame(height: 22)
+            if isGridMode {
+                HStack(alignment: .bottom) {
+                    sortMenuCapsule
+                        .onTapGesture {
+                            isShowingSheet.toggle()
+                        }
+                    
+                    Spacer()
+                    
+                    Text("total \(films.count) reviews")
+                        .font(.regular15)
+                        .foregroundStyle(.gray7A)
+                        .frame(height: 22)
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 24)
             
             if films.isEmpty {
                 Spacer()
@@ -56,17 +60,21 @@ struct WatchedView: View {
                 Spacer()
             } else {
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(sortedFilms, id: \.id) { film in
-                            if let poster = film.poster, let uiImage = UIImage(data: poster), let title = film.title, let id = Int(film.id ?? "") {
-                                NavigationLink(destination: FilmDetailView(filmId: id)) {
-                                    ReviewThumnailView(image: Image(uiImage: uiImage), title: title, iconName: film.recommend && film.recommendsub ? "best" : (film.recommend ? "like" : "bad"))
+                    if isGridMode {
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            ForEach(sortedFilms, id: \.id) { film in
+                                if let poster = film.poster, let uiImage = UIImage(data: poster), let title = film.title, let id = Int(film.id ?? "") {
+                                    NavigationLink(destination: FilmDetailView(filmId: id)) {
+                                        ReviewThumnailView(image: Image(uiImage: uiImage), title: title, iconName: film.recommend && film.recommendsub ? "best" : (film.recommend ? "like" : "bad"))
+                                    }
                                 }
                             }
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 32)
+                    } else {
+                        CalendarView(reviews: Array(films))
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 32)
                 }
                 .scrollIndicators(.hidden)
             }
@@ -92,7 +100,11 @@ struct WatchedView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Image("Filog")
+                Image(systemName: "\(isGridMode ? "rectangle.grid.3x2" : "calendar")")
+                    .foregroundStyle(.primaryBlue)
+                    .onTapGesture {
+                        isGridMode.toggle()
+                    }
             }
             
             ToolbarItem(placement: .principal) {

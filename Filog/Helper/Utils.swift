@@ -77,7 +77,7 @@ class Utils {
             .flatMap({ $0.windows })
             .first(where: { $0.isKeyWindow }) else { return }
         
-        window.rootViewController = UIHostingController(rootView: WatchedView().environment(\.managedObjectContext, PersistenceController.shared.container.viewContext))
+        window.rootViewController = UIHostingController(rootView: TotalView().environment(\.managedObjectContext, PersistenceController.shared.container.viewContext))
         window.makeKeyAndVisible()
     }
 }

@@ -54,7 +54,7 @@ struct WatchListView: View {
                 .scrollIndicators(.hidden)
             }
         }
-        .padding(.top, 24)
+        .padding(.top, 8)
         .background(.white)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

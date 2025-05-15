@@ -25,4 +25,13 @@ extension Date {
     func get(_ component: Calendar.Component, calendar: Calendar = Calendar.current) -> Int {
         return calendar.component(component, from: self)
     }
+    
+    // MARK: 컴포넌트에 해당하는 Date 반환
+    static func date(year: Int, month: Int, day: Int) -> Date {
+        let components = DateComponents(year: year, month: month, day: day)
+        if let customDate = Calendar.current.date(from: components) {
+            return customDate
+        }
+        return Date()
+    }
 }

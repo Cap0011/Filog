@@ -92,6 +92,7 @@ struct PersonDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Utils.backButton
+                    .padding(.vertical, 8)
                     .onTapGesture {
                         self.presentationMode.wrappedValue.dismiss()
                     }
