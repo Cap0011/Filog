@@ -67,7 +67,7 @@ struct Toast: ViewModifier {
         
         init(textColor: Color = .primaryBlack,
              font: Font = .regular16,
-             backgroundColor: Color = .white.opacity(0.8),
+             backgroundColor: Color = .white.opacity(0.9),
              duration: TimeInterval = Toast.short,
              transition: AnyTransition = .opacity,
              animation: Animation = .linear(duration: 0.3)) {

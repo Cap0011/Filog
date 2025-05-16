@@ -21,6 +21,7 @@ struct FilmDetailView: View {
     @State private var isAlreadyOnWatchlist = false
     @State private var isAddedToWatchlistToastShowing = false
     @State private var isRemovedFromWatchlistToastShowing = false
+    @State private var isReviewRemovedToastShowing = false
     @State private var isDeleteReviewPopupPresented = false
     
     @State private var review: Film?
@@ -44,10 +45,13 @@ struct FilmDetailView: View {
         .background(.white)
         .toast(message: "Added to watchlist!", isShowing: $isAddedToWatchlistToastShowing, duration: Toast.short)
         .toast(message: "Removed from watchlist!", isShowing: $isRemovedFromWatchlistToastShowing, duration: Toast.short)
+        .toast(message: "Your review has been removed!", isShowing: $isReviewRemovedToastShowing, duration: Toast.short)
         .toast(message: ToastType.save.message, isShowing: $toastManager.isShowingSaveToast, duration: Toast.short)
         .popup(isPresented: $isDeleteReviewPopupPresented) {
             DeletePopupView(isPresented: $isDeleteReviewPopupPresented) {
                 if let review = review {
+                    self.review = nil
+                    isReviewRemovedToastShowing.toggle()
                     deleteReview(object: review)
                 }
             }
