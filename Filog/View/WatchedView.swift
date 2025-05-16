@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct WatchedView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -63,9 +64,9 @@ struct WatchedView: View {
                     if isGridMode {
                         LazyVGrid(columns: columns, spacing: 20) {
                             ForEach(sortedFilms, id: \.id) { film in
-                                if let poster = film.poster, let uiImage = UIImage(data: poster), let title = film.title, let id = Int(film.id ?? "") {
+                                if let title = film.title, let id = Int(film.id ?? "") {
                                     NavigationLink(destination: FilmDetailView(filmId: id)) {
-                                        ReviewThumnailView(image: Image(uiImage: uiImage), title: title, iconName: film.recommend && film.recommendsub ? "best" : (film.recommend ? "like" : "bad"))
+                                        ReviewThumnailView(posterURL: film.posterURL, data: film.poster, title: title, iconName: film.recommend && film.recommendsub ? "best" : (film.recommend ? "like" : "bad"))
                                     }
                                 }
                             }
@@ -100,7 +101,7 @@ struct WatchedView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Image(systemName: "\(isGridMode ? "rectangle.grid.3x2" : "calendar")")
+                Image(systemName: "\(!isGridMode ? "rectangle.grid.3x2" : "calendar")")
                     .foregroundStyle(.primaryBlue)
                     .onTapGesture {
                         isGridMode.toggle()
@@ -187,19 +188,36 @@ struct WatchedView: View {
     }
     
     struct ReviewThumnailView: View {
-        let image: Image
+        let posterURL: String?
+        let data: Data?
         let title: String
         let iconName: String
         
         var body: some View {
             VStack(alignment: .leading, spacing: 8) {
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .background(.primaryBlue)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .shadow(color: .black.opacity(0.12), radius: 8, x: 4, y: 4)
-                    .overlay(Image(iconName).padding(8).padding(.bottom, 2), alignment: .bottomTrailing)
+                CachedAsyncImage(url: URL(string: posterURL ?? ""), transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .shadow(color: .black.opacity(0.12), radius: 8, x: 4, y: 4)
+                            .overlay(Image(iconName).padding(8).padding(.bottom, 2), alignment: .bottomTrailing)
+                    default:
+                        if let data = data, let uiImage = UIImage(data: data) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .background(.primaryBlue)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .shadow(color: .black.opacity(0.12), radius: 8, x: 4, y: 4)
+                                .overlay(Image(iconName).padding(8).padding(.bottom, 2), alignment: .bottomTrailing)
+                        } else {
+                            Utils.placeholderColor
+                        }
+                    }
+                }
                 
                 Text(title)
                     .font(.regular15)

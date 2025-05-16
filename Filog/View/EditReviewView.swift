@@ -19,8 +19,6 @@ struct EditReviewView: View {
     let film: FilmData
     let review: Film?
 
-    @State private var filmImage: Image?
-
     @State private var selectedDate: Date? = nil
     @State private var reviewText = ""
     @State private var selectedRating = 1
@@ -108,16 +106,12 @@ struct EditReviewView: View {
                 case .success(let image):
                     image
                         .resizable()
-                        .scaledToFill()
+                        .scaledToFit()
+                        .frame(width: 80, alignment: .top)
+                default: Utils.placeholderColor
                         .frame(width: 80, height: 120)
-                        .clipped()
-                        .onAppear {
-                            filmImage = image
-                        }
-                default: Color.grayf4
                 }
             }
-            .frame(width: 80, height: 120)
             .cornerRadius(4)
 
             VStack(alignment: .leading, spacing: 4) {
@@ -275,7 +269,9 @@ struct EditReviewView: View {
             newReview.review = reviewText
             newReview.recommend = selectedRating > 0
             newReview.recommendsub = selectedRating == 2
-            newReview.poster = filmImage?.snapshot().jpegData(compressionQuality: 0.8)
+            if let posterURL = film.posterURL {
+                newReview.posterURL = posterURL.absoluteString
+            }
         }
 
         do {

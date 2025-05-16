@@ -1,0 +1,24 @@
+//
+//  Image.swift
+//  Filog
+//
+//  Created by Jiyoung Park on 5/16/25.
+//
+
+import SwiftUI
+
+extension Image {
+    func asUIImage() -> UIImage? {
+        let controller = UIHostingController(rootView: self.resizable().aspectRatio(contentMode: .fill))
+        let view = controller.view
+
+        let targetSize = controller.view.intrinsicContentSize
+        view?.bounds = CGRect(origin: .zero, size: targetSize)
+        view?.backgroundColor = .clear
+
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        return renderer.image { _ in
+            view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+        }
+    }
+}

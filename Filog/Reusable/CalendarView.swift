@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct CalendarView: View {
     let reviews: [Film]
@@ -74,13 +75,31 @@ struct CalendarView: View {
                 LazyVGrid(columns: columns, spacing: 2) {
                     ForEach(days.indices, id: \.self) { index in
                         if days[index] > 0 {
-                            if let review = reviews.filter({ $0.watchedAt != nil && calendar.isDate(Date.date(year: year, month: month, day: days[index]), inSameDayAs: $0.watchedAt!) }).first, let poster = UIImage(data: review.poster ?? Data()), let id = Int(review.id ?? "") {
+                            if let review = reviews.filter({ $0.watchedAt != nil && calendar.isDate(Date.date(year: year, month: month, day: days[index]), inSameDayAs: $0.watchedAt!) }).first, let id = Int(review.id ?? "") {
                                 NavigationLink(destination: FilmDetailView(filmId: id)) {
-                                    Image(uiImage: poster)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: itemWidth, height: itemWidth * 3 / 2)
-                                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                                    CachedAsyncImage(url: URL(string: review.posterURL ?? ""), transaction: Transaction(animation: .easeInOut)) { phase in
+                                        switch phase {
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: itemWidth, height: itemWidth * 3 / 2)
+                                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                                        default:
+                                            if let data = review.poster, let uiImage = UIImage(data: data) {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: itemWidth, height: itemWidth * 3 / 2)
+                                                    .background(.primaryBlue)
+                                                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                                            } else {
+                                                RoundedRectangle(cornerRadius: 4)
+                                                    .foregroundStyle(Utils.placeholderColor)
+                                                    .frame(width: itemWidth, height: itemWidth * 3 / 2)
+                                            }
+                                        }
+                                    }
                                 }
                             } else {
                                 Text("\(days[index])")
@@ -151,17 +170,28 @@ struct CalendarView: View {
         
         var body: some View {
             HStack(alignment: .top, spacing: 12) {
-                if let data = review.poster {
-                    Image(uiImage: UIImage(data: data) ?? UIImage())
-                        .resizable()
-                        .frame(width: 104, height: 156, alignment: .center)
-                        .scaledToFit()
-                        .aspectRatio(contentMode: .fit)
-                        .cornerRadius(8)
-                } else {
-                    RoundedRectangle(cornerRadius: 8)
-                        .foregroundStyle(Utils.placeholderColor)
-                        .frame(width: 104, height: 156, alignment: .center)
+                CachedAsyncImage(url: URL(string: review.posterURL ?? ""), transaction: Transaction(animation: .easeInOut)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .frame(width: 104, height: 156, alignment: .center)
+                            .aspectRatio(contentMode: .fit)
+                            .cornerRadius(8)
+                    default:
+                        if let data = review.poster, let uiImage = UIImage(data: data) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .frame(width: 104, height: 156, alignment: .center)
+                                .aspectRatio(contentMode: .fit)
+                                .background(.primaryBlue)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        } else {
+                            RoundedRectangle(cornerRadius: 8)
+                                .foregroundStyle(Utils.placeholderColor)
+                                .frame(width: 104, height: 156, alignment: .center)
+                        }
+                    }
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {

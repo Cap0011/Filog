@@ -5,6 +5,7 @@
         <attribute name="genre" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="poster" optional="YES" attributeType="Binary"/>
+        <attribute name="posterURL" optional="YES" attributeType="String"/>
         <attribute name="recommend" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="recommendsub" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="review" optional="YES" attributeType="String"/>
