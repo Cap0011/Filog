@@ -11,6 +11,7 @@ import CachedAsyncImage
 struct FilmSearchRow: View {
     let film: FilmData
     var query: String? = nil
+    var isReviewed = false
     
     var body: some View {
         VStack(spacing: 12) {
@@ -28,6 +29,10 @@ struct FilmSearchRow: View {
                 .cornerRadius(4)
                 
                 VStack(alignment: .leading, spacing: 2) {
+                    if isReviewed {
+                        reviewedTag
+                    }
+                    
                     Text(highlightedString(from: film.title ?? "N/A", query: query ?? ""))
                         .lineLimit(1)
                         .frame(height: 22)
@@ -49,6 +54,15 @@ struct FilmSearchRow: View {
                 .padding(.horizontal, -5)
         }
         .background(.white)
+    }
+    
+    var reviewedTag: some View {
+        Text("reviewed")
+            .foregroundStyle(.white)
+            .font(.regular14)
+            .padding(.vertical, 1.5)
+            .padding(.horizontal, 8)
+            .background(RoundedRectangle(cornerRadius: 100).foregroundStyle(.primaryBlue))
     }
     
     func highlightedString(from text: String, query: String) -> AttributedString {

@@ -31,7 +31,7 @@ struct CalendarView: View {
                     Image(systemName: "triangle.fill")
                         .font(.system(size: 10))
                         .rotationEffect(.degrees(-90))
-                        .foregroundStyle(.gray3C)
+                        .foregroundStyle(.primaryBlue)
                         .frame(width: 23, height: 23)
                         .onTapGesture {
                             withAnimation {
@@ -49,7 +49,7 @@ struct CalendarView: View {
                     Image(systemName: "triangle.fill")
                         .font(.system(size: 10))
                         .rotationEffect(.degrees(90))
-                        .foregroundStyle(.gray3C)
+                        .foregroundStyle(.primaryBlue)
                         .frame(width: 23, height: 23)
                         .onTapGesture {
                             withAnimation {

@@ -10,6 +10,7 @@ import SwiftUI
 struct FindView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @StateObject private var viewModel = SearchViewModel<FilmData>()
+    @FetchRequest(sortDescriptors: []) var reviews: FetchedResults<Film>
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,8 +21,8 @@ struct FindView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     ForEach(viewModel.searchResults) { film in
-                        NavigationLink(destination: EditReviewView(film: film, review: nil)) {
-                            FilmSearchRow(film: film, query: viewModel.searchText)
+                        NavigationLink(destination: EditReviewView(film: film, review: reviews.filter { $0.id == String(film.id) }.first)) {
+                            FilmSearchRow(film: film, query: viewModel.searchText, isReviewed: reviews.filter { $0.id == String(film.id) }.count > 0)
                         }
                     }
                 }
