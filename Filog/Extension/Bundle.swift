@@ -1,11 +1,11 @@
 //
-//  FilmData+Stub.swift
-//  FilmLog
+//  Bundle.swift
+//  Filog
 //
-//  Created by Jiyoung Park on 2022/05/03.
+//  Created by Jiyoung Park on 5/16/25.
 //
 
-import SwiftUI
+import Foundation
 
 extension Bundle {
     func loadAndDecodeJSON<D: Decodable>(filename: String) throws -> D? {
@@ -16,11 +16,5 @@ extension Bundle {
         let jsonDecoder = Utils.jsonDecoder
         let decodedModel = try jsonDecoder.decode(D.self, from: data)
         return decodedModel
-    }
-}
-
-extension UIApplication {
-    func dismissKeyboard() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }

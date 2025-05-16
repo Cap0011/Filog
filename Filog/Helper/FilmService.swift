@@ -34,14 +34,6 @@ class FilmService {
         }
         return fetchData(from: url)
             .decode(type: ShowResponse.self, decoder: Utils.jsonDecoder)
-//            .tryMap { data -> ShowResponse in
-//                do {
-//                    return try Utils.jsonDecoder.decode(ShowResponse.self, from: data)
-//                } catch {
-//                    print("Decoding error:", error)
-//                    throw error
-//                }
-//            }
             .map(\.results)
             .eraseToAnyPublisher()
     }

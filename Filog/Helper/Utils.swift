@@ -38,39 +38,7 @@ class Utils {
         }
         .clipShape(Circle())
     }
-    
-    static func decodeGenres(number: Int) -> [Int] {
-        var array = [Int]()
-        let binaryString = String(number, radix: 2).reversed()
-        
-        for (index, char) in binaryString.enumerated() {
-            if char == "1" {
-                array.append(index)
-            }
-        }
-        return array
-    }
-    
-    static func genresToInt(genres: [Int]) -> Int {
-        var result = 1
-        if genres.count > 0 {
-            genres.prefix(3).forEach { genre in
-                result += Int(pow(2.0, Double(Constants.shared.genreDictionary[genre] ?? 0)))
-            }
-        }
-        return result
-    }
-    
-    static func convertedGenresToInt(genres: [Int]) -> Int {
-        var result = 1
-        if genres.count > 0 {
-            genres.prefix(3).forEach { genre in
-                result += Int(pow(2.0, Double(genre)))
-            }
-        }
-        return result
-    }
-    
+
     static func resetToRootView() {
         guard let window = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })
