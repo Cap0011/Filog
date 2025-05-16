@@ -542,7 +542,6 @@ struct FilmDetailView: View {
             .padding(.horizontal, 48)
         }
     }
-
 }
 
 #Preview {

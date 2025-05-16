@@ -108,14 +108,16 @@ struct EditReviewView: View {
                 case .success(let image):
                     image
                         .resizable()
+                        .scaledToFill()
+                        .frame(width: 80, height: 120)
+                        .clipped()
                         .onAppear {
                             filmImage = image
                         }
                 default: Color.grayf4
                 }
             }
-            .aspectRatio(168/248 ,contentMode: .fit)
-            .frame(width: 80)
+            .frame(width: 80, height: 120)
             .cornerRadius(4)
 
             VStack(alignment: .leading, spacing: 4) {
@@ -273,7 +275,7 @@ struct EditReviewView: View {
             newReview.review = reviewText
             newReview.recommend = selectedRating > 0
             newReview.recommendsub = selectedRating == 2
-            newReview.poster = filmImage.snapshot().pngData()
+            newReview.poster = filmImage?.snapshot().jpegData(compressionQuality: 0.8)
         }
 
         do {
