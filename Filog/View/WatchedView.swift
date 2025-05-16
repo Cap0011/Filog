@@ -45,7 +45,7 @@ struct WatchedView: View {
                 .padding(.bottom, 24)
             }
             
-            if films.isEmpty {
+            if films.isEmpty && isGridMode {
                 Spacer()
                 
                 Text("You haven't left a review yet.")

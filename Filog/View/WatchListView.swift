@@ -61,10 +61,6 @@ struct WatchListView: View {
             dictionary = UserDefaults.standard.dictionary(forKey: "ToWatchFilms") as? [String: String] ?? [:]
         }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image("Filog")
-            }
-            
             ToolbarItem(placement: .principal) {
                 Text("Watch List")
                     .foregroundStyle(.primaryBlack)
