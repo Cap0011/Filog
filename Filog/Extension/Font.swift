@@ -14,6 +14,7 @@ extension Font {
     static let regular16: Font = .custom("Pretendard-Regular", size: 16)
     static let regular17: Font = .custom("Pretendard-Regular", size: 17)
     static let regular18: Font = .custom("Pretendard-Regular", size: 18)
+    static let medium14: Font = .custom("Pretendard-Medium", size: 14)
     static let medium16: Font = .custom("Pretendard-Medium", size: 16)
     static let medium17: Font = .custom("Pretendard-Medium", size: 17)
     static let medium18: Font = .custom("Pretendard-Medium", size: 18)

@@ -142,10 +142,10 @@ struct EditReviewView: View {
                 .padding(.horizontal, 4)
 
             Text(selectedDate != nil ? dateString(for: selectedDate!) : "Select a date")
-                .foregroundStyle(selectedDate != nil ? .primaryBlack : .graya7)
+                .foregroundStyle(selectedDate != nil ? .white : .graya7)
                 .font(.regular16)
                 .padding(.horizontal, 12)
-                .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(.white).frame(height: 38).shadow(color: .black.opacity(0.05), radius: 3, x: 2, y: 2))
+                .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(selectedDate != nil ? .primaryBlue : .white).frame(height: 38).shadow(color: .black.opacity(0.05), radius: 3, x: 2, y: 2))
                 .frame(height: 38)
                 .overlay {
                     DatePicker(selection: Binding($selectedDate, default: Date()), in: ...Date.now, displayedComponents: .date) {}

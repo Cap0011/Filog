@@ -30,7 +30,7 @@ struct FilmCarouselView: View {
             case .largePoster:
                 return .medium16
             default:
-                return .regular14
+                return .medium14
             }
         }
         
