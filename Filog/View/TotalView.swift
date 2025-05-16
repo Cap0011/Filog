@@ -16,7 +16,7 @@ struct TotalView: View {
                 FilmListView()
             }
             .tabItem {
-                Image(systemName: "doc.text.magnifyingglass")
+                Image(systemName: "magnifyingglass")
                 Text("Explore")
             }
             .tag(0)
@@ -34,8 +34,8 @@ struct TotalView: View {
                 WatchListView()
             }
             .tabItem {
-                Image(systemName: "list.and.film")
-                Text("To Watch")
+                Image(systemName: "eye")
+                Text("Watch List")
             }
             .tag(2)
         }

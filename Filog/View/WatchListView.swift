@@ -42,7 +42,7 @@ struct WatchListView: View {
                 Spacer()
             } else {
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 2) {
+                    LazyVGrid(columns: columns, spacing: 1) {
                         ForEach(Array(dictionary.keys), id: \.self) { id in
                             if let intId = Int(id) {
                                 WatchListPosterCard(filmID: intId, posterURL: URL(string: dictionary[id] ?? ""))
@@ -88,7 +88,7 @@ struct WatchListPosterCard: View {
                 default: Utils.placeholderColor
                 }
             }
-            .aspectRatio(2/3, contentMode: .fit)
+            .aspectRatio(2/3, contentMode: .fill)
             .frame(width: UIScreen.main.bounds.width / 3)
         }
     }
