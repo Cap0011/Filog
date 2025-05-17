@@ -210,7 +210,7 @@ struct FilmDetailView: View {
                                 
                                 Spacer()
                                 
-                                Text(review.watchedAt?.formattedString(format: "yyyy.mm.dd") ?? "Unknown")
+                                Text(review.watchedAt?.formattedString(format: "yyyy.MM.dd") ?? "Unknown")
                                     .font(.regular14)
                                     .foregroundStyle(.gray7A)
                             }
