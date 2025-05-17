@@ -19,6 +19,7 @@ struct EditReviewView: View {
     let film: FilmData
     let review: Film?
 
+    @State private var isShowingPickerSheet = false
     @State private var selectedDate: Date? = nil
     @State private var reviewText = ""
     @State private var selectedRating = 1
@@ -51,6 +52,15 @@ struct EditReviewView: View {
             }
         }
         .toast(message: ToastType.empty.message, isShowing: $toastManager.isShowingEmptyToast, duration: Toast.short)
+        .sheet(isPresented: $isShowingPickerSheet) {
+            VStack {
+                DatePicker("Select Date", selection: Binding($selectedDate, default: Date()), in: ...Date.now, displayedComponents: .date)
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                .padding()
+            }
+            .presentationDetents([.height(400)])
+        }
         .task {
             if let review = review {
                 selectedDate = review.watchedAt
@@ -143,15 +153,12 @@ struct EditReviewView: View {
 
             Text(selectedDate != nil ? dateString(for: selectedDate!) : "Select a date")
                 .foregroundStyle(selectedDate != nil ? .white : .graya7)
-                .font(.regular16)
+                .font(selectedDate != nil ? .medium16 : .regular16)
                 .padding(.horizontal, 12)
                 .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(selectedDate != nil ? .primaryBlue : .white).frame(height: 38).shadow(color: .black.opacity(0.05), radius: 3, x: 2, y: 2))
                 .frame(height: 38)
-                .overlay {
-                    DatePicker(selection: Binding($selectedDate, default: Date()), in: ...Date.now, displayedComponents: .date) {}
-                        .datePickerStyle(.compact)
-                        .labelsHidden()
-                        .colorMultiply(.clear)
+                .onTapGesture {
+                    isShowingPickerSheet = true
                 }
         }
     }
