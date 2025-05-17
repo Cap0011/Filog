@@ -77,6 +77,23 @@ struct PersonDetailView: View {
                         }
                         .scrollIndicators(.hidden)
                     }
+                    
+                    if let biography = person.biography {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Biography")
+                                .font(.semibold17)
+                                .foregroundStyle(.primaryBlue)
+                                .frame(height: 24)
+                                .padding(.top, 24)
+                            
+                            Text(biography)
+                                .font(.regular16)
+                                .foregroundStyle(.primaryBlack)
+                                .padding(.top, 8)
+                                .lineSpacing(8)
+                        }
+                        .padding(.horizontal, 20)
+                    }
                 }
             }
             .padding(.top, 16)
@@ -169,22 +186,6 @@ struct PersonDetailView: View {
                             .foregroundStyle(.primaryBlack)
                             .frame(height: 22)
                             .padding(.top, 8)
-                        
-                        if let biography = person.biography {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Biography")
-                                    .font(.semibold17)
-                                    .foregroundStyle(.primaryBlue)
-                                    .frame(height: 24)
-                                    .padding(.top, 24)
-                                
-                                Text(biography)
-                                    .font(.regular16)
-                                    .foregroundStyle(.primaryBlack)
-                                    .padding(.top, 8)
-                                    .lineSpacing(8)
-                            }
-                        }
                     }
                 }
                 .padding(.horizontal, 20)
